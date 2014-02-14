@@ -1,0 +1,2 @@
+class ParserController < ApplicationController
+end
