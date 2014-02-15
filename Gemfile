@@ -35,6 +35,15 @@ end
 # Include Backbone
 gem 'rails-backbone'
 
+# Add Bootstrap
+gem 'bootstrap-sass'
+group :development do
+	gem 'rails_layout'
+end
+
+# FIle uploads by carrierwave
+gem 'carrierwave'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

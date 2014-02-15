@@ -1,0 +1,13 @@
+<div class="container">
+	<%= form_tag({action: :upload}, multipart: true) do %>
+		<%= file_field_tag 'csv' %>
+		<%= submit_tag("Upload") %>
+	<% end %>
+</div>
+<script type="text/javascript">
+	$(function() {
+		// Get the app name
+		window.router = new Cs210Stockholm.Routers.ParserRouter();
+		Backbone.history.start();
+	});
+</script>
