@@ -46,6 +46,9 @@ gem 'carrierwave'
 # Manage application envv
 gem 'dotenv-rails'
 
+# Static assets
+gem 'rails_serve_static_assets'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
