@@ -1,4 +1,5 @@
 require 'csv'
+require 'json'
 
 class ParserController < ApplicationController
 
@@ -27,6 +28,16 @@ class ParserController < ApplicationController
  			# Headers are stored in the first row
  			@attributes = rows[0]
  			rows.delete_at(0)
+
+ 			# Now create a representation of the model we want
+ 			@dm = DataModel.new
+ 			@dm.name = params[:name]
+ 			@dm.attrs = @attributes.to_json
+ 			@dm.base_url = SecureRandom.hex(10)
+ 			# @dm.name = params[:name]
+ 			# @dm.attributes = @attributes.join(',')
+ 			# @dm.base_url = SecureRandom.uuid
+ 			@dm.save()
 
  			# TODO: Use metaprogramming to dynamically generate class
  			@hashes = Array.new

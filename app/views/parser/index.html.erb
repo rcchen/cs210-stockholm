@@ -1,5 +1,6 @@
 <div class="container">
 	<%= form_tag({action: :upload}, multipart: true) do %>
+		<%= text_field_tag 'name' %>
 		<%= file_field_tag 'csv' %>
 		<%= submit_tag("Upload") %>
 	<% end %>
