@@ -53,20 +53,14 @@ class ParserController < ApplicationController
  				@attributes[attribute] = "String"
  			end
 
-
- 			# Now create a representation of the model we want
- 			@dm = DataModel.new
- 			@dm.name = params[:name]
- 			@dm.attrs = @attributes.to_json
- 			@dm.base_url = SecureRandom.hex(10)
- 			@dm.save()
-
- 			# Attempt to connect to MongoDB
- 			# db = get_connection
- 			# collection = db[@dm.base_url]
+			# Now create a representation of the model we want
+			@dm = DataModel.new
+			@dm.name = params[:name]
+			@dm.attrs = @attributes.to_json
+			@dm.base_url = SecureRandom.hex(10)
 
  			# Generate all the hashes
- 			hashes = Array.new
+ 			@hashes = Array.new
  			rows.each do |row|
 
  				# Parse into hashes
@@ -76,18 +70,18 @@ class ParserController < ApplicationController
  				end
 
  				# Put it into our collection
- 				hashes.push(h)
+ 				@hashes.push(h)
  			
  			end
 
  			# Create a JSON object from the hash
- 			@sample = hashes[0].to_json
+ 			@sample = @hashes[0].to_json
 
  			# From the sample, figure out the proper types
  			attributes_copy = @attributes.clone
  			@attributes.each do |attribute, type|
  				puts attribute
- 				puts hashes[0]
+ 				puts @hashes[0]
  				if is_numeric?(hashes[0][attribute])
  					puts type
  					attributes_copy.delete(attribute)
@@ -104,7 +98,28 @@ class ParserController < ApplicationController
 
  	def upload
 
- 		# Define route here
+		# Write new values for the attributes
+		attributes_copy = @attributes.clone
+		@attributes.each do |attribute, type|
+			attributes_copy.delete(attribute)
+			attributes_copy[attribute] = type
+		end
+		@attributes = attributes_copy
+
+		# Modify the attributes of the data model created earlier
+		@dm.attributes = @attributes.to_json
+		@dm.save()
+
+  		# Attempt to connect to MongoDB
+ 		db = get_connection
+ 		collection = db[@dm.base_url]
+
+ 		# Rewrite the data types in the collection
+ 		@hashes.each do |hash|
+ 			hash.each do |attribute|
+ 				puts hash[attribute]
+ 			end
+ 		end
 
  	end
 

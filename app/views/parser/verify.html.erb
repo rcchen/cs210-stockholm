@@ -2,24 +2,24 @@
 	<div class="row">
 		<div class="col-xs-6">
 			<strong>Parsed attributes</strong>
-			<%= form_tag({action: :upload}) do %>
+			<%= form_tag({:action => 'upload'}, {}) do %>
 			<div id="json-attributes" style="margin: 10px 0px;">
 			<input type="hidden" value="<%= @file_data %>" />
 			<% @attributes.each do |attribute, type| %>
 			<div class="row" style="margin-bottom: 5px;">
 				<div class="col-xs-6">
-					<input type="text" class="form-control" value="<%= attribute %>" />
+					<input type="text" class="form-control" value="<%= attribute %>" disabled />
 				</div>
 				<div class="col-xs-6">
-					<select class="form-control">
-						<option <%= type == 'String' ? "selected" : "" %>>String</option>
-						<option <%= type == 'Numeric' ? "selected" : "" %>>Numeric</option>
+					<select name="<%= attribute %>" class="form-control">
+						<option value="String" <%= type == 'String' ? "selected" : "" %>>String</option>
+						<option value="Numeric" <%= type == 'Numeric' ? "selected" : "" %>>Numeric</option>
 					</select>
 				</div>
 			</div>
 			<% end %>
 			</div>
-			<button type="button" class="btn btn-primary">Submit</button>
+			<button type="submit" class="btn btn-primary">Submit</button>
 			<% end %>
 		</div>
 		<div class="col-xs-6">
