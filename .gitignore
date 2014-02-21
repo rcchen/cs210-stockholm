@@ -44,3 +44,6 @@ config/secrets.yml
 
 ## Because Macs are silly this way
 .DS_Store
+
+## Dat environment
+.env

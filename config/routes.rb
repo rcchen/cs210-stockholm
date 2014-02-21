@@ -5,6 +5,7 @@ Cs210Stockholm::Application.routes.draw do
 
   # These routes are associated with the CSV parser
   get "parser/index"
+  post "parser/verify"
   post "parser/upload"
 
   # You can have the root of your site routed with "root"

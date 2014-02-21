@@ -52,6 +52,10 @@ gem 'rails_serve_static_assets'
 # Safe attributes
 gem 'safe_attributes'
 
+# Add mongo
+gem 'mongo'
+gem 'bson_ext'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

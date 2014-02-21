@@ -29,6 +29,9 @@ GEM
     atomic (1.1.14)
     bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
+    bson (1.9.2)
+    bson_ext (1.9.2)
+      bson (~> 1.9.2)
     builder (3.1.4)
     carrierwave (0.9.0)
       activemodel (>= 3.2.0)
@@ -61,6 +64,8 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.25.1)
     minitest (4.7.5)
+    mongo (1.9.2)
+      bson (~> 1.9.2)
     multi_json (1.8.4)
     pg (0.17.1)
     polyglot (0.3.4)
@@ -127,11 +132,13 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap-sass
+  bson_ext
   carrierwave
   coffee-rails (~> 4.0.0)
   dotenv-rails
   jbuilder (~> 1.2)
   jquery-rails
+  mongo
   pg
   rails (= 4.0.2)
   rails-backbone
