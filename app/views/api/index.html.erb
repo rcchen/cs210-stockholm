@@ -1,0 +1,11 @@
+<div class="container">
+	<h3>Collections</h3>
+	<table class="table">
+		<% @dms.each do |dm| %>
+		<tr>
+			<td><%= dm.name %></td>
+			<td><a href="/api/<%= dm.base_url %>">View</a></td>
+		</tr>
+		<% end %>
+	</table>
+</div>
