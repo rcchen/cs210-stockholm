@@ -26,6 +26,14 @@ class ApiController < ApplicationController
  		db = get_connection
  		@collection = db[@dm.base_url]
 
+ 		# If there is a JSON option, process as JSON
+ 		type = params[:type]
+ 		page = params[:p]
+ 		puts type
+ 		if type == 'json' then
+ 			render json: @collection.find({}, {:limit => 10, :skip => 10 * page.to_i })
+ 		end
+
 	end
 
 
