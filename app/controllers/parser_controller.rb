@@ -63,8 +63,8 @@ class ParserController < ApplicationController
 			@dm.attrs = @attributes.to_json
 
 			base_url = SecureRandom.hex(10)
-			# If base_url collides, find a new random hex value
-			while DataModel.find_by(base_url: id).nil? do
+			# If base_url collides, find a new random hex values
+			while not DataModel.find_by(base_url: base_url).nil? do
 				base_url = SecureRandom.hex(10)
 			end
 
