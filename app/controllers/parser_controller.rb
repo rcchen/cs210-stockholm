@@ -5,6 +5,7 @@ require 'uri'
 
 class ParserController < ApplicationController
 
+	# Gets a connection to the MongoHQ server
 	def get_connection
 	  return @db_connection if @db_connection
 	  db = URI.parse(ENV['MONGOHQ_URL'])
@@ -30,6 +31,8 @@ class ParserController < ApplicationController
  	end
 
  	def verify
+
+ 		# 
 
  		# The file data is stored in CSV
  		@file_data = params[:csv]
@@ -82,7 +85,7 @@ class ParserController < ApplicationController
  			@attributes.each do |attribute, type|
  				puts attribute
  				puts @hashes[0]
- 				if is_numeric?(hashes[0][attribute])
+ 				if is_numeric?(@hashes[0][attribute])
  					puts type
  					attributes_copy.delete(attribute)
  					attributes_copy[attribute] = 'Numeric'
@@ -90,7 +93,9 @@ class ParserController < ApplicationController
  			end
  			@attributes = attributes_copy
 
- 			# collection.insert(@hashes)
+ 			Rails.cache.write("attributes", @attributes)
+ 			Rails.cache.write("hashes", @hashes)
+ 			Rails.cache.write("dm", @dm)
 
  		end
 
@@ -98,16 +103,23 @@ class ParserController < ApplicationController
 
  	def upload
 
+ 		@attributes = Rails.cache.read("attributes")
+ 		@hashes = Rails.cache.read("hashes")
+ 		@dm = Rails.cache.read("dm")
+
 		# Write new values for the attributes
 		attributes_copy = @attributes.clone
 		@attributes.each do |attribute, type|
+			puts attribute
 			attributes_copy.delete(attribute)
 			attributes_copy[attribute] = type
 		end
 		@attributes = attributes_copy
+		puts @attributes
 
 		# Modify the attributes of the data model created earlier
-		@dm.attributes = @attributes.to_json
+		puts @dm.attrs
+		@dm.attrs = @attributes.to_json
 		@dm.save()
 
   		# Attempt to connect to MongoDB
@@ -115,11 +127,19 @@ class ParserController < ApplicationController
  		collection = db[@dm.base_url]
 
  		# Rewrite the data types in the collection
- 		@hashes.each do |hash|
- 			hash.each do |attribute|
- 				puts hash[attribute]
+ 		hashes_copy = @hashes.clone
+ 		@hashes.each_with_index do |hash, index|
+ 			hash.each do |attribute, type|
+ 				if @attributes[attribute] == 'Numeric'
+ 					current_hash = hashes_copy[index]
+ 					current_hash[attribute] = hash[attribute].to_i
+ 				end
  			end
  		end
+ 		@hashes = hashes_copy
+
+ 		# Send it all over to MongoDB
+ 		collection.insert(@hashes)
 
  	end
 
