@@ -61,7 +61,15 @@ class ParserController < ApplicationController
 			@dm = DataModel.new
 			@dm.name = params[:name]
 			@dm.attrs = @attributes.to_json
-			@dm.base_url = SecureRandom.hex(10)
+
+			base_url = SecureRandom.hex(10)
+			# If base_url collides, find a new random hex value
+			while DataModel.find_by(base_url: id).nil? do
+				base_url = SecureRandom.hex(10)
+			end
+
+
+			@dm.base_url = base_url
 
  			# Generate all the hashes
  			@hashes = Array.new
