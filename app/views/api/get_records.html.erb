@@ -1,33 +1,106 @@
 <div class="container">
 	<h3><%= @dm.name %></h3>
-	<div class="row">
-		<div class="col-xs-6">
-			<table class="table">
-				<tr>
-					<td>Records</td>
-					<td><%= @collection.count %></td>
-				</tr>
-				<tr>
-					<td>Created</td>
-					<td><%= @dm.created_at %></td>
-				</tr>
-				<tr>
-					<td>Last Updated</td>
-					<td><%= @dm.updated_at %></td>
-				</tr>
-				<tr>
-					<td>Endpoint</td>
-					<td><a href="/api/<%= @dm.base_url %>">/api/<%= @dm.base_url %></a></td>
-				</tr>
-			</table>
-		</div>
-		<div class="col-xs-6">
-			<pre id="attributes"></pre>
+	<div id="information" style="margin: 30px 0px;">
+		<div class="row">
+			<div class="col-xs-6">
+				<table class="table">
+					<tr>
+						<td>Records</td>
+						<td><%= @collection.count %></td>
+					</tr>
+					<tr>
+						<td>Created</td>
+						<td><%= @dm.created_at %></td>
+					</tr>
+					<tr>
+						<td>Last Updated</td>
+						<td><%= @dm.updated_at %></td>
+					</tr>
+					<tr>
+						<td>Endpoint</td>
+						<td><a href="/api/<%= @dm.base_url %>">/api/<%= @dm.base_url %></a></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-xs-6">
+				<pre id="attributes"></pre>
+			</div>
 		</div>
 	</div>
+	<div id="dataset" style="margin: 30px 0px;">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<% JSON.parse(@dm.attrs).each do |key, value| %>
+					<th><%= key %></th>
+					<% end %>
+				</tr>
+			</thead>
+			<tbody id="helix">
+
+			</tbody>
+		</table>
+	</div>
 </div>
+<script id="dataTemplate" type="text/template">
+	<tr>
+		<% JSON.parse(@dm.attrs).each do |key, value| %>
+		<td><@= <%= key %> @></td>
+		<% end %>
+	</tr>
+</script>
 <script>
+	// Eliminate conflicts with Rails
+	_.templateSettings = {
+	    interpolate: /\<\@\=(.+?)\@\>/gim,
+	    evaluate: /\<\@(.+?)\@\>/gim,
+	    escape: /\<\@\-(.+?)\@\>/gim
+	};
+	/*_.templateSettings = {
+	    interpolate: /\{\{\=(.+?)\}\}/g,
+	    evaluate: /\{\{(.+?)\}\}/g
+	};*/
+	/*_.templateSettings = {
+  		interpolate : /\{\{(.+?)\}\}/g
+	};*/
+	var DataModel = Backbone.Model.extend();
+	var DataCollection = Backbone.Collection.extend({
+		model: DataModel,
+		url: '/api/<%= @dm.base_url %>?type=json&p=0'
+	});
+
+	var DataView = Backbone.View.extend({
+		el: "#helix",
+		template: _.template($('#dataTemplate').html()),
+ 		render: function(eventName) {
+			_.each(this.model.models, function(data) {
+				var dataTemplate = this.template(data.toJSON());
+				console.log(data.toJSON());
+				console.log(this.el);
+				$(this.el).append(dataTemplate);
+			}, this);
+			return this;
+		}
+	})
+
+	var AppView = Backbone.View.extend({
+		el: "body",
+		initialize: function() {
+			var collection = new DataCollection();
+			var collectionView = new DataView({
+				model: collection
+			});
+			collection.bind('reset', function() {
+				collectionView.render();
+			});
+			collection.fetch();
+		}
+
+	});
+
+	var App = new AppView;
+
+	// Display the JSON attribute preview on the right
 	var sample = JSON.parse('<%= @dm.attrs.to_s.html_safe %>');
-	console.log(sample);
 	document.getElementById('attributes').innerHTML = JSON.stringify(sample, null, 2);
 </script>

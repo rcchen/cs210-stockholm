@@ -53,7 +53,8 @@ class ParserController < ApplicationController
  			rows.delete_at(0)
  			@attributes = Hash.new
  			parsed_attributes.each do |attribute|
- 				@attributes[attribute] = "String"
+ 				attribute_underscore = attribute.split.join('_')
+ 				@attributes[attribute_underscore] = "String"
  			end
 
 			# Now create a representation of the model we want
