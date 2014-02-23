@@ -64,7 +64,7 @@ class ParserController < ApplicationController
 
 			base_url = SecureRandom.hex(10)
 			# If base_url collides, find a new random hex value
-			while DataModel.find_by(base_url: id).nil? do
+			while DataModel.find_by(base_url: base_url).nil? do
 				base_url = SecureRandom.hex(10)
 			end
 
