@@ -5,7 +5,6 @@ Cs210Stockholm::Application.routes.draw do
 
   resources :entries
 
-  get "graph/line"
   get "welcome/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -19,6 +18,13 @@ Cs210Stockholm::Application.routes.draw do
   get "api/index"
   get "api/:id", to: "api#get_records"
 
+  #These routes are associated with the line graph
+  get "graph/line_filter"
+  post "graph/get_line"
+  get "graph/line"
+
+  #These routes are associated with the dashboard
+  get "dashboard", to: "dashboard#dashboard"
   # You can have the root of your site routed with "root"
   root 'welcome#index'
 
