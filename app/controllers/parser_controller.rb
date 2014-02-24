@@ -143,7 +143,10 @@ class ParserController < ApplicationController
  				else
  					property.value = value
  				end
- 				property.save
+ 				# The properties are saved when the @collection is saved, so this 
+ 				# is a redundant update to the db. Removing it halved update time
+ 				# in some cases.
+ 				#property.save
  				entry.properties.append(property)
  			end
  			@collection.entries.append(entry)
