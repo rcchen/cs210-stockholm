@@ -12,7 +12,7 @@ class ApiController < ApplicationController
 
 	def index
 
-		@dms = DataModel.all
+		@collections = Collection.all
 
 	end
 
@@ -20,17 +20,19 @@ class ApiController < ApplicationController
 
 		# First get the data model from Postgres
 		id = params[:id]
-		@dm = DataModel.find_by(base_url: id)
+		@collection = Collection.find_by(base_url: id)
 
 		# Attempt to connect to MongoDB
- 		db = get_connection
- 		@collection = db[@dm.base_url]
+ 		#db = get_connection
+ 		#@collection = db[@dm.base_url]
 
  		# If there is a JSON option, process as JSON
  		type = params[:type]
  		page = params[:p]
  		if type == 'json' then
- 			render json: @collection.find({}, {:limit => 100, :skip => 100 * page.to_i })
+ 			render json: @collection.entries.as_json(
+ 				:include => [:properties])
+ 			#render json: @collection.find({}, {:limit => 100, :skip => 100 * page.to_i })
  		end
 
 	end

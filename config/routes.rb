@@ -1,4 +1,10 @@
 Cs210Stockholm::Application.routes.draw do
+  resources :collections
+
+  resources :properties
+
+  resources :entries
+
   get "graph/line"
   get "welcome/index"
   # The priority is based upon order of creation: first created -> highest priority.

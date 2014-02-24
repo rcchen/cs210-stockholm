@@ -6,14 +6,14 @@ require 'uri'
 class ParserController < ApplicationController
 
 	# Gets a connection to the MongoHQ server
-	def get_connection
-	  return @db_connection if @db_connection
-	  db = URI.parse(ENV['MONGOHQ_URL'])
-	  db_name = db.path.gsub(/^\//, '')
-	  @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
-	  @db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
-	  @db_connection
-	end
+	#def get_connection
+	#  return @db_connection if @db_connection
+	#  db = URI.parse(ENV['MONGOHQ_URL'])
+	#  db_name = db.path.gsub(/^\//, '')
+	#  @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
+	#  @db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
+	#  @db_connection
+	#end
 
 	# Adopted from http://rosettacode.org/wiki/Determine_if_a_string_is_numeric#Ruby
 	def is_numeric?(s)
@@ -31,8 +31,6 @@ class ParserController < ApplicationController
  	end
 
  	def verify
-
- 		# 
 
  		# The file data is stored in CSV
  		@file_data = params[:csv]
@@ -58,9 +56,9 @@ class ParserController < ApplicationController
  			end
 
 			# Now create a representation of the model we want
-			@dm = DataModel.new
-			@dm.name = params[:name]
-			@dm.attrs = @attributes.to_json
+			@collection = Collection.new
+			@collection.name = params[:name]
+			@collection.attrs = @attributes.to_json
 
 			base_url = SecureRandom.hex(10)
 			# If base_url collides, find a new random hex values
@@ -68,8 +66,8 @@ class ParserController < ApplicationController
 				base_url = SecureRandom.hex(10)
 			end
 
-
-			@dm.base_url = base_url
+			@collection.base_url = base_url
+			@collection.save
 
  			# Generate all the hashes
  			@hashes = Array.new
@@ -102,9 +100,9 @@ class ParserController < ApplicationController
  			end
  			@attributes = attributes_copy
 
+ 			Rails.cache.write("collection", @collection)
  			Rails.cache.write("attributes", @attributes)
  			Rails.cache.write("hashes", @hashes)
- 			Rails.cache.write("dm", @dm)
 
  		end
 
@@ -114,7 +112,7 @@ class ParserController < ApplicationController
 
  		@attributes = Rails.cache.read("attributes")
  		@hashes = Rails.cache.read("hashes")
- 		@dm = Rails.cache.read("dm")
+ 		@collection = Rails.cache.read("collection")
 
 		# Write new values for the attributes
 		attributes_copy = @attributes.clone
@@ -127,28 +125,40 @@ class ParserController < ApplicationController
 		puts @attributes
 
 		# Modify the attributes of the data model created earlier
-		puts @dm.attrs
-		@dm.attrs = @attributes.to_json
-		@dm.save()
+		@collection.attrs = @attributes.to_json
+		@collection.save()
 
   		# Attempt to connect to MongoDB
- 		db = get_connection
- 		collection = db[@dm.base_url]
+ 		# db = get_connection
+ 		# collection = db[@dm.base_url]
 
  		# Rewrite the data types in the collection
- 		hashes_copy = @hashes.clone
  		@hashes.each_with_index do |hash, index|
- 			hash.each do |attribute, type|
+ 			entry = Entry.new
+ 			entry.save
+ 			hash.each do |attribute|
+ 				property = Property.new
+ 				property.name = attribute
+ 				# property.ptype = @attributes[attribute]
  				if @attributes[attribute] == 'Numeric'
- 					current_hash = hashes_copy[index]
- 					current_hash[attribute] = hash[attribute].to_i
+ 					property.value = hash[attribute].to_i
+ 				else
+ 					property.value = hash[attribute]
  				end
+ 				property.save
+ 				entry.properties.append(property)
  			end
+ 			@collection.entries.append(entry)
  		end
- 		@hashes = hashes_copy
+
+ 		@collection.save()
+
+ 		# @hashes = hashes_copy
+
+ 		# @dm.documents = @hashes
 
  		# Send it all over to MongoDB
- 		collection.insert(@hashes)
+ 		# collection.insert(@hashes)
 
  	end
 
