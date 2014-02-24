@@ -47,7 +47,13 @@
 				</tr>
 			</thead>
 			<tbody id="helix">
-
+				<% @collection.entries.each do |entry| %>
+					<tr>
+					<% entry.properties.each do |property| %>
+					<td> <%= property.value %> </td>
+					<% end %>
+					</tr>
+				<% end %>
 			</tbody>
 		</table>
 	</div>
@@ -84,6 +90,8 @@
 		<td><@= <%= key %> @></td>
 		<% end %>
 	</tr>
+
+
 </script>
 <script>
 	// Eliminate conflicts with Rails
