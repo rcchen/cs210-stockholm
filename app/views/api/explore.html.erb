@@ -76,6 +76,32 @@
 			</form>
 			<svg style="height: 740px;"></svg>
 		</div>
+		<div id = "chart-bar">
+			<h4>Bar Chart Demo</h4>
+			<p> Select a key and aggregate to generate a bar chart.</p>
+			<form id = "chart-bar-form" role = "form" style = "margin: 10px 0px 20px 0px;">
+			<div class="row">
+				<div class="col-xs-3">
+					<select class="form-control" name="chart-bar-key">
+						<% JSON.parse(@dataset.attrs).each do |key, value| %>
+						<option><%= key %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="col-xs-3">
+					<select class="form-control" name="chart-bar-value">
+						<% JSON.parse(@dataset.attrs).each do |key, value| %>
+						<option><%= key %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="col-xs-2">
+					<button type="button" class="btn btn-success" id="redraw-chart-bar">Submit</button>
+				</div>
+			</div>
+			</form>
+			<svg style="height: 740px;"></svg>
+		</div>
 	</div>
 </div>
 <script id="filterTemplate" type="text/template">
@@ -251,7 +277,31 @@
 			  return chart;
 			});
 		});
+	});
 
+	$('#redraw-chart-bar').click(function() {
+	var params = $('#chart-bar-form').serializeArray();
+	var params_key = params[0]['value'];
+	var params_value = params[1]['value'];
+
+	$.post('/api/<%= @dataset.base_url %>', { chart: "bar", key: params_key, aggregate: params_value }, function(data) {
+		//Discrete chart example
+		nv.addGraph(function() {
+		  var chart = nv.models.discreteBarChart()
+		      .x(function(d) { return d.label })
+		      .y(function(d) { return d.value })
+		      .staggerLabels(true)     // Stagger bar chart labels
+		      .tooltips(false)  //Configure the minimum slice size for labels to show up
+		      .showValues(true)   // Show bar value on top of bar
+		      ;
+		 
+		    d3.select("#chart-bar svg")
+		        .datum(data)
+		        .transition().duration(350)
+		        .call(chart);
+		  return chart;
+			});
+		});
 	});
 
 </script>
