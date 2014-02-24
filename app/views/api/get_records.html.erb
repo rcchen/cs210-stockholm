@@ -1,24 +1,24 @@
 <div class="container">
-	<h3><%= @dm.name %></h3>
+	<h3><%= @collection.name %></h3>
 	<div id="information" style="margin: 30px 0px;">
 		<div class="row">
 			<div class="col-xs-6">
 				<table class="table">
 					<tr>
 						<td>Records</td>
-						<td><%= @collection.count %></td>
+						<td><%= @collection.entries.count %></td>
 					</tr>
 					<tr>
 						<td>Created</td>
-						<td><%= @dm.created_at %></td>
+						<td><%= @collection.created_at %></td>
 					</tr>
 					<tr>
 						<td>Last Updated</td>
-						<td><%= @dm.updated_at %></td>
+						<td><%= @collection.updated_at %></td>
 					</tr>
 					<tr>
 						<td>Endpoint</td>
-						<td><a href="/api/<%= @dm.base_url %>">/api/<%= @dm.base_url %></a></td>
+						<td><a href="/api/<%= @collection.base_url %>">/api/<%= @collection.base_url %></a></td>
 					</tr>
 				</table>
 			</div>
@@ -27,11 +27,21 @@
 			</div>
 		</div>
 	</div>
+	<div id="filters">
+		<form id="filters-form">
+			<div id="filter-attributes">
+			</div>
+			<div id="filter-actions" style="margin: 20px 0px;">
+				<button type="button" class="btn btn-success" id="add-filter">Add Filter</button>
+				<button type="button" class="btn btn-primary" id="submit-filter">Submit</button>
+			</div>
+		</form>
+	</div>
 	<div id="dataset" style="margin: 30px 0px;">
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<% JSON.parse(@dm.attrs).each do |key, value| %>
+					<% JSON.parse(@collection.attrs).each do |key, value| %>
 					<th><%= key %></th>
 					<% end %>
 				</tr>
@@ -42,9 +52,35 @@
 		</table>
 	</div>
 </div>
+<script id="filterTemplate" type="text/template">
+	<div class="form-attribute" style="margin: 10px 0px;">
+		<div class="row">
+			<div class="col-xs-5">
+				<select class="form-control" name="filter-attribute">
+					<% JSON.parse(@collection.attrs).each do |key, value| %>
+					<option><%= key %></option>
+					<% end %>
+				</select>
+			</div>
+			<div class="col-xs-3">
+				<select class="form-control" name="filter-sign">
+					<option>less than (<)</option>
+					<option>equals (=)</option>
+					<option>greater than (>)</option>
+				</select>
+			</div>	
+			<div class="col-xs-3">
+				<input class="form-control" name="filter-value" />
+			</div>
+			<div class="col-xs-1">
+				<button type="button" class="btn btn-danger filter-remove">Remove</button>
+			</div>
+		</div>
+	</div>
+</script>
 <script id="dataTemplate" type="text/template">
 	<tr>
-		<% JSON.parse(@dm.attrs).each do |key, value| %>
+		<% JSON.parse(@collection.attrs).each do |key, value| %>
 		<td><@= <%= key %> @></td>
 		<% end %>
 	</tr>
@@ -66,7 +102,7 @@
 	var DataModel = Backbone.Model.extend();
 	var DataCollection = Backbone.Collection.extend({
 		model: DataModel,
-		url: '/api/<%= @dm.base_url %>?type=json&p=0'
+		url: '/api/<%= @collection.base_url %>'
 	});
 
 	var DataView = Backbone.View.extend({
@@ -75,8 +111,6 @@
  		render: function(eventName) {
 			_.each(this.model.models, function(data) {
 				var dataTemplate = this.template(data.toJSON());
-				console.log(data.toJSON());
-				console.log(this.el);
 				$(this.el).append(dataTemplate);
 			}, this);
 			return this;
@@ -101,6 +135,30 @@
 	var App = new AppView;
 
 	// Display the JSON attribute preview on the right
-	var sample = JSON.parse('<%= @dm.attrs.to_s.html_safe %>');
+	var sample = JSON.parse('<%= @collection.attrs.to_s.html_safe %>');
 	document.getElementById('attributes').innerHTML = JSON.stringify(sample, null, 2);
+
+	var FilterView = Backbone.View.extend({
+		initialize: function() {
+			this.render();
+		},
+		render: function() {
+			var template = _.template($('#filterTemplate').html(), {});
+			$('#filter-attributes').append(template);
+		}
+	});
+
+	$('#add-filter').click(function() {
+		new FilterView();
+	});
+
+	$('#submit-filter').click(function() {
+		var filters = $('#filters-form').serializeArray();
+		console.log(filters);
+	});
+
+	$('.filter-remove').live('click', function() {
+		$(this).parent().parent().parent().remove();
+		event.preventDefault();
+	});
 </script>

@@ -56,6 +56,9 @@ gem 'safe_attributes'
 gem 'mongo'
 gem 'bson_ext'
 
+# Speed up ActiveRecord
+gem 'activerecord-import'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

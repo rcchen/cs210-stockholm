@@ -1,10 +1,10 @@
 <div class="container">
 	<h3>Collections</h3>
 	<table class="table">
-		<% @dms.each do |dm| %>
+		<% @collections.each do |collection| %>
 		<tr>
-			<td><%= dm.name %></td>
-			<td><a href="/api/<%= dm.base_url %>">View</a></td>
+			<td><%= collection.name %></td>
+			<td><a href="/api/<%= collection.base_url %>">View</a></td>
 		</tr>
 		<% end %>
 	</table>
