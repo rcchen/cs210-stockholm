@@ -130,7 +130,7 @@ class ParserController < ApplicationController
  		# Rewrite the data types in the collection
  		@hashes.each_with_index do |hash, index|
  			entry = Entry.new
- 			entry.save
+ 			#entry.save
  			hash.each do |attribute|
  			# attribute is represented as [key, value], not {key => value}
  				property = Property.new
