@@ -17,6 +17,7 @@ Cs210Stockholm::Application.routes.draw do
   # These routes are associated with the API
   get "api/index"
   get "api/:id", to: "api#get_records"
+  post "api/:id", to: "api#get_records"
 
   #These routes are associated with the line graph
   get "graph/line_filter"

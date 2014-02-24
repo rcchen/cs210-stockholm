@@ -27,7 +27,12 @@
 			</div>
 		</div>
 	</div>
+	<div id="charts">
+		<h3>Charts</h3>
+		<svg id="chart-pie" style="height: 740px;"></svg>
+	</div>
 	<div id="filters">
+		<h3>Data</h3>
 		<form id="filters-form">
 			<div id="filter-attributes">
 			</div>
@@ -169,4 +174,28 @@
 		$(this).parent().parent().parent().remove();
 		event.preventDefault();
 	});
+
+
+	$.post('/api/<%= @collection.base_url %>', { chart: "pie", key: "county", aggregate: "ballots" }, function(data) {
+			//Donut chart example
+			nv.addGraph(function() {
+			  var chart = nv.models.pieChart()
+			      .x(function(d) { return d.label })
+			      .y(function(d) { return d.value })
+			      .showLabels(true)     //Display pie labels
+			      .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
+			      .labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
+			      .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
+			      .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
+			      ;
+			 
+			    d3.select("svg#chart-pie")
+			        .datum(data)
+			        .transition().duration(350)
+			        .call(chart);
+			  return chart;
+			});
+	});
+
+
 </script>
