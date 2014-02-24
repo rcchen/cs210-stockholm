@@ -81,7 +81,7 @@ class ParserController < ApplicationController
 
  				# Put it into our collection
  				@hashes.push(h)
- 			
+ 				
  			end
 
  			# Create a JSON object from the hash
@@ -90,10 +90,7 @@ class ParserController < ApplicationController
  			# From the sample, figure out the proper types
  			attributes_copy = @attributes.clone
  			@attributes.each do |attribute, type|
- 				puts attribute
- 				puts @hashes[0]
  				if is_numeric?(@hashes[0][attribute])
- 					puts type
  					attributes_copy.delete(attribute)
  					attributes_copy[attribute] = 'Numeric'
  				end
@@ -117,12 +114,10 @@ class ParserController < ApplicationController
 		# Write new values for the attributes
 		attributes_copy = @attributes.clone
 		@attributes.each do |attribute, type|
-			puts attribute
 			attributes_copy.delete(attribute)
 			attributes_copy[attribute] = type
 		end
 		@attributes = attributes_copy
-		puts @attributes
 
 		# Modify the attributes of the data model created earlier
 		@collection.attrs = @attributes.to_json
@@ -137,21 +132,23 @@ class ParserController < ApplicationController
  			entry = Entry.new
  			entry.save
  			hash.each do |attribute|
+ 			# attribute is represented as [key, value], not {key => value}
  				property = Property.new
- 				property.name = attribute
+ 				property.name = attribute[0]
+ 				name = attribute[0]
+ 				value = attribute[1]
  				# property.ptype = @attributes[attribute]
- 				if @attributes[attribute] == 'Numeric'
- 					property.value = hash[attribute].to_i
+ 				if @attributes[name] == 'Numeric'
+ 					property.value = value.to_i
  				else
- 					property.value = hash[attribute]
+ 					property.value = value
  				end
  				property.save
  				entry.properties.append(property)
  			end
  			@collection.entries.append(entry)
  		end
-
- 		@collection.save()
+		@collection.save()
 
  		# @hashes = hashes_copy
 
