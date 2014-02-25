@@ -48,7 +48,11 @@ class ApiController < ApplicationController
 	 						key_value = property.value
 	 					end
 	 					if property.name == aggregate
-	 						aggregate_value = property.value.to_i
+	 						if key == aggregate
+	 							aggregate_value = 1
+	 						else
+	 							aggregate_value = property.value.to_i
+	 						end
 	 					end
 	 				end
 	 				if not data.key?(key_value)

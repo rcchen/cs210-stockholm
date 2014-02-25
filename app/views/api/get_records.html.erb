@@ -29,7 +29,31 @@
 	</div>
 	<div id="charts">
 		<h3>Charts</h3>
-		<svg id="chart-pie" style="height: 740px;"></svg>
+		<div id="chart-pie">
+			<h4>Pie Chart Demo</h4>
+			<form id="chart-pie-form" role="form" style="margin: 10px 0px 20px 0px;">
+			<div class="row">
+				<div class="col-xs-3">
+					<select class="form-control" name="chart-pie-key">
+						<% JSON.parse(@collection.attrs).each do |key, value| %>
+						<option><%= key %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="col-xs-3">
+					<select class="form-control" name="chart-pie-value">
+						<% JSON.parse(@collection.attrs).each do |key, value| %>
+						<option><%= key %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="col-xs-2">
+					<button type="button" class="btn btn-success" id="redraw-chart-pie">Submit</button>
+				</div>
+			</div>
+			</form>
+			<svg style="height: 740px;"></svg>
+		</div>
 	</div>
 	<div id="filters">
 		<h3>Data</h3>
@@ -176,7 +200,12 @@
 	});
 
 
-	$.post('/api/<%= @collection.base_url %>', { chart: "pie", key: "county", aggregate: "ballots" }, function(data) {
+	$('#redraw-chart-pie').click(function() {
+		var params = $('#chart-pie-form').serializeArray();
+		var params_key = params[0]['value'];
+		var params_value = params[1]['value'];
+
+		$.post('/api/<%= @collection.base_url %>', { chart: "pie", key: params_key, aggregate: params_value }, function(data) {
 			//Donut chart example
 			nv.addGraph(function() {
 			  var chart = nv.models.pieChart()
@@ -189,13 +218,17 @@
 			      .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
 			      ;
 			 
-			    d3.select("svg#chart-pie")
+			    d3.select("#chart-pie svg")
 			        .datum(data)
 			        .transition().duration(350)
 			        .call(chart);
 			  return chart;
 			});
+		});
+
 	});
+
+	
 
 
 </script>
