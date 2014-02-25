@@ -31,6 +31,7 @@
 		<h3>Charts</h3>
 		<div id="chart-pie">
 			<h4>Pie Chart Demo</h4>
+			<p>Select a key and aggregate to generate a pie chart. If the key is the same as the aggregate, the count of the key will be taken.</p>
 			<form id="chart-pie-form" role="form" style="margin: 10px 0px 20px 0px;">
 			<div class="row">
 				<div class="col-xs-3">
@@ -199,7 +200,6 @@
 		event.preventDefault();
 	});
 
-
 	$('#redraw-chart-pie').click(function() {
 		var params = $('#chart-pie-form').serializeArray();
 		var params_key = params[0]['value'];
@@ -228,6 +228,9 @@
 
 	});
 
+	$(function() {
+		$('#redraw-chart-pie').click();
+	});
 	
 
 
