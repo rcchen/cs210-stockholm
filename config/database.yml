@@ -21,8 +21,8 @@ test:
   database: syndrome-test
 
 production:
-  adapter: postgresql
+  adapter: mysql2
   host: localhost
-  username: postgres
-  password: postgres
-  database: syndrome-pro
+  username: rails
+  password: <%= begin IO.read("/home/rails/.db") rescue "" end %>
+  database: rails

@@ -59,6 +59,14 @@ gem 'bson_ext'
 # Speed up ActiveRecord
 gem 'activerecord-import'
 
+# Use mySQL for database
+group :production do
+  gem 'mysql2'
+end
+
+# We handle secrets with Figaro
+gem "figaro"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 

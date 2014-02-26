@@ -52,6 +52,9 @@ GEM
     ejs (1.1.1)
     erubis (2.7.0)
     execjs (2.0.2)
+    figaro (0.7.0)
+      bundler (~> 1.0)
+      rails (>= 3, < 5)
     hike (1.2.3)
     i18n (0.6.9)
     jbuilder (1.5.3)
@@ -69,6 +72,7 @@ GEM
     mongo (1.9.2)
       bson (~> 1.9.2)
     multi_json (1.8.4)
+    mysql2 (0.3.15)
     pg (0.17.1)
     polyglot (0.3.4)
     rack (1.5.2)
@@ -139,9 +143,11 @@ DEPENDENCIES
   carrierwave
   coffee-rails (~> 4.0.0)
   dotenv-rails
+  figaro
   jbuilder (~> 1.2)
   jquery-rails
   mongo
+  mysql2
   pg
   rails (= 4.0.2)
   rails-backbone
