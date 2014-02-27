@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# Manage application envv
+gem 'dotenv-rails'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
 
@@ -42,9 +45,6 @@ gem 'bootstrap-sass'
 
 # FIle uploads by carrierwave
 gem 'carrierwave'
-
-# Manage application envv
-gem 'dotenv-rails'
 
 # Static assets
 gem 'rails_serve_static_assets'
