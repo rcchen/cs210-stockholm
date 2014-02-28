@@ -5,16 +5,6 @@ require 'uri'
 
 class ParserController < ApplicationController
 
-	# Gets a connection to the MongoHQ server
-	#def get_connection
-	#  return @db_connection if @db_connection
-	#  db = URI.parse(ENV['MONGOHQ_URL'])
-	#  db_name = db.path.gsub(/^\//, '')
-	#  @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
-	#  @db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
-	#  @db_connection
-	#end
-
 	# Adopted from http://rosettacode.org/wiki/Determine_if_a_string_is_numeric#Ruby
 	def is_numeric?(s)
 		begin
@@ -58,20 +48,19 @@ class ParserController < ApplicationController
  			# Create a new Hash object of attributes
  			@attributes = Hash.new
  			parsed_attributes.each do |attribute|
- 				attribute_underscore = attribute.split.join('_')
+ 				attribute_underscore = attribute.split.join('')
  				@attributes[attribute_underscore] = "String"
  			end
 
 			# Now create a representation of the model we want
-			@collection = Dataset.new
-			@collection.name = params[:name]
-			@collection.attrs = @attributes.to_json
-			@collection.base_url = SecureRandom.hex(10)
+			@dataset = Dataset.new
+			@dataset.name = params[:name]
+			@dataset.attrs = @attributes.to_json
+			@dataset.base_url = SecureRandom.hex(10)
 			# If base_url collides, find a new random hex values
-			#while not Collection.where(:base_url => @collection.base_url).exists? do
-			#	print 'asdf'
-			#	@collection.base_url = SecureRandom.hex(10)
-			#end
+			while Dataset.where(:base_url => @dataset.base_url).exists? do
+				@dataset.base_url = SecureRandom.hex(10)
+			end
 
  			# Generate all the hashes
  			@hashes = Array.new
@@ -83,7 +72,7 @@ class ParserController < ApplicationController
  					h[attribute] = row[index]
  				end
 
- 				# Put it into our collection
+ 				# Put it into our dataset
  				@hashes.push(h)
  				
  			end
@@ -101,7 +90,8 @@ class ParserController < ApplicationController
  			end
  			@attributes = attributes_copy
 
- 			Rails.cache.write("collection", @collection)
+ 			# We temporarily keep things in the cache to pass to the upload method
+ 			Rails.cache.write("dataset", @dataset)
  			Rails.cache.write("attributes", @attributes)
  			Rails.cache.write("hashes", @hashes)
 
@@ -111,9 +101,11 @@ class ParserController < ApplicationController
 
  	def upload
 
+ 		# Recall items from the cache
+ 		# TODO: deprecate the cache. We shouldn't be doing this
  		@attributes = Rails.cache.read("attributes")
  		@hashes = Rails.cache.read("hashes")
- 		@collection = Rails.cache.read("collection")
+ 		@dataset = Rails.cache.read("dataset")
 
 		# Write new values for the attributes
 		attributes_copy = @attributes.clone
@@ -124,57 +116,41 @@ class ParserController < ApplicationController
 		@attributes = attributes_copy
 
 		# Modify the attributes of the data model created earlier
-		@collection.attrs = @attributes.to_json
-		@collection.save
+		@dataset.attrs = @attributes.to_json
+		@dataset.save
 
-  		# Attempt to connect to MongoDB
- 		# db = get_connection
- 		# collection = db[@dm.base_url]
-
- 		documents = []
-
- 		# Rewrite the data types in the collection
+ 		# Rewrite the data types in the dataset
  		@hashes.each_with_index do |hash, index|
- 			#entry = Entry.new
- 			#entry.save
- 			document = Datadoc.new
 
+ 			# Create a new Datadoc
+ 			datadoc = Datadoc.new
+
+ 			# Iterate through attributes of the hash
  			hash.each do |attribute|
- 			# attribute is represented as [key, value], not {key => value}
- 				#property = Property.new
- 				#property.name = attribute[0]
+
+ 				# Retrieve the name and value of each attribute
  				name = attribute[0]
  				value = attribute[1]
- 				# property.ptype = @attributes[attribute]
+
+ 				# Typecast if the attribute type is Numeric
  				if @attributes[name] == 'Numeric'
  					value = value.to_i
  				else
  					value = value
  				end
- 				document["#{name}"] = value
- 				# The properties are saved when the @collection is saved, so this 
- 				# is a redundant update to the db. Removing it halved update time
- 				# in some cases.
- 				#property.save
- 				#entry.properties.append(property)
+
+ 				# Dynamically create the attribute in our Datadoc
+ 				datadoc["#{name}"] = value
+
  			end
 
- 			# documents.push(document)
+ 			# Add the Datadoc into our Dataset
+ 			@dataset.datadocs.push(document)
 
- 			@collection.datadocs.push(document)
- 			#@collection.entries.append(entry)
  		end
 
-		Mongoid.logger = nil
-
-		@collection.save()
-
- 		# @hashes = hashes_copy
-
- 		# @dm.documents = @hashes
-
- 		# Send it all over to MongoDB
- 		# collection.insert(@hashes)
+ 		# Saving the dataset saves all the entries
+		@dataset.save()
 
  	end
 

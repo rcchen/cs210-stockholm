@@ -1,23 +1,27 @@
 class ApiController < ApplicationController
 
+	# Pulls in a list of all of the datasets
 	def index
 
+		# Variable passed to the view
 		@datasets = Dataset.all
 
 	end
 
-	def get_records
+	# Shows information on a single dataset
+	def explore
 
 		# Retrieve the data set
 		id = params[:id]
 		@dataset = Dataset.where(:base_url => id).first
 
+		# POST requests are typically associated with some chart
  		if request.post?
 
  			# Figure out what sort of chart it is
  			chart = params[:chart]
 
- 			# Now split based on the chart
+ 			# Handles pie chart data requests
  			if chart == 'pie'
 
  				# Get the key and the aggregate
@@ -58,8 +62,6 @@ class ApiController < ApplicationController
 	 				json_data << json_data_object
 	 			end
 
-	 			print json_data
-
 	 			# Render as JSON data
 	 			render json: json_data
 
@@ -67,15 +69,6 @@ class ApiController < ApplicationController
  			
  		end
 
- 		# If there is a JSON option, process as JSON
- 		type = params[:type]
- 		page = params[:p]
- 		if type == 'json' then
- 			render json: @collection.entries.as_json(
- 				:include => [:properties])
- 		end
-
 	end
-
 
 end
