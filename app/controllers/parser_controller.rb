@@ -145,7 +145,7 @@ class ParserController < ApplicationController
  			end
 
  			# Add the Datadoc into our Dataset
- 			@dataset.datadocs.push(document)
+ 			@dataset.datadocs.push(datadoc)
 
  		end
 
