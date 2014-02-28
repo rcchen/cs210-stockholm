@@ -66,3 +66,11 @@ test:
         # low amounts for fast failures.
         max_retries: 1
         retry_interval: 0
+production:
+  sessions:
+    default:
+      database: cs210_stockholm_production
+      hosts:
+        - localhost:27017
+      options:
+
