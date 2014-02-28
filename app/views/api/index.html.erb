@@ -1,10 +1,11 @@
 <div class="container">
-	<h3>Collections</h3>
+	<h3>Datasets</h3>
 	<table class="table">
-		<% @collections.each do |collection| %>
+		<% @datasets.each do |dataset| %>
 		<tr>
-			<td><%= collection.name %></td>
-			<td><a href="/api/<%= collection.base_url %>">View</a></td>
+			<td><%= dataset[:name] %></td>
+			<td><%= dataset.datadocs.count %></td>
+			<td><a href="/api/<%= dataset[:base_url] %>">View</a></td>
 		</tr>
 		<% end %>
 	</table>

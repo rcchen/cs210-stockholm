@@ -1,24 +1,24 @@
 <div class="container">
-	<h3><%= @collection.name %></h3>
+	<h3><%= @dataset.name %></h3>
 	<div id="information" style="margin: 30px 0px;">
 		<div class="row">
 			<div class="col-xs-6">
 				<table class="table">
 					<tr>
 						<td>Records</td>
-						<td><%= @collection.entries.count %></td>
+						<td><%= @dataset.datadocs.count %></td>
 					</tr>
 					<tr>
 						<td>Created</td>
-						<td><%= @collection.created_at %></td>
+						<td><%= @dataset.created_at %></td>
 					</tr>
 					<tr>
 						<td>Last Updated</td>
-						<td><%= @collection.updated_at %></td>
+						<td><%= @dataset.updated_at %></td>
 					</tr>
 					<tr>
 						<td>Endpoint</td>
-						<td><a href="/api/<%= @collection.base_url %>">/api/<%= @collection.base_url %></a></td>
+						<td><a href="/api/<%= @dataset.base_url %>">/api/<%= @dataset.base_url %></a></td>
 					</tr>
 				</table>
 			</div>
@@ -36,14 +36,14 @@
 			<div class="row">
 				<div class="col-xs-3">
 					<select class="form-control" name="chart-pie-key">
-						<% JSON.parse(@collection.attrs).each do |key, value| %>
+						<% JSON.parse(@dataset.attrs).each do |key, value| %>
 						<option><%= key %></option>
 						<% end %>
 					</select>
 				</div>
 				<div class="col-xs-3">
 					<select class="form-control" name="chart-pie-value">
-						<% JSON.parse(@collection.attrs).each do |key, value| %>
+						<% JSON.parse(@dataset.attrs).each do |key, value| %>
 						<option><%= key %></option>
 						<% end %>
 					</select>
@@ -67,33 +67,13 @@
 			</div>
 		</form>
 	</div>
-	<div id="dataset" style="margin: 30px 0px;">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<% JSON.parse(@collection.attrs).each do |key, value| %>
-					<th><%= key %></th>
-					<% end %>
-				</tr>
-			</thead>
-			<tbody id="helix">
-				<% @collection.entries.each do |entry| %>
-					<tr>
-					<% entry.properties.each do |property| %>
-					<td> <%= property.value %> </td>
-					<% end %>
-					</tr>
-				<% end %>
-			</tbody>
-		</table>
-	</div>
 </div>
 <script id="filterTemplate" type="text/template">
 	<div class="form-attribute" style="margin: 10px 0px;">
 		<div class="row">
 			<div class="col-xs-5">
 				<select class="form-control" name="filter-attribute">
-					<% JSON.parse(@collection.attrs).each do |key, value| %>
+					<% JSON.parse(@dataset.attrs).each do |key, value| %>
 					<option><%= key %></option>
 					<% end %>
 				</select>
@@ -116,31 +96,25 @@
 </script>
 <script id="dataTemplate" type="text/template">
 	<tr>
-		<% JSON.parse(@collection.attrs).each do |key, value| %>
+		<% JSON.parse(@dataset.attrs).each do |key, value| %>
 		<td><@= <%= key %> @></td>
 		<% end %>
 	</tr>
-
-
 </script>
 <script>
+
 	// Eliminate conflicts with Rails
 	_.templateSettings = {
 	    interpolate: /\<\@\=(.+?)\@\>/gim,
 	    evaluate: /\<\@(.+?)\@\>/gim,
 	    escape: /\<\@\-(.+?)\@\>/gim
 	};
-	/*_.templateSettings = {
-	    interpolate: /\{\{\=(.+?)\}\}/g,
-	    evaluate: /\{\{(.+?)\}\}/g
-	};*/
-	/*_.templateSettings = {
-  		interpolate : /\{\{(.+?)\}\}/g
-	};*/
+
+	
 	var DataModel = Backbone.Model.extend();
-	var DataCollection = Backbone.Collection.extend({
+	var DataSet = Backbone.Collection.extend({
 		model: DataModel,
-		url: '/api/<%= @collection.base_url %>'
+		url: '/api/<%= @dataset.base_url %>'
 	});
 
 	var DataView = Backbone.View.extend({
@@ -158,14 +132,14 @@
 	var AppView = Backbone.View.extend({
 		el: "body",
 		initialize: function() {
-			var collection = new DataCollection();
-			var collectionView = new DataView({
-				model: collection
+			var dataset = new DataSet();
+			var datasetView = new DataView({
+				model: dataset
 			});
-			collection.bind('reset', function() {
-				collectionView.render();
+			dataset.bind('reset', function() {
+				datasetView.render();
 			});
-			collection.fetch();
+			dataset.fetch();
 		}
 
 	});
@@ -173,8 +147,9 @@
 	var App = new AppView;
 
 	// Display the JSON attribute preview on the right
-	var sample = JSON.parse('<%= @collection.attrs.to_s.html_safe %>');
+	var sample = JSON.parse('<%= @dataset.attrs.to_s.html_safe %>');
 	document.getElementById('attributes').innerHTML = JSON.stringify(sample, null, 2);
+
 
 	var FilterView = Backbone.View.extend({
 		initialize: function() {
@@ -200,12 +175,13 @@
 		event.preventDefault();
 	});
 
+	
 	$('#redraw-chart-pie').click(function() {
 		var params = $('#chart-pie-form').serializeArray();
 		var params_key = params[0]['value'];
 		var params_value = params[1]['value'];
 
-		$.post('/api/<%= @collection.base_url %>', { chart: "pie", key: params_key, aggregate: params_value }, function(data) {
+		$.post('/api/<%= @dataset.base_url %>', { chart: "pie", key: params_key, aggregate: params_value }, function(data) {
 			//Donut chart example
 			nv.addGraph(function() {
 			  var chart = nv.models.pieChart()
@@ -227,11 +203,5 @@
 		});
 
 	});
-
-	$(function() {
-		$('#redraw-chart-pie').click();
-	});
-	
-
 
 </script>
