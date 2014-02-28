@@ -6,11 +6,6 @@ gem 'dotenv-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
 
-# Use sqlite3 as the database for Active Record
-# gem 'sqlite3'
-# We switch to Postgres because of Heroku
-gem 'pg'
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
@@ -54,15 +49,8 @@ gem 'safe_attributes'
 
 # Add mongo
 gem 'mongo'
+gem 'mongoid', github: 'mongoid/mongoid'
 gem 'bson_ext'
-
-# Speed up ActiveRecord
-gem 'activerecord-import'
-
-# Use mySQL for database
-group :production do
-  gem 'mysql2'
-end
 
 # We handle secrets with Figaro
 gem "figaro"

@@ -1,30 +1,16 @@
 class ApiController < ApplicationController
 
-	# Gets a connection to the MongoHQ server
-	def get_connection
-	  return @db_connection if @db_connection
-	  db = URI.parse(ENV['MONGOHQ_URL'])
-	  db_name = db.path.gsub(/^\//, '')
-	  @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
-	  @db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
-	  @db_connection
-	end
-
 	def index
 
-		@collections = Collection.all
+		@datasets = Dataset.all
 
 	end
 
 	def get_records
 
-		# First get the data model from Postgres
+		# Retrieve the data set
 		id = params[:id]
-		@collection = Collection.find_by(base_url: id)
-
-		# Attempt to connect to MongoDB
- 		#db = get_connection
- 		#@collection = db[@dm.base_url]
+		@dataset = Dataset.where(:base_url => id).first
 
  		if request.post?
 
@@ -38,27 +24,29 @@ class ApiController < ApplicationController
 				key = params[:key]
 	 			aggregate = params[:aggregate]
 
-	 			# Essentially MapReduce
+	 			# We're essentially doing a map/reduce operation
+	 			# We collect all the keys in the data hash and 
+	 			# aggregate values for the keys
 	 			data = Hash.new
-	 			@collection.entries.each do |entry|
-	 				key_value = ""
-	 				aggregate_value = 0
-	 				entry.properties.each do |property|
-	 					if property.name == key
-	 						key_value = property.value
-	 					end
-	 					if property.name == aggregate
-	 						if key == aggregate
-	 							aggregate_value = 1
-	 						else
-	 							aggregate_value = property.value.to_i
-	 						end
-	 					end
+	 			@dataset.datadocs.each do |datadoc|
+	 				
+	 				# Get the key
+	 				key_value = datadoc["#{key}"]
+
+	 				# By default, we count the aggregate
+	 				aggregate_value = 1
+	 				if key != aggregate
+	 					aggregate_value = datadoc["#{aggregate}"].to_i
 	 				end
+
+	 				# If the key does not exist yet, set it to zero
 	 				if not data.key?(key_value)
 	 					data[key_value] = 0
 	 				end
+
+	 				# Add in the value that we observed for the aggregate
 	 				data[key_value] = data[key_value] + aggregate_value
+
 	 			end
 
 	 			# Compile data into format expected of pie charts
@@ -70,9 +58,10 @@ class ApiController < ApplicationController
 	 				json_data << json_data_object
 	 			end
 
+	 			print json_data
+
 	 			# Render as JSON data
 	 			render json: json_data
-
 
  			end
  			

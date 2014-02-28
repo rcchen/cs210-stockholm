@@ -1,11 +1,11 @@
 class WelcomeController < ApplicationController
 
   def index
-
-    dm = DataModel.new
-    dm.name = 'Testing'
-    dm.save()
   
+  	collection = Collection.new
+  	collection.name = 'Test collection'
+  	collection.save
+
   end
 
 end

@@ -30,9 +30,11 @@ class ParserController < ApplicationController
 
  	end
 
+ 	# Verification process that validates the data that is being uploaded. 
+ 	# Checks data types and creates basic models to be associated with data
  	def verify
 
- 		# The file data is stored in CSV
+ 		# Uploaded data is located in the POST param :csv
  		@file_data = params[:csv]
  		
  		# Check that we are able to read the data
@@ -46,9 +48,14 @@ class ParserController < ApplicationController
  				rows.push(csv_obj)
  			end
 
- 			# Headers are stored in the first row
+ 			# We assume that attributes are in the header of the CSV
+ 			# TODO: Ask user whether these are actually the attributes
  			parsed_attributes = rows[0]
+
+ 			# Remove the row so we don't accidentally process it
  			rows.delete_at(0)
+
+ 			# Create a new Hash object of attributes
  			@attributes = Hash.new
  			parsed_attributes.each do |attribute|
  				attribute_underscore = attribute.split.join('_')
@@ -56,18 +63,15 @@ class ParserController < ApplicationController
  			end
 
 			# Now create a representation of the model we want
-			@collection = Collection.new
+			@collection = Dataset.new
 			@collection.name = params[:name]
 			@collection.attrs = @attributes.to_json
-
-			base_url = SecureRandom.hex(10)
+			@collection.base_url = SecureRandom.hex(10)
 			# If base_url collides, find a new random hex values
-			while not DataModel.find_by(base_url: base_url).nil? do
-				base_url = SecureRandom.hex(10)
-			end
-
-			@collection.base_url = base_url
-			@collection.save
+			#while not Collection.where(:base_url => @collection.base_url).exists? do
+			#	print 'asdf'
+			#	@collection.base_url = SecureRandom.hex(10)
+			#end
 
  			# Generate all the hashes
  			@hashes = Array.new
@@ -121,36 +125,48 @@ class ParserController < ApplicationController
 
 		# Modify the attributes of the data model created earlier
 		@collection.attrs = @attributes.to_json
-		@collection.save()
+		@collection.save
 
   		# Attempt to connect to MongoDB
  		# db = get_connection
  		# collection = db[@dm.base_url]
 
+ 		documents = []
+
  		# Rewrite the data types in the collection
  		@hashes.each_with_index do |hash, index|
- 			entry = Entry.new
+ 			#entry = Entry.new
  			#entry.save
+ 			document = Datadoc.new
+
  			hash.each do |attribute|
  			# attribute is represented as [key, value], not {key => value}
- 				property = Property.new
- 				property.name = attribute[0]
+ 				#property = Property.new
+ 				#property.name = attribute[0]
  				name = attribute[0]
  				value = attribute[1]
  				# property.ptype = @attributes[attribute]
  				if @attributes[name] == 'Numeric'
- 					property.value = value.to_i
+ 					value = value.to_i
  				else
- 					property.value = value
+ 					value = value
  				end
+ 				document["#{name}"] = value
  				# The properties are saved when the @collection is saved, so this 
  				# is a redundant update to the db. Removing it halved update time
  				# in some cases.
  				#property.save
- 				entry.properties.append(property)
+ 				#entry.properties.append(property)
  			end
- 			@collection.entries.append(entry)
+
+ 			# documents.push(document)
+
+ 			@collection.datadocs.push(document)
+ 			#@collection.entries.append(entry)
  		end
+
+		Mongoid.logger = nil
+
 		@collection.save()
 
  		# @hashes = hashes_copy
