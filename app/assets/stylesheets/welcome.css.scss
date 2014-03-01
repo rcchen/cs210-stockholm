@@ -1,3 +1,63 @@
 // Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$asbestos: #7F8C8D;
+$midnight-blue: #2C3E50;
+$wet-asphalt: #34495E;
+
+ body {
+ 	/* background-color: $wet-asphalt; */
+ 	background-color: #EEE;
+ }
+
+ .navbar-default {
+ 	background-color: $midnight-blue;
+  	border-color: $midnight-blue;
+ }
+
+ .navbar-form {
+ 	border-color: $midnight-blue;
+ }
+
+ .navbar-header a {
+ 	&:hover {
+ 		text-decoration: underline;
+ 	}
+ }
+
+/* Landing */
+#landing {
+	background-color: $midnight-blue;
+	margin-top: -20px;
+	padding-top:150px;
+	background-attachment: relative;
+	background-position: center center;
+	min-height: 650px;
+	width: 100%;
+	
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    color: $asbestos;
+}
+
+#team {
+	padding: 40px 0px;
+	#members {
+		padding: 30px 0px;
+	}
+}
+
+#footer {
+	background-color: $midnight-blue;
+	color: $asbestos;
+	padding: 40px 0px;
+}

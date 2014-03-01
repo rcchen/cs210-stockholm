@@ -117,7 +117,7 @@
 		url: '/api/<%= @dataset.base_url %>'
 	});
 
-	var DataView = Backbone.View.extend({
+	/*var DataView = Backbone.View.extend({
 		el: "#helix",
 		template: _.template($('#dataTemplate').html()),
  		render: function(eventName) {
@@ -127,9 +127,9 @@
 			}, this);
 			return this;
 		}
-	})
+	});*/
 
-	var AppView = Backbone.View.extend({
+	/*var AppView = Backbone.View.extend({
 		el: "body",
 		initialize: function() {
 			var dataset = new DataSet();
@@ -144,7 +144,7 @@
 
 	});
 
-	var App = new AppView;
+	var App = new AppView;*/
 
 	// Display the JSON attribute preview on the right
 	var sample = JSON.parse('<%= @dataset.attrs.to_s.html_safe %>');
