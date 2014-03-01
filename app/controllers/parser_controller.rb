@@ -134,7 +134,7 @@ class ParserController < ApplicationController
 
  				# Typecast if the attribute type is Numeric
  				if @attributes[name] == 'Numeric'
- 					value = value.to_i
+ 					value = value.to_f
  				else
  					value = value
  				end
