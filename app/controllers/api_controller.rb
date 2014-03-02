@@ -1,5 +1,9 @@
 class ApiController < ApplicationController
 
+	class Criteria
+		include Origin::Queryable
+	end
+
 	# Pulls in a list of all of the datasets
 	def index
 
@@ -65,9 +69,72 @@ class ApiController < ApplicationController
 	 			# Render as JSON data
 	 			render json: json_data
 
- 			end
- 			
- 		end
+	 		# If we don't receive a chart type, handle as a filtered data request
+	 		else
+
+	 			# Get the filters from the parameter
+	 			filters = params[:filters]
+
+	 			# Start construction our query here
+	 			query = @dataset.datadocs
+
+	 			# Construct a query with criteria
+	 			criteria = Criteria.new
+
+				# Keep track of equals filters
+				equals_filters = {}
+
+				# Get a pointer to the attributes from the dataset
+				attrs = JSON.parse(@dataset.attrs)
+
+	 			# Iterate through the objects in the filter to build the query
+	 			filters.each do |filter|
+
+	 				# When we build the query, if we have multiple things fulfilling
+	 				# the same pattern (eg. two attributes that are both equals) the
+	 				# default is to apply an OR clause on the two statements. There
+	 				# is currently no override for this. This should be the behavior
+	 				# that is expected by the user.
+
+	 				# Pull the correct values out from the filter
+	 				filter_attribute = filter[1]["attribute"]
+	 				filter_sign = filter[1]["sign"]
+	 				filter_value = filter[1]["value"]
+
+	 				# Cast for numerics
+	 				if attrs[filter_attribute] == 'Numeric'
+	 					filter_value = filter_value.to_f
+	 				end
+
+ 					# Start building our query filter
+ 					if filter_sign == "="
+		 				if not equals_filters.include?(filter_attribute)
+	 						equals_filters[filter_attribute] = Array.new()
+	 					end
+	 	 				equals_filters[filter_attribute].push(filter_value)
+	 				elsif filter_sign == "<"
+ 						query = query.lt(:"#{filter_attribute}" => filter_value)
+ 					elsif filter_sign == "<="
+ 						query = query.lte(:"#{filter_attribute}" => filter_value)
+ 					elsif filter_sign == ">"
+ 						query = query.gt(:"#{filter_attribute}" => filter_value)
+ 					elsif filter_sign == ">="
+ 						query = query.gte(:"#{filter_attribute}" => filter_value)
+ 					end
+
+	 			end
+
+	 			# Assemble everything with equal signs
+	 			equals_filters.each do |key, value|
+	 				query = query.in(:"#{key}" => value)
+	 			end
+
+	 			# Render the result as JSON
+	 			render json: query
+
+	 		end
+
+	 	end
 
 	end
 

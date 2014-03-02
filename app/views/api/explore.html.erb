@@ -27,6 +27,27 @@
 			</div>
 		</div>
 	</div>
+	<div id="filters" style="margin-top: 40px;">
+		<h3>Data</h3>
+		<form id="filters-form">
+			<div id="filter-attributes">
+			</div>
+			<div id="filter-actions" style="margin: 20px 0px;">
+				<button type="button" class="btn btn-success" id="add-filter">Add Filter</button>
+				<button type="button" class="btn btn-primary" id="submit-filter">Submit</button>
+			</div>
+		</form>
+	</div>
+	<table class="table" style="margin-bottom: 80px;">
+		<thead>
+			<tr>
+			<% JSON.parse(@dataset.attrs).each do |key, value| %>
+			<th><%= key %></th>
+			<% end %>				
+			</tr>
+		</thead>
+		<tbody id="helix"></tbody>
+	</table>
 	<div id="charts">
 		<h3>Charts</h3>
 		<div id="chart-pie">
@@ -56,37 +77,28 @@
 			<svg style="height: 740px;"></svg>
 		</div>
 	</div>
-	<div id="filters">
-		<h3>Data</h3>
-		<form id="filters-form">
-			<div id="filter-attributes">
-			</div>
-			<div id="filter-actions" style="margin: 20px 0px;">
-				<button type="button" class="btn btn-success" id="add-filter">Add Filter</button>
-				<button type="button" class="btn btn-primary" id="submit-filter">Submit</button>
-			</div>
-		</form>
-	</div>
 </div>
 <script id="filterTemplate" type="text/template">
 	<div class="form-attribute" style="margin: 10px 0px;">
 		<div class="row">
 			<div class="col-xs-5">
-				<select class="form-control" name="filter-attribute">
+				<select class="form-control" name="attribute">
 					<% JSON.parse(@dataset.attrs).each do |key, value| %>
 					<option><%= key %></option>
 					<% end %>
 				</select>
 			</div>
 			<div class="col-xs-3">
-				<select class="form-control" name="filter-sign">
-					<option>less than (<)</option>
-					<option>equals (=)</option>
-					<option>greater than (>)</option>
+				<select class="form-control" name="sign">
+					<option value="<">less than (<)</option>
+					<option value="<=">less than or equal (<=)</option>
+					<option value="=">equals (=)</option>
+					<option value=">=">greater than or equal (>=)</option>
+					<option value=">">greater than (>)</option>
 				</select>
 			</div>	
 			<div class="col-xs-3">
-				<input class="form-control" name="filter-value" />
+				<input class="form-control" name="value" />
 			</div>
 			<div class="col-xs-1">
 				<button type="button" class="btn btn-danger filter-remove">Remove</button>
@@ -109,12 +121,15 @@
 	    evaluate: /\<\@(.+?)\@\>/gim,
 	    escape: /\<\@\-(.+?)\@\>/gim
 	};
-
 	
 	var DataModel = Backbone.Model.extend();
+
 	var DataSet = Backbone.Collection.extend({
 		model: DataModel,
-		url: '/api/<%= @dataset.base_url %>'
+		url: '#',
+		initialize: function() {
+
+		}
 	});
 
 	var DataView = Backbone.View.extend({
@@ -128,28 +143,6 @@
 			return this;
 		}
 	});
-	
-	var AppView = Backbone.View.extend({
-		el: "body",
-		initialize: function() {
-			var dataset = new DataSet();
-			var datasetView = new DataView({
-				model: dataset
-			});
-			dataset.bind('reset', function() {
-				datasetView.render();
-			});
-			dataset.fetch();
-		}
-
-	});
-
-	var App = new AppView;
-
-	// Display the JSON attribute preview on the right
-	var sample = JSON.parse('<%= @dataset.attrs.to_s.html_safe %>');
-	document.getElementById('attributes').innerHTML = JSON.stringify(sample, null, 2);
-
 
 	var FilterView = Backbone.View.extend({
 		initialize: function() {
@@ -160,15 +153,72 @@
 			$('#filter-attributes').append(template);
 		}
 	});
+	
+	var AppView = Backbone.View.extend({
+		el: "body",
+		events: {
+			'click #submit-filter': 'updateData'
+		},
+		initialize: function() {
+			var _this = this;
+			this.dataset = new DataSet();
+			this.datasetView = new DataView({
+				model: this.dataset
+			});
+			this.dataset.bind('reset', function() {
+				_this.datasetView.render();
+			});
+			this.dataset.fetch();
+		},
+		updateData: function(submissions) {
+			var submissions = [];
+			var filters = $('#filters-form').serializeArray();
+			var filter = new Object();
+			var _this = this;
+			for (var i = 0; i < filters.length; i++) {
+				// Filters are in groups of three objects
+				if (i % 3 == 0 && i != 0) {
+					submissions.push(filter);
+					filter = new Object();
+				}
+				// Set the object attributes
+				var attribute = filters[i];
+				filter[attribute.name] = attribute.value;
+			} submissions.push(filter);
+			$.post('/api/<%= @dataset.base_url %>', {filters: submissions}, function(data) {
+				document.getElementById('helix').innerHTML = "";
+				_this.dataset.reset(data);
+			}); 
+		}
+	});
+
+	var App = new AppView;
+
+	// Display the JSON attribute preview on the right
+	var sample = JSON.parse('<%= @dataset.attrs.to_s.html_safe %>');
+	document.getElementById('attributes').innerHTML = JSON.stringify(sample, null, 2);
 
 	$('#add-filter').click(function() {
 		new FilterView();
 	});
 
-	$('#submit-filter').click(function() {
+	/*$('#submit-filter').click(function() {
+		var submissions = [];
 		var filters = $('#filters-form').serializeArray();
-		console.log(filters);
-	});
+		var filter = new Object();
+		for (var i = 0; i < filters.length; i++) {
+			// Filters are in groups of three objects
+			if (i % 3 == 0 && i != 0) {
+				submissions.push(filter);
+				filter = new Object();
+			}
+			// Set the object attributes
+			var attribute = filters[i];
+			filter[attribute.name] = attribute.value;
+		} submissions.push(filter);
+		console.log('asdfasdfasdf');
+		App.trigger('updateData', submissions);
+	});*/
 
 	$('.filter-remove').live('click', function() {
 		$(this).parent().parent().parent().remove();
