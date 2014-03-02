@@ -18,6 +18,8 @@ Cs210Stockholm::Application.routes.draw do
   get "api/index"
   get "api/:id", to: "api#explore"
   post "api/:id", to: "api#explore"
+  get "api/bar/:id", to: "api#bar"
+  post "api/bar/:id", to: "api#bar"
 
   #These routes are associated with the line graph
   get "graph/line_filter"
