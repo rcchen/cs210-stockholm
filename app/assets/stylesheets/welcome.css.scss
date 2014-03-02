@@ -5,15 +5,51 @@
 $asbestos: #7F8C8D;
 $midnight-blue: #2C3E50;
 $wet-asphalt: #34495E;
+$white: #FFFFFF;
 
  body {
  	/* background-color: $wet-asphalt; */
  	background-color: #EEE;
  }
 
+ a {
+ 	text-decoration: none;
+ 	color: $asbestos;
+ 	&:visited {
+ 		color: $asbestos;
+ 		background-color: transparent;
+ 	}
+  	&:hover {
+ 		color: $white;
+ 		background-color: transparent;
+ 		text-decoration: none;
+ 	}
+ }
+
  .navbar-default {
  	background-color: $midnight-blue;
   	border-color: $midnight-blue;
+  	a.navbar-brand {
+	 	color: $asbestos;
+	  	&:visited {
+	 		color: $asbestos;
+	 		background-color: transparent;
+	 	}
+	 	&:hover {
+	 		color: $white;
+	 		text-decoration: none;
+	 	}
+	 }
+	 .navbar-nav {
+	 	li {
+	 		a {
+	 			&:hover {
+	 				color: $white;
+	 				text-decoration: none;
+	 			}
+	 		}
+	 	}
+	 }
  }
 
  .navbar-form {
@@ -21,16 +57,16 @@ $wet-asphalt: #34495E;
  }
 
  .navbar-header a {
- 	&:hover {
- 		text-decoration: underline;
- 	}
+
  }
+
+
 
 /* Landing */
 #landing {
 	background-color: $midnight-blue;
 	margin-top: -20px;
-	padding-top:150px;
+	padding-top: 230px;
 	background-attachment: relative;
 	background-position: center center;
 	min-height: 650px;
@@ -47,6 +83,20 @@ $wet-asphalt: #34495E;
     background-size: cover;
 
     color: $asbestos;
+
+    button {
+    	margin: 20px 0px;
+    }
+}
+
+#introduction {
+	padding: 40px 0px;
+}
+
+#tools {
+	padding: 40px 0px;
+	background-color: $midnight-blue;
+	color: $asbestos;
 }
 
 #team {
@@ -60,4 +110,9 @@ $wet-asphalt: #34495E;
 	background-color: $midnight-blue;
 	color: $asbestos;
 	padding: 40px 0px;
+	ul {
+		li {
+			padding: 0px 20px;
+		}
+	}
 }
