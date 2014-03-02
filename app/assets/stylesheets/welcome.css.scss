@@ -1,3 +1,118 @@
 // Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$asbestos: #7F8C8D;
+$midnight-blue: #2C3E50;
+$wet-asphalt: #34495E;
+$white: #FFFFFF;
+
+ body {
+ 	/* background-color: $wet-asphalt; */
+ 	background-color: #EEE;
+ }
+
+ a {
+ 	text-decoration: none;
+ 	color: $asbestos;
+ 	&:visited {
+ 		color: $asbestos;
+ 		background-color: transparent;
+ 	}
+  	&:hover {
+ 		color: $white;
+ 		background-color: transparent;
+ 		text-decoration: none;
+ 	}
+ }
+
+ .navbar-default {
+ 	background-color: $midnight-blue;
+  	border-color: $midnight-blue;
+  	a.navbar-brand {
+	 	color: $asbestos;
+	  	&:visited {
+	 		color: $asbestos;
+	 		background-color: transparent;
+	 	}
+	 	&:hover {
+	 		color: $white;
+	 		text-decoration: none;
+	 	}
+	 }
+	 .navbar-nav {
+	 	li {
+	 		a {
+	 			&:hover {
+	 				color: $white;
+	 				text-decoration: none;
+	 			}
+	 		}
+	 	}
+	 }
+ }
+
+ .navbar-form {
+ 	border-color: $midnight-blue;
+ }
+
+ .navbar-header a {
+
+ }
+
+
+
+/* Landing */
+#landing {
+	background-color: $midnight-blue;
+	margin-top: -20px;
+	padding-top: 230px;
+	background-attachment: relative;
+	background-position: center center;
+	min-height: 650px;
+	width: 100%;
+	
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    color: $asbestos;
+
+    button {
+    	margin: 20px 0px;
+    }
+}
+
+#introduction {
+	padding: 40px 0px;
+}
+
+#tools {
+	padding: 40px 0px;
+	background-color: $midnight-blue;
+	color: $asbestos;
+}
+
+#team {
+	padding: 40px 0px;
+	#members {
+		padding: 30px 0px;
+	}
+}
+
+#footer {
+	background-color: $midnight-blue;
+	color: $asbestos;
+	padding: 40px 0px;
+	ul {
+		li {
+			padding: 0px 20px;
+		}
+	}
+}

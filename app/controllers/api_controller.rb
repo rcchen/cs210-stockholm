@@ -1,64 +1,60 @@
 class ApiController < ApplicationController
 
-	# Gets a connection to the MongoHQ server
-	def get_connection
-	  return @db_connection if @db_connection
-	  db = URI.parse(ENV['MONGOHQ_URL'])
-	  db_name = db.path.gsub(/^\//, '')
-	  @db_connection = Mongo::Connection.new(db.host, db.port).db(db_name)
-	  @db_connection.authenticate(db.user, db.password) unless (db.user.nil? || db.user.nil?)
-	  @db_connection
+	class Criteria
+		include Origin::Queryable
 	end
 
+	# Pulls in a list of all of the datasets
 	def index
 
-		@collections = Collection.all
+		# Variable passed to the view
+		@datasets = Dataset.all
 
 	end
 
-	def get_records
+	# Shows information on a single dataset
+	def explore
 
-		# First get the data model from Postgres
+		# Retrieve the data set
 		id = params[:id]
-		@collection = Collection.find_by(base_url: id)
+		@dataset = Dataset.where(:base_url => id).first
 
-		# Attempt to connect to MongoDB
- 		#db = get_connection
- 		#@collection = db[@dm.base_url]
-
+		# POST requests are typically associated with some chart
  		if request.post?
 
  			# Figure out what sort of chart it is
  			chart = params[:chart]
 
- 			# Now split based on the chart
+ 			# Handles pie chart data requests
  			if chart == 'pie'
 
  				# Get the key and the aggregate
 				key = params[:key]
 	 			aggregate = params[:aggregate]
 
-	 			# Essentially MapReduce
+	 			# We're essentially doing a map/reduce operation
+	 			# We collect all the keys in the data hash and 
+	 			# aggregate values for the keys
 	 			data = Hash.new
-	 			@collection.entries.each do |entry|
-	 				key_value = ""
-	 				aggregate_value = 0
-	 				entry.properties.each do |property|
-	 					if property.name == key
-	 						key_value = property.value
-	 					end
-	 					if property.name == aggregate
-	 						if key == aggregate
-	 							aggregate_value = 1
-	 						else
-	 							aggregate_value = property.value.to_i
-	 						end
-	 					end
+	 			@dataset.datadocs.each do |datadoc|
+	 				
+	 				# Get the key
+	 				key_value = datadoc["#{key}"]
+
+	 				# By default, we count the aggregate
+	 				aggregate_value = 1
+	 				if key != aggregate
+	 					aggregate_value = datadoc["#{aggregate}"].to_i
 	 				end
+
+	 				# If the key does not exist yet, set it to zero
 	 				if not data.key?(key_value)
 	 					data[key_value] = 0
 	 				end
+
+	 				# Add in the value that we observed for the aggregate
 	 				data[key_value] = data[key_value] + aggregate_value
+
 	 			end
 
 	 			# Compile data into format expected of pie charts
@@ -73,20 +69,73 @@ class ApiController < ApplicationController
 	 			# Render as JSON data
 	 			render json: json_data
 
+	 		# If we don't receive a chart type, handle as a filtered data request
+	 		else
 
- 			end
- 			
- 		end
+	 			# Get the filters from the parameter
+	 			filters = params[:filters]
 
- 		# If there is a JSON option, process as JSON
- 		type = params[:type]
- 		page = params[:p]
- 		if type == 'json' then
- 			render json: @collection.entries.as_json(
- 				:include => [:properties])
- 		end
+	 			# Start construction our query here
+	 			query = @dataset.datadocs
+
+	 			# Construct a query with criteria
+	 			criteria = Criteria.new
+
+				# Keep track of equals filters
+				equals_filters = {}
+
+				# Get a pointer to the attributes from the dataset
+				attrs = JSON.parse(@dataset.attrs)
+
+	 			# Iterate through the objects in the filter to build the query
+	 			filters.each do |filter|
+
+	 				# When we build the query, if we have multiple things fulfilling
+	 				# the same pattern (eg. two attributes that are both equals) the
+	 				# default is to apply an OR clause on the two statements. There
+	 				# is currently no override for this. This should be the behavior
+	 				# that is expected by the user.
+
+	 				# Pull the correct values out from the filter
+	 				filter_attribute = filter[1]["attribute"]
+	 				filter_sign = filter[1]["sign"]
+	 				filter_value = filter[1]["value"]
+
+	 				# Cast for numerics
+	 				if attrs[filter_attribute] == 'Numeric'
+	 					filter_value = filter_value.to_f
+	 				end
+
+ 					# Start building our query filter
+ 					if filter_sign == "="
+		 				if not equals_filters.include?(filter_attribute)
+	 						equals_filters[filter_attribute] = Array.new()
+	 					end
+	 	 				equals_filters[filter_attribute].push(filter_value)
+	 				elsif filter_sign == "<"
+ 						query = query.lt(:"#{filter_attribute}" => filter_value)
+ 					elsif filter_sign == "<="
+ 						query = query.lte(:"#{filter_attribute}" => filter_value)
+ 					elsif filter_sign == ">"
+ 						query = query.gt(:"#{filter_attribute}" => filter_value)
+ 					elsif filter_sign == ">="
+ 						query = query.gte(:"#{filter_attribute}" => filter_value)
+ 					end
+
+	 			end
+
+	 			# Assemble everything with equal signs
+	 			equals_filters.each do |key, value|
+	 				query = query.in(:"#{key}" => value)
+	 			end
+
+	 			# Render the result as JSON
+	 			render json: query
+
+	 		end
+
+	 	end
 
 	end
-
 
 end
