@@ -333,6 +333,7 @@
 	var params_value = params[1]['value'];
 
 	$.post('/api/<%= @dataset.base_url %>', { chart: "bar", key: params_key, aggregate: params_value }, function(data) {
+		console.log(data);
 		//Discrete chart example
 		nv.addGraph(function() {
 		  var chart = nv.models.discreteBarChart()
@@ -341,13 +342,16 @@
 		      .staggerLabels(true)     // Stagger bar chart labels
 		      .tooltips(false)  //Configure the minimum slice size for labels to show up
 		      .showValues(true)   // Show bar value on top of bar
+		      .transitionDuration(350)
 		      ;
 		 
 		    d3.select("#chart-bar svg")
 		        .datum(data)
-		        .transition().duration(350)
 		        .call(chart);
-		  return chart;
+
+	       nv.utils.windowResize(chart.update);
+
+			  return chart;
 			});
 		});
 	});
