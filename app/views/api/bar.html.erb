@@ -46,31 +46,31 @@
 			<% end %>				
 			</tr>
 		</thead>
-		<tbody id="helix"></tbody>
+		<tbody id="table-data"></tbody>
 	</table>
 	<div id="charts">
 		<h3>Charts</h3>
-		<div id="chart-pie">
-			<h4>Pie Chart Demo</h4>
-			<p>Select a key and aggregate to generate a pie chart. If the key is the same as the aggregate, the count of the key will be taken.</p>
-			<form id="chart-pie-form" role="form" style="margin: 10px 0px 20px 0px;">
+		<div id="chart-bar">
+			<h4>Bar Chart Demo</h4>
+			<p>Select a key and aggregate to generate a Bar chart. If the key is the same as the aggregate, the count of the key will be taken.</p>
+			<form id="chart-bar-form" role="form" style="margin: 10px 0px 20px 0px;">
 			<div class="row">
 				<div class="col-xs-3">
-					<select class="form-control" name="chart-pie-key">
+					<select class="form-control" name="chart-bar-key">
 						<% JSON.parse(@dataset.attrs).each do |key, value| %>
 						<option><%= key %></option>
 						<% end %>
 					</select>
 				</div>
 				<div class="col-xs-3">
-					<select class="form-control" name="chart-pie-value">
+					<select class="form-control" name="chart-bar-value">
 						<% JSON.parse(@dataset.attrs).each do |key, value| %>
 						<option><%= key %></option>
 						<% end %>
 					</select>
 				</div>
 				<div class="col-xs-2">
-					<button type="button" class="btn btn-success" id="redraw-chart-pie">Submit</button>
+					<button type="button" class="btn btn-success" id="redraw-chart-bar">Submit</button>
 				</div>
 			</div>
 			</form>
@@ -122,76 +122,142 @@
 	    escape: /\<\@\-(.+?)\@\>/gim
 	};
 	
+	// Establish a Backbone data model
 	var DataModel = Backbone.Model.extend();
 
+	// Backbone collection that represents our model
 	var DataSet = Backbone.Collection.extend({
 		model: DataModel,
 		url: '#',
-		initialize: function() {
-
-		}
+		initialize: function() { }
 	});
 
+	// Represents each row of data in the grid
 	var DataView = Backbone.View.extend({
-		el: "#helix",
+
+		// The id that we are targeting is table-data
+		el: "#table-data",
+
+		// The template that this is backed by is dataTemplate
 		template: _.template($('#dataTemplate').html()),
+
+		// Used to render each row of the data table 
  		render: function(eventName) {
+		
+ 			// Loops through all of our models
 			_.each(this.model.models, function(data) {
+
+				// Render the data for each model in the template
 				var dataTemplate = this.template(data.toJSON());
 				$(this.el).append(dataTemplate);
+
 			}, this);
 			return this;
 		}
+
 	});
 
+	// Used to load additional filters on the fly
 	var FilterView = Backbone.View.extend({
+
+		// Renders the filter view on initialization
 		initialize: function() {
 			this.render();
 		},
+		
+		// Render the filterTemplate within the filterAttribute div
 		render: function() {
 			var template = _.template($('#filterTemplate').html(), {});
 			$('#filter-attributes').append(template);
 		}
+
 	});
 	
+	// Handles everything related to the table on the page
 	var AppView = Backbone.View.extend({
+
+		// AppView targets the body element
 		el: "body",
+
+		// Backbone is event-driven, so register them here
 		events: {
+
+			// Clicking on the submit filter will update data
 			'click #submit-filter': 'updateData'
+
 		},
+
+		// Initializer for this Backbone view
 		initialize: function() {
+
+			// We use this pattern so we have a references to the parent obj
 			var _this = this;
+
+			// Instance of the model collection
 			this.dataset = new DataSet();
+
+			// Instance of the model view backed by the collection
 			this.datasetView = new DataView({
-				model: this.dataset
+				model: _this.dataset
 			});
+
+			// When the dataset is reset, we want to rerender the view
 			this.dataset.bind('reset', function() {
 				_this.datasetView.render();
 			});
-			this.dataset.fetch();
+
 		},
-		updateData: function(submissions) {
-			var submissions = [];
-			var filters = $('#filters-form').serializeArray();
-			var filter = new Object();
+
+		// Responsible for taking data from the filters and 
+		updateData: function() {
+
+			// Getting a reference to the parent object
 			var _this = this;
+
+			// Store all the filters in this array
+			var submissions = [];
+
+			// Serialize the form data
+			var filters = $('#filters-form').serializeArray();
+
+			// Each filter is an object to make our lives easier
+			var filter = new Object();
+
+			// Go through each of the filters and create objects
 			for (var i = 0; i < filters.length; i++) {
+
 				// Filters are in groups of three objects
 				if (i % 3 == 0 && i != 0) {
 					submissions.push(filter);
 					filter = new Object();
 				}
+
 				// Set the object attributes
 				var attribute = filters[i];
 				filter[attribute.name] = attribute.value;
-			} submissions.push(filter);
-			$.post('/api/<%= @dataset.base_url %>', {filters: submissions}, function(data) {
-				document.getElementById('helix').innerHTML = "";
-				_this.dataset.reset(data);
-			}); 
-		}
-	});
 
+			} 
+
+			// Add the last filter into the array
+			submissions.push(filter);
+
+			// POST request to the server with the filters
+			$.post('/api/<%= @dataset.base_url %>', {filters: submissions}, function(data) {
+
+				// Empty out the target DOM
+				document.getElementById('table-data').innerHTML = "";
+
+				// Call a reset on the data collection with our new data
+				// Will trigger a rerender of the view
+				_this.dataset.reset(data);
+
+			}); 
+
+		}
+
+	});
+	
+	// Gets everything started
 	var App = new AppView;
 
 	// Display the JSON attribute preview on the right
@@ -202,58 +268,9 @@
 		new FilterView();
 	});
 
-	/*$('#submit-filter').click(function() {
-		var submissions = [];
-		var filters = $('#filters-form').serializeArray();
-		var filter = new Object();
-		for (var i = 0; i < filters.length; i++) {
-			// Filters are in groups of three objects
-			if (i % 3 == 0 && i != 0) {
-				submissions.push(filter);
-				filter = new Object();
-			}
-			// Set the object attributes
-			var attribute = filters[i];
-			filter[attribute.name] = attribute.value;
-		} submissions.push(filter);
-		console.log('asdfasdfasdf');
-		App.trigger('updateData', submissions);
-	});*/
-
-
-
 	$('.filter-remove').live('click', function() {
 		$(this).parent().parent().parent().remove();
 		event.preventDefault();
-	});
-
-	
-	$('#redraw-chart-pie').click(function() {
-		var params = $('#chart-pie-form').serializeArray();
-		var params_key = params[0]['value'];
-		var params_value = params[1]['value'];
-
-		$.post('/api/<%= @dataset.base_url %>', { chart: "pie", key: params_key, aggregate: params_value }, function(data) {
-			//Donut chart example
-			nv.addGraph(function() {
-			  var chart = nv.models.pieChart()
-			      .x(function(d) { return d.label })
-			      .y(function(d) { return d.value })
-			      .showLabels(true)     //Display pie labels
-			      .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
-			      .labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
-			      .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
-			      .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
-			      ;
-			 
-			    d3.select("#chart-pie svg")
-			        .datum(data)
-			        .transition().duration(350)
-			        .call(chart);
-			  return chart;
-			});
-		});
-
 	});
 
 	$('#redraw-chart-bar').click(function() {
@@ -281,4 +298,7 @@
 			});
 		});
 
+
 </script>
+
+	
