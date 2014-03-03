@@ -220,6 +220,8 @@
 		App.trigger('updateData', submissions);
 	});*/
 
+
+
 	$('.filter-remove').live('click', function() {
 		$(this).parent().parent().parent().remove();
 		event.preventDefault();
@@ -253,5 +255,30 @@
 		});
 
 	});
+
+	$('#redraw-chart-bar').click(function() {
+		var params = $('#chart-bar-form').serializeArray();
+		var params_key = params[0]['value'];
+		var params_value = params[1]['value'];
+
+		$.post('/api/<%= @dataset.base_url %>', { chart: "bar", key: params_key, aggregate: params_value }, function(data) {
+			//Discrete chart example
+			nv.addGraph(function() {
+			  var chart = nv.models.discreteBarChart()
+			      .x(function(d) { return d.label })
+			      .y(function(d) { return d.value })
+			      .staggerLabels(true)     // Stagger bar chart labels
+			      .tooltips(false)  //Configure the minimum slice size for labels to show up
+			      .showValues(true)   // Show bar value on top of bar
+			      ;
+			 
+			    d3.select("#chart-bar svg")
+			        .datum(data)
+			        .transition().duration(350)
+			        .call(chart);
+			  return chart;
+				});
+			});
+		});
 
 </script>
