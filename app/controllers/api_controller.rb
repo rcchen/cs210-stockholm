@@ -195,7 +195,9 @@ class ApiController < ApplicationController
 	 			bar_data["values"] = aggregate_data(key, aggregate)
 
 	 			# Render as JSON data
-	 			render json: bar_data
+	 			json_data = Array.new
+	 			json_data.push(bar_data)
+	 			render json: json_data
 
 	 		# If we don't receive a chart type, handle as a filtered data request
 	 		else
