@@ -11,3 +11,10 @@ else
 
 	echo "Added DigitalOcean production repo to .git/config"
 fi
+
+if ! which mongo; then
+	echo "Need to install Mongodb."
+	sudo apt-get install mongodb-server
+else
+	echo "Mongodb is already installed"
+fi
