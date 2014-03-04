@@ -1,6 +1,19 @@
 // import the CSS framework
 @import "bootstrap";
 
+html, body { height: 100%; }
+#wrap { 
+  min-height: 100%; 
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -120px;
+}
+
+$asbestos: #7F8C8D;
+$midnight-blue: #2C3E50;
+$wet-asphalt: #34495E;
+$white: #FFFFFF;
+
 // make all images responsive by default
 img {
   @extend .img-responsive;
@@ -36,11 +49,36 @@ main {
   @extend .container;
   background-color: #eee;
   width: 100%;
-  margin-top: 51px; // accommodate the navbar
   padding-left: 0px;
   padding-right: 0px;
+  min-height: 100%; 
+  height: auto !important;
+  height: 100%;
+  margin: 51px auto -120px;
   }
 section {
   @extend .row;
   margin-top: 20px;
   }
+
+footer {
+  background-color: $midnight-blue;
+  color: $asbestos;
+  padding: 20px 0px;
+  height: 120px;
+  ul {
+    li {
+      padding: 0px 20px;
+    }
+  }
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+  footer {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
