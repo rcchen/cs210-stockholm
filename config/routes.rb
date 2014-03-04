@@ -20,8 +20,11 @@ Cs210Stockholm::Application.routes.draw do
   post "api/:id", to: "api#explore"
   get "api/bar/:id", to: "api#bar"
   post "api/bar/:id", to: "api#bar"
+  get "api/line/:id", to: "api#line"
+  post "api/line/:id", to: "api#line"
 
   #These routes are associated with the line graph
+  #^ I think this is deprecated -  trying to associate line with api above
   get "graph/line_filter"
   post "graph/get_line"
   get "graph/line"
