@@ -1,0 +1,164 @@
+<div class="container">
+	<div id="step1">
+		<h3>Step 1: Upload a data set</h3>
+		<p>We currently accept well-formatted data in CSV format</p>
+		<div class="row">
+			<div class="col-md-4">
+			<%= form_tag({:name => 'upload', :action => 'verify'}, {:id => 'upload', :class => 'form-horizontal', :multipart => true}) do %>
+				<div class="form-group">
+					<label for="name" class="col-sm-3 control-label">Name</label>
+					<div class="col-sm-9">
+						<%= text_field_tag 'name', nil, :class => 'form-control' %>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="name" class="col-sm-3 control-label">File</label>
+					<div class="col-sm-9">
+						<%= file_field_tag 'file', :id => 'file' %>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button type="submit" class="btn btn-default">Verify</button>
+					</div>
+				</div>
+			<% end %>
+			</div>
+		</div>
+		<div id="progress" class="progress" style="display: none;">
+		  <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+		    0%
+		  </div>
+		</div>
+	</div>
+	<div id="step2" style="display: none;">
+		<h3>Step 2: Verify your data set</h3>
+		<p>We have attempted to autodetect the structure of your CSV file. Please verify that it is correct.</p>
+		<div class="row">
+			<div id="attribute-data" class="col-md-4">
+			</div>
+		</div>
+	</div>
+	<script id="attributeTemplate" type="text/template">
+		<@= key @>
+	</script>
+	<script>
+		
+		// Eliminate conflicts with Rails
+		_.templateSettings = {
+		    interpolate: /\<\@\=(.+?)\@\>/gim,
+		    evaluate: /\<\@(.+?)\@\>/gim,
+		    escape: /\<\@\-(.+?)\@\>/gim
+		};
+
+		// Establish a Backbone data model
+		var AttributeModel = Backbone.Model.extend();
+
+		// Backbone collection that represents our model
+		var AttributeSet = Backbone.Collection.extend({
+			model: AttributeModel,
+			url: '#',
+			initialize: function() { }
+		});
+
+		// Represents each row of data in the grid
+		var AttributeView = Backbone.View.extend({
+
+			// The id that we are targeting is table-data
+			el: "#attribute-data",
+
+			// The template that this is backed by is dataTemplate
+			template: _.template($('#attributeTemplate').html()),
+
+			// Used to render each row of the data table 
+	 		render: function(eventName) {
+			
+	 			console.log(this.model.attributes);
+
+	 			for (var attr in this.model.attributes) {
+	 				console.log(attr);
+	 			}
+
+	 			// Loops through all of our models
+				_.each(this.model.models, function(data) {
+
+					
+
+
+					// Render the data for each model in the template
+					var dataTemplate = this.template(data.toJSON());
+					$(this.el).append(dataTemplate);
+
+				}, this);
+				return this;
+			}
+
+		});
+
+		// Handles everything related to the table on the page
+		var AppView = Backbone.View.extend({
+
+			// AppView targets the body element
+			el: "body",
+
+			// Backbone is event-driven, so register them here
+			events: {
+
+			},
+
+			// Initializer for this Backbone view
+			initialize: function() {
+
+				// We use this pattern so we have a references to the parent obj
+				var _this = this;
+
+				// Instance of the model collection
+				this.attributeset = new AttributeSet();
+
+				// Instance of the model view backed by the collection
+				this.attributeview = new AttributeView({
+					model: _this.attributeset
+				});
+
+				// When the attributeset is reset, we want to rerender the view
+				this.attributeset.bind('reset', function() {
+					_this.attributeview.render();
+				});
+
+			}
+
+		});
+
+		var app = new AppView;
+
+		// Handles file upload over AJAX. 
+		$('#upload').ajaxForm({
+
+			// Before the form is sent
+			beforeSend: function() {
+				$('#progress').slideDown();
+			},
+
+			// During the file upload
+			uploadProgress: function(event, position, total, percentComplete) {
+				var percent = percentComplete + '%';
+				$('#progress-bar').attr('aria-valuenow', percentComplete);
+				$('#progress-bar').width(percent);
+				$('#progress-bar').html(percent);
+			},
+
+			// Success
+			success: function() {
+				$('#progress-bar').html('Processing...');
+			},
+
+			// Complete
+			complete: function(xhr) {
+				$('#progress').slideUp();
+				var response = JSON.parse(xhr.responseText);
+				app.attributeset.reset(xhr.responseText);
+			}
+
+		});
+	</script>
+</div>

@@ -14,6 +14,10 @@ Cs210Stockholm::Application.routes.draw do
   post "parser/verify"
   post "parser/upload"
 
+  # These routes are associated with the create tool
+  get "create/index"
+  post "create/verify"
+
   # These routes are associated with the API
   get "api/index"
   get "api/:id", to: "api#explore"

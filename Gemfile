@@ -38,9 +38,6 @@ gem 'rails-backbone'
 # Add Bootstrap
 gem 'bootstrap-sass'
 
-# FIle uploads by carrierwave
-gem 'carrierwave'
-
 # Static assets
 gem 'rails_serve_static_assets'
 
