@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 			else
 
 				# Flash this message up
-				flash[:error] = "Email or password is incorrect. Please try again."
+				flash.now[:error] = "Email or password is incorrect. Please try again."
 
 			end
 
@@ -61,7 +61,7 @@ class UsersController < ApplicationController
 
 			else
 
-				flash[:error] = "That email is already registered."
+				flash.now[:error] = "That email is already registered."
 
 			end
 

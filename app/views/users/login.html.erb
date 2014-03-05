@@ -6,7 +6,7 @@
       <h3>Please Log In, or <%= link_to "Sign Up", :controller => :users, :action => :register %></h3>
 
       <% if flash[:error] %>
-        <div class="alert alert-danger"><%= flash[:notice] %></div>
+        <div class="alert alert-danger"><%= flash[:error] %></div>
       <% end %>
 
     	<%= form_tag({controller: "users", action: "login"}, method: "post") do %>
