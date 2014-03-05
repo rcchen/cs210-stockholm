@@ -13,6 +13,7 @@
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <% if session[:id] %>
+          <li><%= link_to 'Profile', {controller: 'users', action: 'profile'} %></li>
           <li><%= link_to 'Logout', {controller: 'users', action: 'logout'} %></li>
         <% else %>
           <li><%= link_to 'Login', {controller: 'users', action: 'login'} %></li>
