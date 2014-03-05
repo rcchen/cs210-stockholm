@@ -7,6 +7,9 @@ class Dataset
 	include Mongoid::Timestamps::Created
 	include Mongoid::Timestamps::Updated
 
+	# Multiple users can own datasets
+	has_and_belongs_to_many :users
+
 	# Defines one to many with Datadocs
 	has_many :datadocs
 

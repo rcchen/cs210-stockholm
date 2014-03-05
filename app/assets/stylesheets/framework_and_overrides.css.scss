@@ -2,12 +2,6 @@
 @import "bootstrap";
 
 html, body { height: 100%; }
-#wrap { 
-  min-height: 100%; 
-  height: auto !important;
-  height: 100%;
-  margin: 0 auto -120px;
-}
 
 $asbestos: #7F8C8D;
 $midnight-blue: #2C3E50;
@@ -51,10 +45,12 @@ main {
   width: 100%;
   padding-left: 0px;
   padding-right: 0px;
+  padding-top: 60px;
+  padding-bottom: 60px;
   min-height: 100%; 
   height: auto !important;
   height: 100%;
-  margin: 81px auto -120px;
+  margin: 0px auto -80px;
   }
 section {
   @extend .row;
@@ -64,8 +60,8 @@ section {
 footer {
   background-color: $midnight-blue;
   color: $asbestos;
-  padding: 20px 0px;
-  height: 120px;
+  padding: 10px 0px;
+  height: 80px;
   ul {
     li {
       padding: 0px 20px;

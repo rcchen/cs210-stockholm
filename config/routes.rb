@@ -27,6 +27,14 @@ Cs210Stockholm::Application.routes.draw do
   get "api/line/:id", to: "api#line"
   post "api/line/:id", to: "api#line"
 
+  # This is a registration URL
+  get "users/login"
+  post "users/login"
+  get "users/register"
+  post "users/register"
+  get "users/profile"
+  get "users/logout"
+
   #These routes are associated with the line graph
   #^ I think this is deprecated -  trying to associate line with api above
   get "graph/line_filter"

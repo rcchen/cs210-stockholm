@@ -1,0 +1,28 @@
+<div class="container" id="login">
+  <div class="row">
+
+    <div class="main">
+
+      <h3>Register</h3>
+
+      <% if flash[:error] %>
+        <div class="alert alert-danger"><%= flash[:error] %></div>
+      <% end %>
+
+    	<%= form_tag({controller: "users", action: "register"}, method: "post") do %>
+            <div class="form-group">
+              <label for="inputUsernameEmail">Email</label>
+              <input type="text" name="email" class="form-control" id="inputUsernameEmail">
+            </div>
+            <div class="form-group">
+              <label for="inputPassword">Password</label>
+              <input type="password" name="password" class="form-control" id="inputPassword">
+            </div>
+            <button type="submit" class="btn btn btn-primary">
+              Register
+            </button>
+      	<% end %>
+    
+    </div>
+    
+  </div>
