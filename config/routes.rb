@@ -1,5 +1,5 @@
 Cs210Stockholm::Application.routes.draw do
-  
+
   get "welcome/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -17,10 +17,12 @@ Cs210Stockholm::Application.routes.draw do
   get "api/index"
   get "api/:id", to: "api#explore"
   post "api/:id", to: "api#explore"
-  get "api/bar/:id", to: "api#bar"
-  post "api/bar/:id", to: "api#bar"
-  get "api/line/:id", to: "api#line"
-  post "api/line/:id", to: "api#line"
+
+  # These routes are associated with the worksheet
+  get "worksheet/create"
+  post "worksheet/create"
+  get "worksheet/:id", to: "worksheet#view"
+  get "worksheet/:id/edit", to: "worksheet#edit"
 
   # This is a registration URL
   get "users/login"
@@ -29,12 +31,6 @@ Cs210Stockholm::Application.routes.draw do
   post "users/register"
   get "users/profile"
   get "users/logout"
-
-  #These routes are associated with the line graph
-  #^ I think this is deprecated -  trying to associate line with api above
-  #get "graph/line_filter"
-  #post "graph/get_line"
-  #get "graph/line"
 
   #These routes are associated with the dashboard
   get "dashboard", to: "dashboard#dashboard"

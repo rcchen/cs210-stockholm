@@ -13,11 +13,9 @@ class User
 	# Validators on the email address
 	validates_presence_of :email, :message => "Email address is required."
 	validates_uniqueness_of :email, :message => "Email address is already registered. Check your password?"
-
-	# Encrypt the password before saving
-	# before_save :encrypt_password
 	
 	# Users can own multiple datasets
+	has_and_belongs_to_many :worksheets
 	has_and_belongs_to_many :datasets
 
 	def self.find_by_email(email)

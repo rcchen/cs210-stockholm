@@ -1,3 +1,26 @@
 <div class="container">
-	<h3><%= @user.email %></h3>
+	<h3><%= @user.email %></h3>	
+	<%= link_to 'New Worksheet', {controller: 'worksheet', action: 'create'}, class: 'btn btn-success btn-or' %>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Created</th>
+				<th>Updated</th>
+				<th>View</th>
+				<th>Edit</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @user.worksheets.each do |worksheet| %>
+			<tr>
+				<td><%= worksheet.title %></td>
+				<td><%= worksheet.created_at %></td>
+				<td><%= worksheet.updated_at %></td>
+				<td><a href="/worksheet/<%= worksheet.identifier %>">View</a></td>
+				<td><a href="/worksheet/<%= worksheet.identifier %>/edit">Edit</a></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
 </div>
