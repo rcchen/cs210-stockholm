@@ -1,18 +1,12 @@
+# This controller acts as the API for all the DataSets
+# It is only accessable through JSON POST requests
 class ApiController < ApplicationController
 
 	class Criteria
 		include Origin::Queryable
 	end
 
-	# Pulls in a list of all of the datasets
-	def index
-
-		# Variable passed to the view
-		@datasets = Dataset.all
-
-	end
-
-	# Aggregate the route
+	# Route for data aggregation
 	def aggregate_data(key, aggregate)
 
 		# We're essentially doing a map/reduce operation
@@ -166,6 +160,11 @@ class ApiController < ApplicationController
 	 			render json: query
 
 	 		end
+
+	 	# If it is a GET request, deny it
+	 	else
+
+	 		redirect_to "/dataset/" + params[:id]
 
 	 	end
 

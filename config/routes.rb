@@ -1,20 +1,13 @@
 Cs210Stockholm::Application.routes.draw do
 
-  get "welcome/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
-  # These routes are associated with the CSV parser
-  get "parser/index"
-  post "parser/verify"
-  post "parser/upload"
 
   # These routes are associated with the create tool
   get "create/index"
   post "create/verify"
 
   # These routes are associated with the API
-  get "api/index"
   get "api/:id", to: "api#explore"
   post "api/:id", to: "api#explore"
 
