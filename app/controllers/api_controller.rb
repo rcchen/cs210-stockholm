@@ -161,10 +161,10 @@ class ApiController < ApplicationController
 
 	 		end
 
-	 	# If it is a GET request, deny it
+	 	# If it is a GET request, return basic information
 	 	else
 
-	 		redirect_to "/dataset/" + params[:id]
+	 		render json: @dataset
 
 	 	end
 

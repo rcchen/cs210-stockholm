@@ -15,7 +15,8 @@
 }
 
 .stepwizard {
-    display: table;     
+    display: table;    
+    table-layout: fixed; 
     width: 100%;
     position: relative;
 }
@@ -41,6 +42,7 @@
     display: table-cell;
     text-align: center;
     position: relative;
+    width: 100%;
 }
 
 .btn-circle {

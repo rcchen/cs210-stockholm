@@ -3,15 +3,15 @@
         <div class="stepwizard">
             <div class="stepwizard-row">
                 <div class="stepwizard-step">
-                    <button type="button" class="btn btn-primary btn-circle">1</button>
+                    <button id="step1-button" type="button" class="btn btn-primary btn-circle">1</button>
                     <p>Dataset</p>
                 </div>
                 <div class="stepwizard-step">
-                    <button type="button" class="btn btn-default btn-circle">2</button>
+                    <button id="step2-button" type="button" class="btn btn-default btn-circle">2</button>
                     <p>Filters</p>
                 </div>
                 <div class="stepwizard-step">
-                    <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+                    <button id="step3-button" type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
                     <p>Visualization</p>
                 </div> 
             </div>
@@ -27,9 +27,9 @@
     <div class="row">
         <div class="col-md-6">
             Select an existing dataset.
-            <select>
+            <select name="dataset" id="step1-dataset" class="form-control">
             <% @user.datasets.each do |dataset| %>
-                <option><%= dataset.name %></option>
+                <option value="<%= dataset.identifier %>"><%= dataset.name %></option>
             <% end %>
             </select>
         </div>
@@ -39,11 +39,47 @@
             </div>
         </div>
     </div>
+    <button role="button" class="btn btn-primary" id="step2">Continue</button>
 </script>
 
 <!-- This is responisble for the second step, figuring out what data to visualize -->
 <script id="filters-template" type="text/template">
+    <form id="filters-form">
+        <div id="filter-attributes">
+        </div>
+        <div id="filter-actions" style="margin: 20px 0px;">
+            <button type="button" class="btn btn-success" id="add-filter">Add Filter</button>
+            <button type="button" class="btn btn-primary" id="submit-filter">Submit</button>
+        </div>
+    </form>
+</script>
 
+<!-- This is a filter that can be added in the second step -->
+<script id="filter-template" type="text/template">
+    <div class="form-attribute" style="margin: 10px 0px;">
+        <div class="row">
+            <div class="col-xs-5">
+                <select class="form-control" name="attribute">
+                    <option>Test</option>
+                </select>
+            </div>
+            <div class="col-xs-3">
+                <select class="form-control" name="sign">
+                    <option value="<">less than (<)</option>
+                    <option value="<=">less than or equal (<=)</option>
+                    <option value="=">equals (=)</option>
+                    <option value=">=">greater than or equal (>=)</option>
+                    <option value=">">greater than (>)</option>
+                </select>
+            </div>  
+            <div class="col-xs-3">
+                <input class="form-control" name="value" />
+            </div>
+            <div class="col-xs-1">
+                <button type="button" class="btn btn-danger remove-filter">Remove</button>
+            </div>
+        </div>
+    </div>
 </script>
 
 <!-- This is responsible for the third step, creating the visualization -->
@@ -64,18 +100,35 @@
 
     });
 
+    var Filter = Backbone.Model.extend({
+
+    });
+
     // Responsible for the first step view
     var DatasetView = Backbone.View.extend({
         el: "#current",
         template: _.template($('#dataset-template').html()),
         render: function() {
-            $(this.el).append(this.template);
+            $(this.el).html(this.template);
         }
     });
 
     // Responsible for the second step view
+    var FiltersView = Backbone.View.extend({
+        el: "#current",
+        template: _.template($('#filters-template').html()),
+        render: function() {
+            $(this.el).html(this.template);
+        }
+    });
+
+    // Each individual filter partial
     var FilterView = Backbone.View.extend({
-        template: _.template($('#filters-template').html())
+        el: "#filter-attributes",
+        template: _.template($('#filter-template').html()),
+        render: function() {
+            $(this.el).append(this.template);
+        }
     });
 
     // Responsible for the third step view
@@ -89,6 +142,13 @@
         // AppView targets the body element
         el: "body",
 
+        events: {
+            "click #add-filter":    "addFilter", 
+            "click .remove-filter": "removeFilter", 
+            "click #step2":         "step2",
+            "click #step3":         "step3", 
+        },
+
         // Initializer for this Backbone view
         initialize: function() {
 
@@ -100,11 +160,55 @@
 
             // Create instances of all the views we need
             this.datasetView = new DatasetView();
-            this.filterView = new FilterView();
+            this.filtersView = new FiltersView();
             this.visualizationView = new VisualizationView();
 
             // Render the default view
             this.datasetView.render();
+
+        },
+
+        // Method for adding new filters
+        addFilter: function() {
+
+            // Render the filter view
+            var filterView = new FilterView();
+            filterView.render();
+
+        },
+
+        // Method for removing filters that are no longer needed
+        removeFilter: function(ev) {
+
+            // Find the parent view
+            var parentView = $(ev.target).closest('.form-attribute');
+
+            // Remove it
+            parentView.remove();
+
+        },
+
+        // Method for moving to step 2
+        step2: function() {
+
+            // Get the selected item
+            var endpoint = $('#step1-dataset').val();
+
+            // Make a GET request for the attributes
+
+            // Fix the active things on the top
+            $('#step1-button').removeClass('btn-primary');
+            $('#step1-button').addClass('btn-default');
+            $('#step2-button').removeClass('btn-default');
+            $('#step2-button').addClass('btn-primary');
+
+            // Render the next view
+            this.filtersView.render();
+
+        },
+
+        // Method for moving to step 3
+        step3: function() {
 
         }
 
