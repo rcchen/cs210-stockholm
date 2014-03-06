@@ -1,0 +1,115 @@
+<div class="container">
+    <div id="steps">
+        <div class="stepwizard">
+            <div class="stepwizard-row">
+                <div class="stepwizard-step">
+                    <button type="button" class="btn btn-primary btn-circle">1</button>
+                    <p>Dataset</p>
+                </div>
+                <div class="stepwizard-step">
+                    <button type="button" class="btn btn-default btn-circle">2</button>
+                    <p>Filters</p>
+                </div>
+                <div class="stepwizard-step">
+                    <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+                    <p>Visualization</p>
+                </div> 
+            </div>
+        </div>
+    </div>
+    <div id="current">
+
+    </div>
+</div>
+
+<!-- This is responsible for the first step, selecting a dataset -->
+<script id="dataset-template" type="text/template">
+    <div class="row">
+        <div class="col-md-6">
+            Select an existing dataset.
+            <select>
+            <% @user.datasets.each do |dataset| %>
+                <option><%= dataset.name %></option>
+            <% end %>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <div class="dataset-container">
+                Create a new dataset by dragging a file here.
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- This is responisble for the second step, figuring out what data to visualize -->
+<script id="filters-template" type="text/template">
+
+</script>
+
+<!-- This is responsible for the third step, creating the visualization -->
+<script id="visualization-template" type="text/template">
+
+</script>
+
+<script>
+
+    // Eliminate conflicts with Rails
+    _.templateSettings = {
+        interpolate: /\<\@\=(.+?)\@\>/gim,
+        evaluate: /\<\@(.+?)\@\>/gim,
+        escape: /\<\@\-(.+?)\@\>/gim
+    };
+
+    var Visualization = Backbone.Model.extend({
+
+    });
+
+    // Responsible for the first step view
+    var DatasetView = Backbone.View.extend({
+        el: "#current",
+        template: _.template($('#dataset-template').html()),
+        render: function() {
+            $(this.el).append(this.template);
+        }
+    });
+
+    // Responsible for the second step view
+    var FilterView = Backbone.View.extend({
+        template: _.template($('#filters-template').html())
+    });
+
+    // Responsible for the third step view
+    var VisualizationView = Backbone.View.extend({
+        template: _.template($('#visualization-template').html())
+    });
+
+    // Handles the entire interaction on the page
+    var AppView = Backbone.View.extend({
+
+        // AppView targets the body element
+        el: "body",
+
+        // Initializer for this Backbone view
+        initialize: function() {
+
+            // Get a reference to the parent object
+            var _this = this;
+
+            // Initialize the model backing this view
+            this.visualization = new Visualization();
+
+            // Create instances of all the views we need
+            this.datasetView = new DatasetView();
+            this.filterView = new FilterView();
+            this.visualizationView = new VisualizationView();
+
+            // Render the default view
+            this.datasetView.render();
+
+        }
+
+    });
+
+    var App = new AppView();
+
+</script>

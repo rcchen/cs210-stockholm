@@ -59,7 +59,7 @@ class ApiController < ApplicationController
 
 		# Retrieve the data set
 		id = params[:id]
-		@dataset = Dataset.where(:base_url => id).first
+		@dataset = Dataset.where(:identifier => id).first
 
 		# POST requests are typically associated with some chart
  		if request.post?

@@ -21,6 +21,10 @@ class Dataset
 	field :attrs
 
 	# Unique identifier for the base URL
-	field :base_url
+	field :identifier
+
+	def self.find_by_identifier(identifier)
+    	self.where(:identifier => identifier).first()
+	end
 
 end
