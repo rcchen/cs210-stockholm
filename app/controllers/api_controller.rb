@@ -44,7 +44,7 @@ class ApiController < ApplicationController
 		end
 
 		# Return the aggregated data
-		return json_data
+		return json_data.sort_by { |hash| hash["label"] }
 
 	end
 	
