@@ -97,9 +97,10 @@ $white: #FFFFFF;
 #landing {
 	background-color: $midnight-blue;
     color: $asbestos;
-
-    button {
+    padding-top: 0px;
+    a {
     	margin: 20px 0px;
+    	color: $white;
     }
 }
 
