@@ -262,6 +262,7 @@
             "click #step3":                 "step3", 
             "click .visualization-choice":  "setVisualizationType",
             "click #preview":               "previewVisualization", 
+            "click #save":                  "saveVisualization"
         },
 
         // Initializer for this Backbone view
@@ -469,8 +470,13 @@
 
             // Get parameters that we need
             var type = selectedChoice.attr('id');
+            var params = $('#visualization-options').serializeArray();
             var identifier = this.visualization.get('dataset').identifier;
             var data_filters = this.visualization.get('filters');
+
+            // Set the type on the visualizaiton object
+            this.visualization.set('chart_type') = type;
+            this.visualization.set('chart_options') = params;
 
             // Now figure out the type
             if (type == 'table') {
@@ -504,9 +510,8 @@
 
             if (type == 'line') {
 
-                var params = $('#visualization-options').serializeArray();
                 var params_key = params[0]['value'];
-                var params_value = params[1]['value'];              
+                var params_value = params[1]['value'];   
 
                 // Add an SVG element to the data area
                 $('#visualization-preview').html('<svg width="800px" height="450px"></svg>');
@@ -546,7 +551,6 @@
 
             if (type == 'pie') {
 
-                var params = $('#visualization-options').serializeArray();
                 var params_key = params[0]['value'];
                 var params_value = params[1]['value'];
 
@@ -577,7 +581,6 @@
 
             if (type == 'bar') {
 
-                var params = $('#visualization-options').serializeArray();
                 var params_key = params[0]['value'];
                 var params_value = params[1]['value'];
 
@@ -603,6 +606,25 @@
                     });
                 });
             }
+
+        },
+
+        // Save the visualization to our database
+        saveVisualization: function() {
+
+            // Get a refererence to the parent object
+            var _this = this;
+
+            // Get our model
+            var visualization = this.visualization;
+
+            // Get the information that we need
+            var dataset = visualization.get('dataset');
+            var filters = visualization.get('filters');
+            var chart_type = visualization.get('chart_type');
+            var chart_options = visualization.get('chart_options');
+
+            // TODO: POST request
 
         }
 
