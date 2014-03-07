@@ -176,4 +176,13 @@ class DatasetController < ApplicationController
 
 	end
 
+	def destroy
+
+		@dataset = Dataset.find_by_identifier(params[:id])
+		@dataset.destroy
+
+		redirect_to '/users/profile'
+
+	end
+
 end

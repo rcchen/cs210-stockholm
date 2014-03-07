@@ -19,6 +19,7 @@ Cs210Stockholm::Application.routes.draw do
   get "dataset/:id", to: "dataset#view"
   get "dataset/:id/edit", to: "dataset#edit"
   post "dataset/:id/edit", to: "dataset#edit"
+  get "dataset/:id/destroy", to: "dataset#destroy"
 
   # These routes are associated with the worksheet
   get "worksheet/create"

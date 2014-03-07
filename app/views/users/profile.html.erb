@@ -35,6 +35,7 @@
 					<th>Created</th>
 					<th>Updated</th>
 					<th>View</th>
+					<th>Destroy</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -44,6 +45,7 @@
 					<td><%= dataset.created_at %></td>
 					<td><%= dataset.updated_at %></td>
 					<td><a href="/dataset/<%= dataset.identifier %>">View</a></td>
+					<td><a href="/dataset/<%= dataset.identifier %>/destroy">Destroy</a></td>
 				</tr>
 				<% end %>	
 			</tbody>
