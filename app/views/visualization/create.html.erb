@@ -475,8 +475,8 @@
             var data_filters = this.visualization.get('filters');
 
             // Set the type on the visualizaiton object
-            this.visualization.set('chart_type') = type;
-            this.visualization.set('chart_options') = params;
+            this.visualization.set('chart_type', type);
+            this.visualization.set('chart_options', params);
 
             // Now figure out the type
             if (type == 'table') {
