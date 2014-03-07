@@ -2,6 +2,11 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+$asbestos: #7F8C8D;
+$midnight-blue: #2C3E50;
+$wet-asphalt: #34495E;
+$white: #FFFFFF;
+
 #steps {
 	margin: 30px auto;
 }
@@ -57,4 +62,22 @@
 
 .dataset-container {
 	width: 100%;
+}
+
+#current {
+  min-height: 500px;
+}
+
+#visualization-choices {
+  margin: 10px 0px;
+  img {
+    width: 40px;
+    margin: 0px 5px;
+    padding: 5px;
+    display: inline;
+  }
+}
+
+.selected-choice {
+  outline: 2px solid $midnight-blue;
 }
