@@ -170,7 +170,7 @@ class ApiController < ApplicationController
 	 	# If it is a GET request, return basic information
 	 	else
 
-	 		render json: @dataset.datadocs
+	 		render json: @dataset
 
 	 	end
 
