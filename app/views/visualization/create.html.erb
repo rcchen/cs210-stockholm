@@ -60,7 +60,9 @@
         <div class="row">
             <div class="col-xs-5">
                 <select class="form-control" name="attribute">
-                    <option>Test</option>
+                    <@ for (var attr in jQuery.parseJSON(attrs)) { @>
+                        <option><@= attr @></option>
+                    <@ } @>
                 </select>
             </div>
             <div class="col-xs-3">
@@ -127,7 +129,7 @@
         el: "#filter-attributes",
         template: _.template($('#filter-template').html()),
         render: function() {
-            $(this.el).append(this.template);
+            $(this.el).append(this.template(this.model.get('dataset')));
         }
     });
 
@@ -171,8 +173,14 @@
         // Method for adding new filters
         addFilter: function() {
 
+            // Get a reference to the parent object
+            var _this = this;
+
             // Render the filter view
-            var filterView = new FilterView();
+            var filterView = new FilterView({
+                model: _this.visualization
+            });
+
             filterView.render();
 
         },
@@ -191,16 +199,30 @@
         // Method for moving to step 2
         step2: function() {
 
+            // Get a reference to the parent object
+            var _this = this;
+
             // Get the selected item
             var endpoint = $('#step1-dataset').val();
 
             // Make a GET request for the attributes
+            $.getJSON('/api/' + endpoint, function(data) {
+
+                // Set the dataset in our model
+                _this.visualization.set("dataset", data);
+
+            });
 
             // Fix the active things on the top
             $('#step1-button').removeClass('btn-primary');
             $('#step1-button').addClass('btn-default');
             $('#step2-button').removeClass('btn-default');
             $('#step2-button').addClass('btn-primary');
+
+            // Create the next view
+            this.filtersView = new FiltersView({
+                model: _this.visualization
+            });
 
             // Render the next view
             this.filtersView.render();
