@@ -13,7 +13,7 @@ class ApiController < ApplicationController
 		# We collect all the keys in the data hash and 
 		# aggregate values for the keys
 		data = Hash.new
-		@results.datadocs.each do |datadoc|
+		@results.each do |datadoc|
 			
 			# Get the key
 			key_value = datadoc["#{key}"]

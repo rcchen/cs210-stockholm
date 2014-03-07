@@ -512,9 +512,9 @@
                 var params_value = params[1]['value'];
 
                 // Add an SVG element to the data area
-                $('#visualization-preview').html('<svg></svg>');
+                $('#visualization-preview').html('<svg width="800px" height="500px"></svg>');
 
-                $.post('/api/' + identifier, { chart: "pie", key: params_key, aggregate: params_value }, function(data) {
+                $.post('/api/' + identifier, { filters: data_filters, chart: "pie", key: params_key, aggregate: params_value }, function(data) {
                     //Donut chart example
                     nv.addGraph(function() {
                       var chart = nv.models.pieChart()
@@ -543,16 +543,16 @@
                 var params_value = params[1]['value'];
 
                 // Add an SVG element to the data area
-                $('#visualization-preview').html('<svg width="800px" height="600px"></svg>');
+                $('#visualization-preview').html('<svg width="800px" height="500px"></svg>');
 
-                $.post('/api/' + identifier, { chart: "bar", key: params_key, aggregate: params_value }, function(data) {
+                $.post('/api/' + identifier, { filters: data_filters, chart: "bar", key: params_key, aggregate: params_value }, function(data) {
                     //Discrete chart example
                     nv.addGraph(function() {
                       var chart = nv.models.discreteBarChart()
                           .x(function(d) { return d.label })
                           .y(function(d) { return d.value })
-                          .staggerLabels(true)     // Stagger bar chart labels
-                          .tooltips(false)  //Configure the minimum slice size for labels to show up
+                          .staggerLabels(false)     // Stagger bar chart labels
+                          .tooltips(true)  //Configure the minimum slice size for labels to show up
                           .showValues(true)   // Show bar value on top of bar
                           ;
                      
