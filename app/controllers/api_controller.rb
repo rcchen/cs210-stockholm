@@ -13,7 +13,7 @@ class ApiController < ApplicationController
 		# We collect all the keys in the data hash and 
 		# aggregate values for the keys
 		data = Hash.new
-		@dataset.datadocs.each do |datadoc|
+		@results.each do |datadoc|
 			
 			# Get the key
 			key_value = datadoc["#{key}"]
@@ -102,7 +102,7 @@ class ApiController < ApplicationController
 		equals_filters.each do |key, value|
 			query = query.in(:"#{key}" => value)
 		end
-		@dataset.datadocs = query
+		@results = query
 	end
 
 
@@ -116,6 +116,8 @@ class ApiController < ApplicationController
 
 		if not params[:filters].nil?
 			filter_documents(params[:filters])
+		else
+			@results = @dataset
 		end
 
 		# POST requests are typically associated with some chart
@@ -163,7 +165,7 @@ class ApiController < ApplicationController
 	 		else
 
 	 			# Render the result as JSON
-	 			render json: @dataset.datadocs
+	 			render json: @results
 
 	 		end
 
