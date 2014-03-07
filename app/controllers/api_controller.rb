@@ -160,6 +160,27 @@ class ApiController < ApplicationController
 	 			key = params[:key]
 	 			aggregate = params[:aggregate]
 
+	 			# Line charts are slightly different because they expect many XY objects
+	 			# We accomplish this by taking the results of the aggregate data and transforming it
+	 			json_values = Array.new
+	 			values = aggregate_data(key, aggregate);
+	 			values.each do |hash|
+	 				xy_pair = Hash.new
+	 				xy_pair["x"] = hash["label"]
+	 				xy_pair["y"] = hash["value"]
+	 				json_values << xy_pair
+	 			end
+
+	 			# Construct the line chart
+	 			json_object = Hash.new
+	 			json_object["values"] = json_values
+	 			json_object["key"] = key
+
+	 			# TODO: Line charts need to pass the name of the line as well
+
+	 			json_data = Array.new
+	 			json_data.push(json_object)
+	 			render json: json_data
 
 	 		# If we don't receive a chart type, handle as a filtered data request
 	 		else
