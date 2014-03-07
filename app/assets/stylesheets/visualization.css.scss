@@ -78,6 +78,10 @@ $white: #FFFFFF;
   }
 }
 
+#visualization-preview {
+  min-height: 500px;
+}
+
 .selected-choice {
   outline: 2px solid $midnight-blue;
 }

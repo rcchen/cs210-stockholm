@@ -99,7 +99,7 @@
                     <%= image_tag "icons/line_graph.png", {:id => 'line', :class => 'visualization-choice'} %>
                     <%= image_tag "icons/pie_chart.png", {:id => 'pie', :class => 'visualization-choice'} %>
                 </div>
-                <div id="visualization-options">
+                <form id="visualization-options">
                     <div class="form-group">
                         <label for="key">Key</label>
                         <select class="form-control" name="key">
@@ -116,8 +116,8 @@
                         <@ } @>
                         </select>
                     </div>
-                </div>
-                <button type="button" id="visualization-preview" class="btn btn-primary">Preview</button>
+                </form>
+                <button type="button" id="preview" class="btn btn-primary">Preview</button>
             </div>
         </div>
     </div>
@@ -229,8 +229,6 @@
             // Loop through all the models
             _.each(this.model.models, function(data) {
                 var tableRow = this.template(data);
-                console.log(data.toJSON());
-                console.log(tableRow);
                 $(this.el).append(tableRow);
             }, this);
 
@@ -262,7 +260,7 @@
             "click #step2":                 "step2",
             "click #step3":                 "step3", 
             "click .visualization-choice":  "setVisualizationType",
-            "click #visualization-preview": "previewVisualization", 
+            "click #preview":               "previewVisualization", 
         },
 
         // Initializer for this Backbone view
@@ -509,10 +507,62 @@
 
             if (type == 'pie') {
 
+                var params = $('#visualization-options').serializeArray();
+                var params_key = params[0]['value'];
+                var params_value = params[1]['value'];
+
+                // Add an SVG element to the data area
+                $('#visualization-preview').html('<svg></svg>');
+
+                $.post('/api/' + identifier, { chart: "pie", key: params_key, aggregate: params_value }, function(data) {
+                    //Donut chart example
+                    nv.addGraph(function() {
+                      var chart = nv.models.pieChart()
+                          .x(function(d) { return d.label })
+                          .y(function(d) { return d.value })
+                          .showLabels(true)     //Display pie labels
+                          .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
+                          .labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
+                          .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
+                          .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
+                          ;
+                        d3.select("#visualization-preview svg")
+                            .datum(data)
+                            .transition().duration(350)
+                            .call(chart);
+                      return chart;
+                    });
+                });
+
             }
 
             if (type == 'bar') {
 
+                var params = $('#visualization-options').serializeArray();
+                var params_key = params[0]['value'];
+                var params_value = params[1]['value'];
+
+                // Add an SVG element to the data area
+                $('#visualization-preview').html('<svg width="800px" height="600px"></svg>');
+
+                $.post('/api/' + identifier, { chart: "bar", key: params_key, aggregate: params_value }, function(data) {
+                    //Discrete chart example
+                    nv.addGraph(function() {
+                      var chart = nv.models.discreteBarChart()
+                          .x(function(d) { return d.label })
+                          .y(function(d) { return d.value })
+                          .staggerLabels(true)     // Stagger bar chart labels
+                          .tooltips(false)  //Configure the minimum slice size for labels to show up
+                          .showValues(true)   // Show bar value on top of bar
+                          ;
+                     
+                        d3.select("#visualization-preview svg")
+                            .datum(data)
+                            .transition().duration(350)
+                            .call(chart);
+                      return chart;
+                    });
+                });
             }
 
         }
