@@ -79,12 +79,26 @@ class DatasetController < ApplicationController
 	 			# From the sample, figure out the proper types
 	 			attributes_copy = @attributes.clone
 	 			@attributes.each do |attribute, type|
-	 				if is_numeric?(@hashes[0][attribute])
-	 					attributes_copy.delete(attribute)
-	 					attributes_copy[attribute] = 'Numeric'
-	 				end
-	 			end
-	 			@attributes = attributes_copy
+ 					begin
+ 						Date.parse(@hashes[0][attribute])
+ 						isDate = true
+ 					rescue
+ 						isDate = false
+ 					end
+ 					if isDate == true
+ 						attrType = 'Date'
+ 					elsif is_numeric?(@hashes[0][attribute])
+ 						attrType = 'Numeric'
+ 					elsif @hashes[0][attribute].match(/\$\d*\.\d\d/)
+ 						attrType = 'Monetary (USD)'
+ 					end
+
+	 				if not attrType.nil?
+ 						attributes_copy.delete(attribute)
+ 						attributes_copy[attribute] = attrType
+ 					end
+ 				end
+ 				@attributes = attributes_copy
 
 	 			# We temporarily keep things in the cache to pass to the upload method
 	 			Rails.cache.write("dataset", @dataset)
@@ -101,6 +115,8 @@ class DatasetController < ApplicationController
 	end
 
 	def verify
+		puts "IN THE VERIFY METHOD: "
+
 
 		if request.post?
 
@@ -165,6 +181,8 @@ class DatasetController < ApplicationController
 	 		@attributes = Rails.cache.read("attributes")
 	 		@hashes = Rails.cache.read("hashes")
 	 		@dataset = Rails.cache.read("dataset")
+
+	 					puts @attributes.to_json 
 
 		end
 
