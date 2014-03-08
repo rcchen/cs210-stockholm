@@ -85,12 +85,12 @@ class DatasetController < ApplicationController
  					rescue
  						isDate = false
  					end
- 					if isDate == true
+ 					if isDate == true or @hashes[0][attribute].match(/\d{4}-\d{2}-\d{2}/)
  						attrType = 'Date'
+ 					elsif @hashes[0][attribute].match(/\$?\d*\.\d\d/)
+ 						attrType = 'Monetary (USD)'
  					elsif is_numeric?(@hashes[0][attribute])
  						attrType = 'Numeric'
- 					elsif @hashes[0][attribute].match(/\$\d*\.\d\d/)
- 						attrType = 'Monetary (USD)'
  					end
 
 	 				if not attrType.nil?
