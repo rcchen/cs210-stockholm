@@ -150,7 +150,7 @@ class DatasetController < ApplicationController
 	 				if @attributes[name] == 'Numeric'
 	 					value = value.to_f
 	 				elsif @attributes[name] == 'Date'
-	 					value = Chronic.parse(value).to_s
+	 					value = Chronic.parse(value)
 	 				else
 	 					value = value
 	 				end
