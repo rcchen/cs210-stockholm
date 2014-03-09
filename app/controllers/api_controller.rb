@@ -47,6 +47,58 @@ class ApiController < ApplicationController
 		return json_data
 
 	end
+ # group anything under this percentage (5%)
+ #display only top ++ or bottom ___
+	def aggragate_small
+		# We're essentially doing a map/reduce operation
+		# We collect all the keys in the data hash and 
+		# aggregate values for the keys
+		num_keys = 0
+		total = 0
+		data = Hash.new
+		@dataset.datadocs.each do |datadoc|
+			
+			# Get the key
+			key_value = datadoc["#{key}"]
+
+			# By default, we count the aggregate
+			aggregate_value = 1
+			if key != aggregate
+				aggregate_value = datadoc["#{aggregate}"].to_i
+			end
+
+			# If the key does not exist yet, set it to zero
+			if not data.key?(key_value)
+				num_keys = num_keys + 1
+				data[key_value] = 0
+			end
+
+			# Add in the value that we observed for the aggregate
+			total = total + aggregate_value
+			data[key_value] = data[key_value] + aggregate_value
+
+		end
+
+		#go through hash, calculate % and add to other if lower than 5%
+
+		data.each do |key, value|
+
+		end
+
+		# Compile data into format expected of pie charts
+		json_data = Array.new
+		data.each do |key, value|
+			json_data_object = Hash.new
+			if value/total < 0.05
+				json_data_object['label']
+			json_data_object["label"] = key
+			json_data_object["value"] = value
+			json_data << json_data_object
+		end
+
+		# Return the aggregated data
+		return json_data
+	end
 	
 	# Shows information on a single dataset
 	def explore
