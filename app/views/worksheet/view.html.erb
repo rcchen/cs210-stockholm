@@ -1,5 +1,7 @@
 <div class="container">
 
-	
+	<% @worksheet.visualizations.each do |visualization| %>
+	<li><%= visualization.identifier %></li>
+	<% end %>
 
 </div>

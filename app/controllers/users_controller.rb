@@ -2,6 +2,13 @@ class UsersController < ApplicationController
 
 	def login
 
+		# If the user is logged in already, redirect them to their profile
+		if session[:id]
+
+			redirect_to action: "profile"
+
+		end
+
 		# Check to see if we are submitting login information
 		if request.post?
 
