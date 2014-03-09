@@ -13,11 +13,20 @@ class VisualizationController < ApplicationController
 		visualization = Visualization.new
 
 		# Now set the various things to our POST params
+
+		puts params[:dataset]
+		puts params[:filters]
+		puts params[:chart_type]
+		puts params[:chart_options]
+
 		visualization.dataset = params[:dataset]
 		visualization.filters = params[:filters]
 		visualization.chart_type = params[:chart_type]
 		visualization.chart_options = params[:chart_options]
-		visualization.identifier = params[:identifier]
+		visualization.identifier = SecureRandom.uuid
+		while Visualization.find_by_identifier(visualization.identifier)
+			visualization.identifier = SecureRandom.uuid
+		end
 
 		# Find the corresponding worksheet
 		worksheet_identifier = params[:worksheet]
@@ -39,7 +48,7 @@ class VisualizationController < ApplicationController
 	def edit
 
 		# Retrieve the correct visualization
-		@visualization = Visualization.get_by_identifier(params[:id])
+		@visualization = Visualization.find_by_identifier(params[:id])
 
 		# Get the current user
 		@user = User.find(session[:id])
@@ -58,7 +67,12 @@ class VisualizationController < ApplicationController
 	def view
 
 		# Retrieve the correct visualization
-		@visualization = Visualization.get_by_identifier(params[:id])
+		@visualization = Visualization.find_by_identifier(params[:id])
+
+		puts @visualization.chart_options
+		puts @visualization.filters
+
+		render layout: "sparse"
 
 	end
 

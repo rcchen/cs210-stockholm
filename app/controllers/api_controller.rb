@@ -58,10 +58,12 @@ class ApiController < ApplicationController
 		# Keep track of equals filters
 		equals_filters = {}
 
+		puts filters
+
 		# Get a pointer to the attributes from the dataset
 		attrs = JSON.parse(@dataset.attrs)
 
-			# Iterate through the objects in the filter to build the query
+		# Iterate through the objects in the filter to build the query
 		filters.each do |filter|
 
 			# When we build the query, if we have multiple things fulfilling

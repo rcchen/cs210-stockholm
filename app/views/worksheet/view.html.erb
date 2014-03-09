@@ -1,7 +1,7 @@
 <div class="container">
 
 	<% @worksheet.visualizations.each do |visualization| %>
-	<li><%= visualization.identifier %></li>
+		<iframe src="/visualization/<%= visualization.identifier %>" width="800px" height="500px"></iframe> 
 	<% end %>
 
 </div>
