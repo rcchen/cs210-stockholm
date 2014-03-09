@@ -33,14 +33,14 @@
                             .showXAxis(true)        //Show the x-axis
               ;
              
-              chart.xAxis     //Chart x-axis settings
+              /*chart.xAxis     //Chart x-axis settings
                   .axisLabel('Time (ms)')
                   .tickFormat(d3.format(',r'));
              
               chart.yAxis     //Chart y-axis settings
                   .axisLabel('Voltage (v)')
                   .tickFormat(d3.format('.02f'));
-             
+              */
               d3.select('#visualization-preview svg')    //Select the <svg> element you want to render the chart in.   
                   .datum(data)         //Populate the <svg> element with chart data...
                   .call(chart);          //Finally, render the chart!
@@ -96,7 +96,7 @@
                   .tooltips(true)  //Configure the minimum slice size for labels to show up
                   .showValues(false)   // Show bar value on top of bar
                   ;
-              chart.xAxis.axisLabel(params_key);
+              //chart.xAxis.axisLabel(params_key);
              
                 d3.select("#visualization-preview svg")
                     .datum(data)
