@@ -34,6 +34,7 @@ Cs210Stockholm::Application.routes.draw do
   get "visualization/:id", to: "visualization#view"
   get "visualization/:id/edit", to: "visualization#edit"
   post "visualization/:id/edit", to: "visualization#edit"
+  post "visualization/save"
 
   # This is a registration URL
   get "users/login"

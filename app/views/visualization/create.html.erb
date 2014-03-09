@@ -619,12 +619,18 @@
             var visualization = this.visualization;
 
             // Get the information that we need
-            var dataset = visualization.get('dataset');
-            var filters = visualization.get('filters');
-            var chart_type = visualization.get('chart_type');
-            var chart_options = visualization.get('chart_options');
+            var param_worksheet = '<%= params[:worksheet] %>';
+            var param_dataset = visualization.get('dataset');
+            var param_filters = visualization.get('filters');
+            var param_chart_type = visualization.get('chart_type');
+            var param_chart_options = visualization.get('chart_options');
 
-            // TODO: POST request
+            // Save our visualization and return to the worksheet
+            $.post('/visualization/save', { worksheet: param_worksheet, dataset: param_dataset, filters: param_filters, chart_type: param_chart_type, chart_options: param_chart_options }, function(data) {
+                console.log(data);
+                window.location.replace('/worksheet/' + param_worksheet + '/edit');
+                return false;
+            });
 
         }
 

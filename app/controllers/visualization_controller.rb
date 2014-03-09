@@ -20,8 +20,8 @@ class VisualizationController < ApplicationController
 		visualization.identifier = params[:identifier]
 
 		# Find the corresponding worksheet
-		worksheet_identifier = params[:w]
-		worksheet = Worksheet.get_by_identifier(worksheet_identifier)
+		worksheet_identifier = params[:worksheet]
+		worksheet = Worksheet.find_by_identifier(worksheet_identifier)
 
 		# Save the visualization to the worksheet
 		worksheet.visualizations << visualization
@@ -29,8 +29,10 @@ class VisualizationController < ApplicationController
 		# Save the worksheet
 		worksheet.save
 
-		# Redirect to the worksheet page
-		redirect_to '/worksheet/' + worksheet_identifier
+		# Return null json
+		jhash = Hash.new
+		jhash["status"] = "ok"
+		render json: jhash
 
 	end
 
