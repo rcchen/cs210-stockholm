@@ -1,0 +1,312 @@
+<div class="container">
+	<h3><%= @dataset.name %></h3>
+	<div id="information" style="margin: 30px 0px;">
+		<div class="row">
+			<div class="col-xs-6">
+				<table class="table">
+					<tr>
+						<td>Records</td>
+						<td><%= @dataset.datadocs.count %></td>
+					</tr>
+					<tr>
+						<td>Created</td>
+						<td><%= @dataset.created_at %></td>
+					</tr>
+					<tr>
+						<td>Last Updated</td>
+						<td><%= @dataset.updated_at %></td>
+					</tr>
+					<tr>
+						<td>Endpoint</td>
+						<td><a href="/api/<%= @dataset.base_url %>">/api/<%= @dataset.base_url %></a></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-xs-6">
+				<pre id="attributes"></pre>
+			</div>
+		</div>
+	</div>
+	<div id="filters" style="margin-top: 40px;">
+		<h3>Data</h3>
+		<form id="filters-form">
+			<div id="filter-attributes">
+			</div>
+			<div id="filter-actions" style="margin: 20px 0px;">
+				<button type="button" class="btn btn-success" id="add-filter">Add Filter</button>
+				<button type="button" class="btn btn-primary" id="submit-filter">Submit</button>
+			</div>
+		</form>
+	</div>
+	<table class="table" style="margin-bottom: 80px;">
+		<thead>
+			<tr>
+			<% JSON.parse(@dataset.attrs).each do |key, value| %>
+			<th><%= key %></th>
+			<% end %>				
+			</tr>
+		</thead>
+		<tbody id="table-data"></tbody>
+	</table>
+	<div id="charts">
+		<h3>Charts</h3>
+		<div id="chart-line">
+			<h4>Line Chart Demo</h4>
+			<p>Select a key and aggregate to generate a line graph. If the key is the same as the aggregate, the count of the key will be taken.</p>
+			<form id="chart-line-form" role="form" style="margin: 10px 0px 20px 0px;">
+			<div class="row">
+				<div class="col-xs-3">
+					<select class="form-control" name="chart-line-key">
+						<% JSON.parse(@dataset.attrs).each do |key, value| %>
+						<option><%= key %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="col-xs-3">
+					<select class="form-control" name="chart-line-value">
+						<% JSON.parse(@dataset.attrs).each do |key, value| %>
+						<option><%= key %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="col-xs-2">
+					<button type="button" class="btn btn-success" id="redraw-chart-line">Submit</button>
+				</div>
+			</div>
+			</form>
+			<svg style="height: 740px;"></svg>
+		</div>
+	</div>
+</div>
+<script id="filterTemplate" type="text/template">
+	<div class="form-attribute" style="margin: 10px 0px;">
+		<div class="row">
+			<div class="col-xs-5">
+				<select class="form-control" name="attribute">
+					<% JSON.parse(@dataset.attrs).each do |key, value| %>
+					<option><%= key %></option>
+					<% end %>
+				</select>
+			</div>
+			<div class="col-xs-3">
+				<select class="form-control" name="sign">
+					<option value="<">less than (<)</option>
+					<option value="<=">less than or equal (<=)</option>
+					<option value="=">equals (=)</option>
+					<option value=">=">greater than or equal (>=)</option>
+					<option value=">">greater than (>)</option>
+				</select>
+			</div>	
+			<div class="col-xs-3">
+				<input class="form-control" name="value" />
+			</div>
+			<div class="col-xs-1">
+				<button type="button" class="btn btn-danger filter-remove">Remove</button>
+			</div>
+		</div>
+	</div>
+</script>
+<script id="dataTemplate" type="text/template">
+	<tr>
+		<% JSON.parse(@dataset.attrs).each do |key, value| %>
+		<td><@= <%= key %> @></td>
+		<% end %>
+	</tr>
+</script>
+<script>
+
+	// Eliminate conflicts with Rails
+	_.templateSettings = {
+	    interpolate: /\<\@\=(.+?)\@\>/gim,
+	    evaluate: /\<\@(.+?)\@\>/gim,
+	    escape: /\<\@\-(.+?)\@\>/gim
+	};
+	
+	// Establish a Backbone data model
+	var DataModel = Backbone.Model.extend();
+
+	// Backbone collection that represents our model
+	var DataSet = Backbone.Collection.extend({
+		model: DataModel,
+		url: '#',
+		initialize: function() { }
+	});
+
+	// Represents each row of data in the grid
+	var DataView = Backbone.View.extend({
+
+		// The id that we are targeting is table-data
+		el: "#table-data",
+
+		// The template that this is backed by is dataTemplate
+		template: _.template($('#dataTemplate').html()),
+
+		// Used to render each row of the data table 
+ 		render: function(eventName) {
+		
+ 			// Loops through all of our models
+			_.each(this.model.models, function(data) {
+
+				// Render the data for each model in the template
+				var dataTemplate = this.template(data.toJSON());
+				$(this.el).append(dataTemplate);
+
+			}, this);
+			return this;
+		}
+
+	});
+
+	// Used to load additional filters on the fly
+	var FilterView = Backbone.View.extend({
+
+		// Renders the filter view on initialization
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			var template = _.template($('#filterTemplate').html(), {});
+			$('#filter-attributes').append(template);
+		}
+
+	});
+	
+	// Handles everything related to the table on the page
+	var AppView = Backbone.View.extend({
+
+		// AppView targets the body element
+		el: "body",
+
+		// Backbone is event-driven, so register them here
+		events: {
+
+			// Clicking on the submit filter will update data
+			'click #submit-filter': 'updateData'
+
+		},
+
+		// Initializer for this Backbone view
+		initialize: function() {
+
+			// We use this pattern so we have a references to the parent obj
+			var _this = this;
+
+			// Instance of the model collection
+			this.dataset = new DataSet();
+
+			// Instance of the model view backed by the collection
+			this.datasetView = new DataView({
+				model: _this.dataset
+			});
+
+			// When the dataset is reset, we want to rerender the view
+			this.dataset.bind('reset', function() {
+				_this.datasetView.render();
+			});
+
+		},
+
+		// Responsible for taking data from the filters and 
+		updateData: function() {
+
+			// Getting a reference to the parent object
+			var _this = this;
+
+			// Store all the filters in this array
+			var submissions = [];
+
+			// Serialize the form data
+			var filters = $('#filters-form').serializeArray();
+
+			// Each filter is an object to make our lives easier
+			var filter = new Object();
+
+			// Go through each of the filters and create objects
+			for (var i = 0; i < filters.length; i++) {
+
+				// Filters are in groups of three objects
+				if (i % 3 == 0 && i != 0) {
+					submissions.push(filter);
+					filter = new Object();
+				}
+
+				// Set the object attributes
+				var attribute = filters[i];
+				filter[attribute.name] = attribute.value;
+
+			} 
+
+			// Add the last filter into the array
+			submissions.push(filter);
+
+			// POST request to the server with the filters
+			$.post('/api/<%= @dataset.base_url %>', {filters: submissions}, function(data) {
+
+				// Empty out the target DOM
+				document.getElementById('table-data').innerHTML = "";
+
+				// Call a reset on the data collection with our new data
+				// Will trigger a rerender of the view
+				_this.dataset.reset(data);
+
+			}); 
+
+		}
+
+	});
+	
+	// Gets everything started
+	var App = new AppView;
+
+	// Display the JSON attribute preview on the right
+	var sample = JSON.parse('<%= @dataset.attrs.to_s.html_safe %>');
+	document.getElementById('attributes').innerHTML = JSON.stringify(sample, null, 2);
+
+	$('#add-filter').click(function() {
+		new FilterView();
+	});
+
+	$('.filter-remove').live('click', function() {
+		$(this).parent().parent().parent().remove();
+		event.preventDefault();
+	});
+
+	$('#redraw-chart-line').click(function() {
+		var params = $('#chart-line-form').serializeArray();
+		var params_key = params[0]['value'];
+		var params_value = params[1]['value'];
+
+		$.post('/api/<%= @dataset.base_url %>', { chart: "line", key: params_key, aggregate: params_value }, function(data) {
+			//Discrete chart example
+			nv.addGraph(function() {
+  				var chart = nv.models.lineChart()
+                .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                .transitionDuration(350)  //how fast do you want the lines to transition?
+                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                .showYAxis(true)        //Show the y-axis
+                .showXAxis(true)        //Show the x-axis
+  				;
+ 
+  				chart.xAxis     //Chart x-axis settings
+     		 	.axisLabel('Time (ms)')
+      			.tickFormat(d3.format(',r'));
+ 
+  				chart.yAxis     //Chart y-axis settings
+      			.axisLabel('Voltage (v)')
+      			.tickFormat(d3.format('.02f'));
+ 
+ 				 d3.select('#chart svg')    //Select the <svg> element you want to render the chart in.   
+     			 .datum(data)         //Populate the <svg> element with chart data...
+      			.call(chart);          //Finally, render the chart!
+ 
+  			//Update the chart when window resizes.
+  			return chart;
+			});
+		});
+	});
+
+
+</script>

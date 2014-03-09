@@ -136,10 +136,8 @@ class DatasetController < ApplicationController
 
 	 		# Rewrite the data types in the dataset
 	 		@hashes.each_with_index do |hash, index|
-
 	 			# Create a new Datadoc
 	 			datadoc = Datadoc.new
-
 	 			# Iterate through attributes of the hash
 	 			hash.each do |attribute|
 
@@ -153,7 +151,6 @@ class DatasetController < ApplicationController
 	 				else
 	 					value = value
 	 				end
-
 	 				# Dynamically create the attribute in our Datadoc
 	 				datadoc["#{name}"] = value
 

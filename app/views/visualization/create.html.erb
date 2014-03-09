@@ -73,6 +73,7 @@
                     <option value="=">equals (=)</option>
                     <option value=">=">greater than or equal (>=)</option>
                     <option value=">">greater than (>)</option>
+                    <option value="!=">not equal (!=)</option>
                 </select>
             </div>  
             <div class="col-xs-3">
@@ -115,6 +116,14 @@
                             <option><@= attr @></option>
                         <@ } @>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" name="description" rows="5"></textarea>
                     </div>
                 </form>
                 <button type="button" id="preview" class="btn btn-primary">Preview</button>
@@ -779,7 +788,6 @@
 
             // Save our visualization and return to the worksheet
             $.post('/visualization/save', { worksheet: param_worksheet, dataset: param_dataset, filters: param_filters, chart_type: param_chart_type, chart_options: param_chart_options }, function(data) {
-                console.log(data);
                 window.location.replace('/worksheet/' + param_worksheet + '/edit');
                 return false;
             });

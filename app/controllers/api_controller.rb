@@ -96,6 +96,8 @@ class ApiController < ApplicationController
 				query = query.gt(:"#{filter_attribute}" => filter_value)
 			elsif filter_sign == ">="
 				query = query.gte(:"#{filter_attribute}" => filter_value)
+			elsif filter_sign == "!="
+				query = query.ne(:"#{filter_attribute}" => filter_value)
 			end
 
 		end
