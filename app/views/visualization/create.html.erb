@@ -118,24 +118,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="viewing-options">Viewing Options</label>
-                            <input type="checkbox" value="">
-                                Combine data below 0.05 &#37;
-                            <form class="form-inline" role="form">
-                             <label>
-                                <input type="checkbox" value="">
-                                Show 
-                                <select class="form-control">
-                                  <option>top</option>
-                                  <option>bottom</option>
-                                </select>
-                            </label>
-                            </form>
-                        <select class="form-control" name="key">
-                        <@ for (var attr in jQuery.parseJSON(dataset.attrs)) { @>
-                            <option><@= attr @></option>
-                        <@ } @>
-                        </select>
+                        <label for="description">Description</label>
+                        <textarea class="form-control" name="description" rows="5"></textarea>
                     </div>
                 </form>
                 <button type="button" id="preview" class="btn btn-primary">Preview</button>
@@ -800,7 +784,6 @@
 
             // Save our visualization and return to the worksheet
             $.post('/visualization/save', { worksheet: param_worksheet, dataset: param_dataset, filters: param_filters, chart_type: param_chart_type, chart_options: param_chart_options }, function(data) {
-                console.log(data);
                 window.location.replace('/worksheet/' + param_worksheet + '/edit');
                 return false;
             });
