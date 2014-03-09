@@ -26,8 +26,7 @@
 		</div>
 		<div class="col-xs-6">
 			<strong>Sample JSON Preview</strong>
-			<pre id="json-preview" style="margin: 10px 0px;">
-				<%= JSON.pretty_generate(JSON.parse(@dataset.attrs)) %>
+			<pre id="json-preview" style="margin: 10px 0px;"><%= JSON.pretty_generate(JSON.parse(@dataset.attrs)) %>
 			</pre>
 		</div>
 	</div>
