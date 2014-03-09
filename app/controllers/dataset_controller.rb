@@ -41,12 +41,15 @@ class DatasetController < ApplicationController
 	 			# Remove the row so we don't accidentally process it
 	 			rows.delete_at(0)
 
+	 			attrNames = Array.new
 	 			# Create a new Hash object of attributes
 	 			@attributes = Hash.new
 	 			parsed_attributes.each do |attribute|
 	 				attribute_underscore = attribute.split.join('')
 	 				@attributes[attribute_underscore] = "String"
+	 				attrNames << attribute_underscore
 	 			end
+
 
 				# Now create a representation of the model we want
 				@dataset = Dataset.new
@@ -64,7 +67,7 @@ class DatasetController < ApplicationController
 
 	 				# Parse into hashes
 	 				h = Hash.new
-	 				@attributes.each_with_index do |(attribute, type), index|
+	 				attrNames.each_with_index do |attribute, index|
 	 					h[attribute] = row[index]
 	 				end
 
@@ -79,26 +82,21 @@ class DatasetController < ApplicationController
 	 			# From the sample, figure out the proper types
 	 			attributes_copy = @attributes.clone
 	 			@attributes.each do |attribute, type|
- 					begin
- 						Date.parse(@hashes[0][attribute])
- 						isDate = true
- 					rescue
- 						isDate = false
- 					end
- 					if isDate == true or @hashes[0][attribute].match(/\d{4}-\d{2}-\d{2}/)
+ 					if @hashes[0][attribute].match(/\d{1,4}[-\/]\d{1,2}[-\/]\d{1,4}\z/)
  						attrType = 'Date'
- 					elsif @hashes[0][attribute].match(/\$?\d*\.\d\d/)
+ 					elsif @hashes[0][attribute].match(/\$?\d*\.\d\d\z/)
  						attrType = 'Monetary (USD)'
  					elsif is_numeric?(@hashes[0][attribute])
  						attrType = 'Numeric'
  					end
 
 	 				if not attrType.nil?
- 						attributes_copy.delete(attribute)
  						attributes_copy[attribute] = attrType
  					end
  				end
  				@attributes = attributes_copy
+ 				@dataset.attrs = @attributes.to_json
+ 				@dataset.save
 
 	 			# We temporarily keep things in the cache to pass to the upload method
 	 			Rails.cache.write("dataset", @dataset)
@@ -115,8 +113,6 @@ class DatasetController < ApplicationController
 	end
 
 	def verify
-		puts "IN THE VERIFY METHOD: "
-
 
 		if request.post?
 
@@ -178,8 +174,6 @@ class DatasetController < ApplicationController
 	 		@attributes = Rails.cache.read("attributes")
 	 		@hashes = Rails.cache.read("hashes")
 	 		@dataset = Rails.cache.read("dataset")
-
-	 					puts @attributes.to_json 
 
 		end
 
