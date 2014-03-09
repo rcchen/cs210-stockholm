@@ -118,6 +118,12 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="viewing-options">Viewing Options</label>
+                            <input id="aggregate-small" type="checkbox" value="true">
+                                Combine values below 0.05%
+                            </input>
+                    </div>
+                    <div class="form-group">
                         <label for="description">Description</label>
                         <textarea class="form-control" name="description" rows="5"></textarea>
                     </div>
@@ -559,10 +565,15 @@
                 var params_key = params[0]['value'];
                 var params_value = params[1]['value'];
 
+                var aggregateSmall =  false;
+                if($('#aggregate-small').is(':checked')){
+                    aggregateSmall = true;
+                }
+                console.log(aggregateSmall);
                 // Add an SVG element to the data area
                 $('#visualization-preview').html('<svg width="800px" height="450px"></svg>');
 
-                $.post('/api/' + identifier, { filters: data_filters, chart: "pie", key: params_key, aggregate: params_value }, function(data) {
+                $.post('/api/' + identifier, { filters: data_filters, chart: "pie", key: params_key, aggregate: params_value, combine: aggregateSmall}, function(data) {
                     //Donut chart example
                     nv.addGraph(function() {
                       var chart = nv.models.pieChart()
