@@ -18,3 +18,5 @@ if ! which mongo; then
 else
 	echo "Mongodb is already installed"
 fi
+echo "Checking for new gems"
+bundle install

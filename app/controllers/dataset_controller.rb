@@ -2,6 +2,7 @@ require 'csv'
 require 'json'
 require 'mongo'
 require 'uri'
+require 'chronic'
 
 class DatasetController < ApplicationController
 
@@ -82,12 +83,12 @@ class DatasetController < ApplicationController
 	 			# From the sample, figure out the proper types
 	 			attributes_copy = @attributes.clone
 	 			@attributes.each do |attribute, type|
- 					if @hashes[0][attribute].match(/\d{1,4}[-\/]\d{1,2}[-\/]\d{1,4}\z/)
- 						attrType = 'Date'
+	 				if is_numeric?(@hashes[0][attribute])
+ 						attrType = 'Numeric'
  					elsif @hashes[0][attribute].match(/\$?\d*\.\d\d\z/)
  						attrType = 'Monetary (USD)'
- 					elsif is_numeric?(@hashes[0][attribute])
- 						attrType = 'Numeric'
+ 					elsif not Chronic.parse(@hashes[0][attribute]).nil?
+ 						attrType = 'Date'
  					end
 
 	 				if not attrType.nil?
@@ -148,6 +149,8 @@ class DatasetController < ApplicationController
 	 				# Typecast if the attribute type is Numeric
 	 				if @attributes[name] == 'Numeric'
 	 					value = value.to_f
+	 				elsif @attributes[name] == 'Date'
+	 					value = Chronic.parse(value).to_s
 	 				else
 	 					value = value
 	 				end
