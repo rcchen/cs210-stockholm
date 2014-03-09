@@ -55,6 +55,9 @@ gem "figaro"
 # Use ActiveModel has_secure_password
 gem 'bcrypt-ruby'
 
+# Use Chronic for parsing different time/date encodings
+gem 'chronic'
+
 # Use unicorn as the app server
 # gem 'unicorn'
 
