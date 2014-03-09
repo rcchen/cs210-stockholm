@@ -21,17 +21,43 @@
 			</div>
 			<% end %>
 			</div>
+			<div id="checkbox">
+				<%= check_box_tag 'header', 'selected' %><%= label_tag(:header, "Need to name headers") %>
+			</div>
+			<div id="header_details" style="display:none;">
+				<% @attributes.each do |attribute| %>
+				<div class="row" style="margin-bottom: 5px;">
+					<div class="col-xs-6">
+						<input type="text" class="form-control" value="<%= attribute %>" disabled />
+					</div>
+					<div class = "col-xs-6">
+  						<%= text_field_tag attribute %>
+  					</div>
+				</div>
+				<% end %>
+			</div>
+
 			<button type="submit" class="btn btn-primary">Submit</button>
 			<% end %>
 		</div>
 		<div class="col-xs-6">
 			<strong>Sample JSON Preview</strong>
-			<pre id="json-preview" style="margin: 10px 0px;"></pre>
+			<pre id="json-preview" style="margin: 10px 0px;">
+				<%= JSON.pretty_generate(JSON.parse(@dataset.attrs)) %>
+			</pre>
 		</div>
 	</div>
 </div>
 <script>
-	var sample = JSON.parse('<%= @sample.to_s.html_safe %>');
+var checkbox = document.getElementById('checkbox');
+var details_div = document.getElementById('header_details');
+checkbox.onchange = function() {
+	console.log("Click!")
+    details_div.style['display'] = 'block';
+}
+</script>
+<script>
+	var sample = JSON.parse('<%= @sample.to_s.html_safe%>');
 	console.log(sample);
 	document.getElementById('json-preview').innerHTML = JSON.stringify(sample, null, 2);
 </script>

@@ -35,17 +35,27 @@ class DatasetController < ApplicationController
 	 			end
 
 	 			# We assume that attributes are in the header of the CSV
-	 			# TODO: Ask user whether these are actually the attributes
-	 			parsed_attributes = rows[0]
-
-	 			# Remove the row so we don't accidentally process it
-	 			rows.delete_at(0)
+	 			# Need to use user-inputted attributes if checked
+	 			if params[:headers] == 'selected'
+	 				parsed_attributes = Array.new
+					columns = rows[0]
+					columns.each do |attribute|
+						print params[:attribute]
+						parsed_attributes.push(params[:attribute])
+					end
+	 			else
+	 				parsed_attributes = rows[0]
+	 				rows.delete_at(0)
+	 			end
 
 	 			# Create a new Hash object of attributes
 	 			@attributes = Hash.new
 	 			parsed_attributes.each do |attribute|
-	 				attribute_underscore = attribute.split.join('')
-	 				@attributes[attribute_underscore] = "String"
+	 				# Stop gap against null fields - fix later
+	 				if attribute 
+	 					attribute_underscore = attribute.split.join('')
+	 					@attributes[attribute_underscore] = "String"
+	 				end
 	 			end
 
 				# Now create a representation of the model we want
