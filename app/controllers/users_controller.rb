@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 			email = params[:email]
 			
 			user = User.find_by_email(email)
-			if (user.password == params[:password]) 
+			if user && (user.password == params[:password]) 
 
 				# Initialize a session for the current user
 				session[:id] = user.id
