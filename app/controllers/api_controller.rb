@@ -13,7 +13,7 @@ class ApiController < ApplicationController
 		# We collect all the keys in the data hash and 
 		# aggregate values for the keys
 		num_keys = 0
-		total = 0
+		total = 0.0
 		data = Hash.new
 		@results.each do |datadoc|
 			# Get the key
@@ -39,13 +39,20 @@ class ApiController < ApplicationController
 
 		end
 
+		aggregate = 0.0
+		newData  = Hash.new
 		if combine == 'true'
-			data["other"] = 0
 			data.each do |key, value|
-				
+				if (value / total)< 0.05 
+					aggregate += value
+				else
+					newData[key] = value
+				end
 			end
-			#data['22'] = total
+			newData[100000] = total
+			data = newData
 		end
+
 
 		# Compile data into format expected of pie charts
 		json_data = Array.new
