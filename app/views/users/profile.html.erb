@@ -10,6 +10,7 @@
 					<th>Updated</th>
 					<th>View</th>
 					<th>Edit</th>
+					<th>Destroy</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -20,6 +21,7 @@
 					<td><%= worksheet.updated_at %></td>
 					<td><a href="/worksheet/<%= worksheet.identifier %>">View</a></td>
 					<td><a href="/worksheet/<%= worksheet.identifier %>/edit">Edit</a></td>
+					<td><a href="/worksheet/<%= worksheet.identifier %>/destroy">Destroy</a></td>
 				</tr>
 				<% end %>
 			</tbody>
