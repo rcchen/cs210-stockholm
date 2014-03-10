@@ -27,6 +27,7 @@ Cs210Stockholm::Application.routes.draw do
   get "worksheet/:id", to: "worksheet#view"
   get "worksheet/:id/edit", to: "worksheet#edit"
   post "worksheet/:id/edit", to: "worksheet#edit"
+  get "worksheet/:id/destroy", to: "worksheet#destroy"
   
   # These routes are associated with visualizations
   get "visualization/create"
