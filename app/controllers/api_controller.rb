@@ -79,18 +79,13 @@ class ApiController < ApplicationController
 
 		end
 
-		#go through hash, calculate % and add to other if lower than 5%
-
-		data.each do |key, value|
-
-		end
-
 		# Compile data into format expected of pie charts
 		json_data = Array.new
 		data.each do |key, value|
 			json_data_object = Hash.new
 			if value/total < 0.05
 				json_data_object['label']
+			end
 			json_data_object["label"] = key
 			json_data_object["value"] = value
 			json_data << json_data_object
