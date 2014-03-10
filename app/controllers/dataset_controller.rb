@@ -83,10 +83,10 @@ class DatasetController < ApplicationController
 	 			# From the sample, figure out the proper types
 	 			attributes_copy = @attributes.clone
 	 			@attributes.each do |attribute, type|
-	 				if is_numeric?(@hashes[0][attribute])
- 						attrType = 'Numeric'
- 					elsif @hashes[0][attribute].match(/\$?\d*\.\d\d\z/)
+	 				if @hashes[0][attribute].match(/\$?\d*\.\d\d\z/)
  						attrType = 'Monetary (USD)'
+ 					elsif is_numeric?(@hashes[0][attribute])
+ 						attrType = 'Numeric'
  					elsif not Chronic.parse(@hashes[0][attribute]).nil?
  						attrType = 'Date'
  					end
@@ -150,7 +150,7 @@ class DatasetController < ApplicationController
 	 				if @attributes[name] == 'Numeric'
 	 					value = value.to_f
 	 				elsif @attributes[name] == 'Date'
-	 					value = Chronic.parse(value).to_s
+	 					value = Chronic.parse(value)
 	 				else
 	 					value = value
 	 				end

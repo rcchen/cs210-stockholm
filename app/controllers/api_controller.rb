@@ -132,6 +132,8 @@ class ApiController < ApplicationController
 			# Cast for numerics
 			if attrs[filter_attribute] == 'Numeric'
 				filter_value = filter_value.to_f
+			elsif attrs[filter_attribute] == "Date"
+				filter_value = Chronic.parse(filter_value)
 			end
 
 			# Start building our query filter
