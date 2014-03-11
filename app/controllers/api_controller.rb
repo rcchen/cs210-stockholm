@@ -1,4 +1,3 @@
-# This controller acts as the API for all the DataSets
 # It is only accessable through JSON POST requests
 class ApiController < ApplicationController
 
@@ -207,7 +206,36 @@ class ApiController < ApplicationController
 	 			render json: json_data
 
 	 		# Handles line chart data requests
-	 		elsif chart == 'line'
+	 		if chart == 'line'
+
+	 			# Get the key and aggregate
+	 			key = params[:key]
+	 			aggregate = params[:aggregate]
+
+	 			# Line charts are slightly different because they expect many XY objects
+	 			# We accomplish this by taking the results of the aggregate data and transforming it
+	 			json_values = Array.new
+	 			values = aggregate_data(key, aggregate);
+	 			values.each do |hash|
+	 				xy_pair = Hash.new
+	 				xy_pair["x"] = hash["label"]
+	 				xy_pair["y"] = hash["value"]
+	 				json_values << xy_pair
+	 			end
+
+	 			# Construct the line chart
+	 			json_object = Hash.new
+	 			json_object["values"] = json_values
+	 			json_object["key"] = key
+
+	 			# TODO: Line charts need to pass the name of the line as well
+
+	 			json_data = Array.new
+	 			json_data.push(json_object)
+	 			render json: json_data
+
+	 		# Handles geo chart data requests
+	 		if chart == 'geo'
 
 	 			# Get the key and aggregate
 	 			key = params[:key]
