@@ -1,5 +1,6 @@
 <div class="container">
-
-	<%= link_to 'New Visualization', {controller: 'visualization', action: 'create', worksheet: params[:id]}, class: 'btn btn-success btn-or' %>
-
+	<div id="edit">
+		<h3>Edit Worksheet</h3>
+		<%= link_to 'New Visualization', {controller: 'visualization', action: 'create', worksheet: params[:id]}, class: 'btn btn-success btn-or' %>
+	</div>
 </div>
