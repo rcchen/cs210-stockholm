@@ -1,6 +1,7 @@
 <div class="container">
 
 	<h3><%= @worksheet.title %></h3>
+	<%= link_to 'Edit', {controller: 'worksheet', action: 'edit'}, class: 'btn btn-success btn-or' %>
 
 	<% @worksheet.visualizations.each do |visualization| %>
 	<div class="visualization">

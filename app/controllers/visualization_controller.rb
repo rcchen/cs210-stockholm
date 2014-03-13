@@ -76,4 +76,15 @@ class VisualizationController < ApplicationController
 
 	end
 
+	def destroy
+
+		@visualization = Visualization.find_by_identifier(params[:id])
+		worksheet = @visualization.worksheet.identifier
+		@visualization.destroy
+
+		redirect_to '/worksheet/' + worksheet + '/edit'
+
+	end
+
+
 end
