@@ -147,6 +147,9 @@ class ApiController < ApplicationController
 				query = query.gte(:"#{filter_attribute}" => filter_value)
 			elsif filter_sign == "!="
 				query = query.ne(:"#{filter_attribute}" => filter_value)
+			elsif filter_sign == "Contains" 
+				puts "INSIDE CONTAINS FILTER"
+				query = query.where(:"#{filter_attribute}" => Regexp.new(filter_value) )
 			end
 
 		end
