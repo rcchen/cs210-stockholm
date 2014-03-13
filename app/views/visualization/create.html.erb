@@ -12,7 +12,7 @@
                     <p>Filters</p>
                 </div>
                 <div class="stepwizard-step">
-                    <button id="step3-button" type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+                    <button id="step3-button" type="button" class="btn btn-default btn-circle">3</button>
                     <p>Visualization</p>
                 </div> 
             </div>
@@ -178,8 +178,13 @@
     var DatasetView = Backbone.View.extend({
         el: "#current",
         template: _.template($('#dataset-template').html()),
-        render: function() {
+        render: function(attrs) {
+            this.options = attrs;
             $(this.el).html(this.template);
+            console.log(attrs);
+            if (attrs.dataset != null) {
+                $('#step1-dataset').val(attrs.dataset);
+            }
         }
     });
 
@@ -187,8 +192,24 @@
     var FiltersView = Backbone.View.extend({
         el: "#current",
         template: _.template($('#filters-template').html()),
-        render: function() {
+        render: function(attrs) {
+            var filters = attrs.filters;
             $(this.el).html(this.template);
+            console.log('asdfsdafsdfdsaf');
+            if (filters != null) {
+                for (var i = 0; i < filters.length; i++) {
+                    var filter = filters[i];
+                    console.log(filter);
+                    var filterView = new FilterView({
+                        model: attrs.model
+                    });
+                    filterView.render();
+                    $(".form-control[name*=attribute]").last().val(filter.attribute);
+                    $(".form-control[name*=sign]").last().val(filter.sign);
+                    $(".form-control[name*=value]").last().val(filter.value);
+                }
+                console.log(filters);
+            }
         }
     });
 
@@ -266,6 +287,9 @@
             "click #add-filter":            "addFilter",
             "click #preview-filter":        "previewFilter",  
             "click .remove-filter":         "removeFilter", 
+            "click #step1-button":          "step1Button",
+            "click #step2-button":          "step2Button",
+            "click #step3-button":          "step3Button",
             "click #step2":                 "step2",
             "click #step3":                 "step3", 
             "click .visualization-choice":  "setVisualizationType",
@@ -288,7 +312,9 @@
             this.visualizationView = new VisualizationView();
 
             // Render the default view
-            this.datasetView.render();
+            this.datasetView.render({
+                "dataset": null
+            });
 
         },
 
@@ -379,6 +405,58 @@
 
         },
 
+        step1Button: function() {
+
+            // Fix the active things on the top
+            $('#step2-button').removeClass('btn-primary');
+            $('#step2-button').addClass('btn-default');
+            $('#step3-button').removeClass('btn-primary');
+            $('#step3-button').addClass('btn-default');
+            $('#step1-button').removeClass('btn-default');
+            $('#step1-button').addClass('btn-primary');
+
+            // Render with parameters
+            var dataset = this.visualization.get('dataset');
+            this.datasetView.render({
+                "dataset": dataset.identifier
+            });
+
+        },
+
+        step2Button: function() {
+
+            // Fix the things on top
+            $('#step1-button').removeClass('btn-primary');
+            $('#step1-button').addClass('btn-default');
+            $('#step3-button').removeClass('btn-primary');
+            $('#step3-button').addClass('btn-default');
+            $('#step2-button').removeClass('btn-default');
+            $('#step2-button').addClass('btn-primary');
+
+            // Render with parameters
+            var filters = this.visualization.get('filters');
+            console.log('step2');
+            console.log(filters);
+            this.filtersView.render({
+                "filters": filters,
+                "model": this.visualization
+            });
+
+        },
+
+        step3Button: function() {
+
+            $('#step1-button').removeClass('btn-primary');
+            $('#step1-button').addClass('btn-default');
+            $('#step2-button').removeClass('btn-primary');
+            $('#step2-button').addClass('btn-default');
+            $('#step3-button').removeClass('btn-default');
+            $('#step3-button').addClass('btn-primary');
+
+            this.visualizationView.render();
+
+        },
+
         // Method for moving to step 2
         step2: function() {
 
@@ -408,7 +486,9 @@
             });
 
             // Render the next view
-            this.filtersView.render();
+            this.filtersView.render({
+                "filters": null
+            });
 
         },
 
