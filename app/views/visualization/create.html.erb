@@ -735,9 +735,9 @@
                 var params_key = params[0]['value'];
                 var params_value = params[1]['value'];
 
+                loadScript();
+
                 var center = new google.maps.LatLng(0, 0);
-
-
                 var mapOptions = {
                     zoom: 4,
                     center: center
@@ -756,6 +756,8 @@
 
                         // Convert it into a LatLng object
                         var latLng = new google.maps.LatLng(coordinate.latitude, coordinate.longitude);
+
+                        console.log(map);
 
                         // Convert into a Google Maps marker
                         var marker = new google.maps.Marker({
@@ -799,5 +801,17 @@
     });
 
     var App = new AppView();
+
+    function initialize() {
+
+    }
+
+    function loadScript() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+              'callback=initialize';
+        document.body.appendChild(script);
+    }
 
 </script>
