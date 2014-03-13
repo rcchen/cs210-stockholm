@@ -137,14 +137,19 @@ class DatasetController < ApplicationController
 
 	 		# Rewrite the data types in the dataset
 	 		@hashes.each_with_index do |hash, index|
+	 			
 	 			# Create a new Datadoc
 	 			datadoc = Datadoc.new
+	 			
 	 			# Iterate through attributes of the hash
 	 			hash.each do |attribute|
 
 	 				# Retrieve the name and value of each attribute
 	 				name = attribute[0]
 	 				value = attribute[1]
+
+	 				puts name
+	 				puts value
 
 	 				# Typecast if the attribute type is Numeric
 	 				if @attributes[name] == 'Numeric'
@@ -154,6 +159,7 @@ class DatasetController < ApplicationController
 	 				else
 	 					value = value
 	 				end
+
 	 				# Dynamically create the attribute in our Datadoc
 	 				datadoc["#{name}"] = value
 

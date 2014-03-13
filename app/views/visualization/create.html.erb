@@ -1,3 +1,4 @@
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEcTCM9oy0_jsuwYDbfw9LJcoMpYl2-vw&sensor=false"></script>
 <div class="container">
     <div id="steps">
         <div class="stepwizard">
@@ -98,10 +99,11 @@
                     <%= image_tag "icons/bar_graph.png", {:id => 'bar', :class => 'visualization-choice'} %>
                     <%= image_tag "icons/line_graph.png", {:id => 'line', :class => 'visualization-choice'} %>
                     <%= image_tag "icons/pie_chart.png", {:id => 'pie', :class => 'visualization-choice'} %>
+                    <%= image_tag "icons/map.png", {:id => 'geo', :class => 'visualization-choice'} %>
                 </div>
                 <form id="visualization-options">
                     <div class="form-group">
-                        <label for="key">Key</label>
+                        <label for="key">Key (Latitude)</label>
                         <select class="form-control" name="key">
                         <@ for (var attr in jQuery.parseJSON(dataset.attrs)) { @>
                             <option><@= attr @></option>
@@ -109,7 +111,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="aggregate">Aggregate</label>
+                        <label for="aggregate">Aggregate (Longitude)</label>
                         <select class="form-control" name="aggregate">
                         <@ for (var attr in jQuery.parseJSON(dataset.attrs)) { @>
                             <option><@= attr @></option>
@@ -587,134 +589,6 @@
 
                 var params_key = params[0]['value'];
                 var params_value = params[1]['value'];
-           // Get a reference to the parent object
-            var _this = this;
-
-            // Variables we need to pick up when building our visualization
-            var selectedChoice;
-
-            // First get the visualization choice
-            $('.visualization-choice').each(function() {
-                if ($(this).hasClass('selected-choice')) {
-                    selectedChoice = $(this);
-                }
-            });
-
-            // Get parameters that we need
-            var type = selectedChoice.attr('id');
-            var params = $('#visualization-options').serializeArray();
-            var identifier = this.visualization.get('dataset').identifier;
-            var data_filters = this.visualization.get('filters');
-
-            // Set the type on the visualizaiton object
-            this.visualization.set('chart_type', type);
-            this.visualization.set('chart_options', params);
-
-            // Now figure out the type
-            if (type == 'table') {
-
-                $.post('/api/' + identifier, { filters: data_filters }, function(data) {
-
-                    // First render the table view
-                    var tableView = new TableView({
-                        model: _this.visualization.get('dataset')
-                    });
-                    tableView.render();
-
-                    // Create a table row view
-                    var tableRowCollection = new TableRowCollection([], {
-                        datasetAttributes: _this.visualization.get('dataset')
-                    });
-
-                    var tableRowView = new TableRowView({
-                        model: tableRowCollection
-                    });
-
-                    // Set the data source
-                    tableRowView.model.reset(data);
-
-                    // Render it
-                    tableRowView.render();
-
-                });
-
-            }
-
-            if (type == 'line') {
-
-                var params_key = params[0]['value'];
-                var params_value = params[1]['value'];   
-
-                // Add an SVG element to the data area
-                $('#visualization-preview').html('<svg width="800px" height="450px"></svg>');
-
-                $.post('/api/' + identifier, { filters: data_filters, chart: "line", key: params_key, aggregate: params_value }, function(data) {            
-
-                    nv.addGraph(function() {
-                      var chart = nv.models.lineChart()
-                                    .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
-                                    .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                                    .transitionDuration(350)  //how fast do you want the lines to transition?
-                                    .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                                    .showYAxis(true)        //Show the y-axis
-                                    .showXAxis(true)        //Show the x-axis
-                      ;
-                     
-                      chart.xAxis     //Chart x-axis settings
-                          .axisLabel('Time (ms)')
-                          .tickFormat(d3.format(',r'));
-                     
-                      chart.yAxis     //Chart y-axis settings
-                          .axisLabel('Voltage (v)')
-                          .tickFormat(d3.format('.02f'));
-                     
-                      d3.select('#visualization-preview svg')    //Select the <svg> element you want to render the chart in.   
-                          .datum(data)         //Populate the <svg> element with chart data...
-                          .call(chart);          //Finally, render the chart!
-                     
-                      //Update the chart when window resizes.
-                      nv.utils.windowResize(function() { chart.update() });
-                      return chart;
-                    });
-
-                });
-
-            }
-
-            if (type == 'pie') {
-
-                var params_key = params[0]['value'];
-                var params_value = params[1]['value'];
-
-                // Add an SVG element to the data area
-                $('#visualization-preview').html('<svg width="800px" height="450px"></svg>');
-
-                $.post('/api/' + identifier, { filters: data_filters, chart: "pie", key: params_key, aggregate: params_value }, function(data) {
-                    //Donut chart example
-                    nv.addGraph(function() {
-                      var chart = nv.models.pieChart()
-                          .x(function(d) { return d.label })
-                          .y(function(d) { return d.value })
-                          .showLabels(true)     //Display pie labels
-                          .labelThreshold(.05)  //Configure the minimum slice size for labels to show up
-                          .labelType("percent") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
-                          .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
-                          .donutRatio(0.35)     //Configure how big you want the donut hole size to be.
-                          ;
-                        d3.select("#visualization-preview svg")
-                            .datum(data)
-                            .transition().duration(350)
-                            .call(chart);
-                      return chart;
-                    });
-                });
-
-            }
-
-            if (type == 'bar') {
-
-                var params_key = params[0]['value'];
-                var params_value = params[1]['value'];
 
                 // Add an SVG element to the data area
                 $('#visualization-preview').html('<svg width="800px" height="500px"></svg>');
@@ -740,27 +614,45 @@
                     });
                 });
             }
-                // Add an SVG element to the data area
-                $('#visualization-preview').html('<svg width="800px" height="500px"></svg>');
 
-                $.post('/api/' + identifier, { filters: data_filters, chart: "bar", key: params_key, aggregate: params_value }, function(data) {
-                    //Discrete chart example
-                    nv.addGraph(function() {
-                      var chart = nv.models.discreteBarChart()
-                          .x(function(d) { return d.label })
-                          .y(function(d) { return d.value })
-                          .staggerLabels(false)     // Stagger bar chart labels
-                          .tooltips(true)  //Configure the minimum slice size for labels to show up
-                          .showValues(true)   // Show bar value on top of bar
-                          ;
-                     
-                        d3.select("#visualization-preview svg")
-                            .datum(data)
-                            .transition().duration(350)
-                            .call(chart);
-                      return chart;
-                    });
+            if (type == 'geo') {
+
+                var params_key = params[0]['value'];
+                var params_value = params[1]['value'];
+
+                var center = new google.maps.LatLng(0, 0);
+
+
+                var mapOptions = {
+                    zoom: 4,
+                    center: center
+                };
+
+                // Get the current Google Maps object
+                var map = new google.maps.Map(document.getElementById('visualization-preview'), mapOptions);
+
+                // Send accross our POST request
+                $.post('/api/' + identifier, { filters: data_filters, chart: "geo", key: params_key, aggregate: params_value }, function(data) {
+               
+                    for (var i = 0; i < data.length; i++) {
+
+                        // Get the data coordinate
+                        var coordinate = data[i];
+
+                        // Convert it into a LatLng object
+                        var latLng = new google.maps.LatLng(coordinate.latitude, coordinate.longitude);
+
+                        // Convert into a Google Maps marker
+                        var marker = new google.maps.Marker({
+                            position: latLng,
+                            map: map,
+                            title: 'Fuck this shit'
+                        });
+                        
+                    }
+
                 });
+
             }
 
         },
