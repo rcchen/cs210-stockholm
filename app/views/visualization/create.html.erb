@@ -1,4 +1,3 @@
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEcTCM9oy0_jsuwYDbfw9LJcoMpYl2-vw&sensor=false"></script>
 <div class="container">
     <div id="steps">
         <div class="stepwizard">
@@ -21,6 +20,7 @@
     <div id="current">
 
     </div>
+    <div id="visualization-mapbuild"></div>
 </div>
 
 <!-- This is responsible for the first step, selecting a dataset -->
@@ -158,6 +158,8 @@
 </script>
 
 <script>
+
+    var map;
 
     // Eliminate conflicts with Rails
     _.templateSettings = {
@@ -735,35 +737,41 @@
                 var params_key = params[0]['value'];
                 var params_value = params[1]['value'];
 
-                loadScript();
 
-                var center = new google.maps.LatLng(0, 0);
-                var mapOptions = {
-                    zoom: 4,
-                    center: center
-                };
-
-                // Get the current Google Maps object
-                var map = new google.maps.Map(document.getElementById('visualization-preview'), mapOptions);
 
                 // Send accross our POST request
                 $.post('/api/' + identifier, { filters: data_filters, chart: "geo", key: params_key, aggregate: params_value }, function(data) {
+
+                    // Get the center of the data
+                    var center_lat = 0;
+                    var center_lng = 0;
+                    for (var i = 0; i < data.length; i++) {
+                        center_lat += data[i].latitude;
+                        center_lng += data[i].longitude;
+                    } center_lat /= data.length;
+                    center_lng /= data.length;
+
+                    // Create the GMaps object
+                    map = new GMaps({
+                        el: '#visualization-preview',
+                        lat: center_lat,
+                        lng: center_lng,
+                        zoomControl : true,
+                        zoom: 8,
+                        zoomControlOpt: {
+                            style : 'SMALL',
+                            position: 'TOP_LEFT'
+                        }
+                    });
                
                     for (var i = 0; i < data.length; i++) {
 
                         // Get the data coordinate
                         var coordinate = data[i];
 
-                        // Convert it into a LatLng object
-                        var latLng = new google.maps.LatLng(coordinate.latitude, coordinate.longitude);
-
-                        console.log(map);
-
-                        // Convert into a Google Maps marker
-                        var marker = new google.maps.Marker({
-                            position: latLng,
-                            map: map,
-                            title: 'Fuck this shit'
+                        map.addMarker({
+                            lat: coordinate.latitude,
+                            lng: coordinate.longitude
                         });
                         
                     }
@@ -801,17 +809,5 @@
     });
 
     var App = new AppView();
-
-    function initialize() {
-
-    }
-
-    function loadScript() {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
-              'callback=initialize';
-        document.body.appendChild(script);
-    }
 
 </script>
