@@ -1,6 +1,4 @@
-<div class="container">
-	<div id="edit">
-		<h3>Edit Worksheet</h3>
-		<%= link_to 'New Visualization', {controller: 'visualization', action: 'create', worksheet: params[:id]}, class: 'btn btn-success btn-or' %>
-	</div>
+<div id="edit">
+	<h3>Edit Worksheet</h3>
+	<%= link_to image_tag("buttons/newvis.png", {:class => "img-rounded"}), {controller: 'visualization', action: 'create', worksheet: params[:id]} %>
 </div>
