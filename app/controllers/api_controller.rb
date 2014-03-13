@@ -47,53 +47,6 @@ class ApiController < ApplicationController
 		return json_data.sort_by { |hash| hash["label"] }
 
 	end
- # group anything under this percentage (5%)
- #display only top ++ or bottom ___
-	def aggragate_small
-		# We're essentially doing a map/reduce operation
-		# We collect all the keys in the data hash and 
-		# aggregate values for the keys
-		num_keys = 0
-		total = 0
-		data = Hash.new
-		@dataset.datadocs.each do |datadoc|
-			
-			# Get the key
-			key_value = datadoc["#{key}"]
-
-			# By default, we count the aggregate
-			aggregate_value = 1
-			if key != aggregate
-				aggregate_value = datadoc["#{aggregate}"].to_i
-			end
-
-			# If the key does not exist yet, set it to zero
-			if not data.key?(key_value)
-				num_keys = num_keys + 1
-				data[key_value] = 0
-			end
-
-			# Add in the value that we observed for the aggregate
-			total = total + aggregate_value
-			data[key_value] = data[key_value] + aggregate_value
-
-		end
-
-		# Compile data into format expected of pie charts
-		json_data = Array.new
-		data.each do |key, value|
-			json_data_object = Hash.new
-			if value/total < 0.05
-				json_data_object['label']
-			end
-			json_data_object["label"] = key
-			json_data_object["value"] = value
-			json_data << json_data_object
-		end
-
-		# Return the aggregated data
-		return json_data
-	end
 	
 	def filter_documents(filters)
 		# Start construction our query here
@@ -237,6 +190,38 @@ class ApiController < ApplicationController
 	 			json_data = Array.new
 	 			json_data.push(json_object)
 	 			render json: json_data
+
+	 		# Handles the geo chart data request
+	 		elsif chart == 'geo'
+
+	 			# This one is special because we need latitude and longitude
+	 			# TODO: Change the parameters so it's not just piggybacking on key/aggregate
+	 			latitude = params[:key]
+	 			longitude = params[:aggregate]
+
+	 			# Stores the results of our iteration
+	 			json_data = Array.new
+
+	 			# Iterate through all of the datadocs for the latitude and longitude
+	 			@results.each do |datadoc|
+
+	 				# Get the latitude and longitude
+					data_latitude = datadoc["#{latitude}"]
+					data_longitude = datadoc["#{longitude}"]
+
+					# Put them in an object
+					# TODO: Also grab a label for the object
+					location_object = Hash.new
+					location_object["latitude"] = data_latitude
+					location_object["longitude"] = data_longitude
+
+					# Put this into the results array
+					json_data << location_object
+
+	 			end
+
+	 			# Return the array as JSON data
+	 			render json: json_data 
 
 	 		# If we don't receive a chart type, handle as a filtered data request
 	 		else
