@@ -336,6 +336,32 @@
 
             // Add the last filter into the array
             submissions.push(filter);
+            var identifier = this.visualization.get('dataset').identifier;
+
+            $.post('/api/' + identifier, { filters: submissions }, function(data) {
+
+                // First render the table view
+                var tableView = new TableView({
+                    model: _this.visualization.get('dataset')
+                });
+                tableView.render();
+
+                // Create a table row view
+                var tableRowCollection = new TableRowCollection([], {
+                    datasetAttributes: _this.visualization.get('dataset')
+                });
+
+                var tableRowView = new TableRowView({
+                    model: tableRowCollection
+                });
+
+                // Set the data source
+                tableRowView.model.reset(data);
+
+                // Render it
+                tableRowView.render();
+
+            });
 
         },
 
