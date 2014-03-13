@@ -106,14 +106,64 @@
             });
         });
       }
-  }
+
+      if (type == 'geo') {
+
+        var params_key = params[0]['value'];
+        var params_value = params[1]['value'];
+
+        // Send accross our POST request
+        $.post('/api/' + identifier, { filters: data_filters, chart: "geo", key: params_key, aggregate: params_value }, function(data) {
+
+            // Get the center of the data
+            var center_lat = 0;
+            var center_lng = 0;
+            for (var i = 0; i < data.length; i++) {
+                center_lat += data[i].latitude;
+                center_lng += data[i].longitude;
+            } center_lat /= data.length;
+            center_lng /= data.length;
+
+            // Create the GMaps object
+            map = new GMaps({
+                el: '#visualization-preview',
+                lat: center_lat,
+                lng: center_lng,
+                zoomControl : true,
+                zoom: 8,
+                zoomControlOpt: {
+                    style : 'SMALL',
+                    position: 'TOP_LEFT'
+                }
+            });
+       
+            for (var i = 0; i < data.length; i++) {
+
+                // Get the data coordinate
+                var coordinate = data[i];
+
+                map.addMarker({
+                    lat: coordinate.latitude,
+                    lng: coordinate.longitude
+                });
+                
+            }
+
+        });
+      }
+    }
 
   var chartType = '<%= @visualization.chart_type %>';
   var chartOptions = JSON.parse('<%= raw @visualization.chart_options %>');
   var dataset = '<%= @visualization.dataset %>';
   var filters = JSON.parse('<%= raw @visualization.filters %>');
 
-  visualizeObject(chartType, chartOptions, dataset, filters, x, y);
+  $(window).load(function() {
+
+    console.log('js loaded');
+    visualizeObject(chartType, chartOptions, dataset, filters, x, y);
+  });
+
 
   function getSize(){
 

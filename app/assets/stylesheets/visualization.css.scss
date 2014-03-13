@@ -89,3 +89,20 @@ $white: #FFFFFF;
 #visualization-mapbuild {
   display: none;
 }
+
+/* Bootstrap Css Map Fix*/
+#mainBody #map img { 
+  max-width: none;
+}
+/* Bootstrap Css Map Fix*/
+#mainBody #map label { 
+  width: auto; display:inline; 
+} 
+
+.gm-style img {
+  max-width: none;
+}
+
+.gm-style label {
+  width: auto; display:inline;
+}

@@ -48,6 +48,8 @@ Cs210Stockholm::Application.routes.draw do
   #These routes are associated with the dashboard
   get "dashboard", to: "dashboard#dashboard"
 
+  get "feedback", to: "welcome#feedback"
+
   root 'welcome#index'
 
 end

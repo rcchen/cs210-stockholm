@@ -5,7 +5,7 @@
     <title><%= content_for?(:title) ? yield(:title) : "Storylytics" %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Cs210 Stockholm" %>">
     <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=true"></script>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
   </head>
@@ -19,7 +19,7 @@
     <footer>
       <div class="container">
         <p class="text-center">
-          <a href="http://cs210compuverde.tumblr.com/">Blog</a> | <a href="https://github.com/rcchen/cs210-stockholm">Github</a>
+          <a href="http://cs210compuverde.tumblr.com/">Blog</a> | <a href="https://github.com/rcchen/cs210-stockholm">Github</a> | <a href="/feedback">Feedback</a>
         </p>
         <p class="text-center">
           Built with &#9829; in Palo Alto
