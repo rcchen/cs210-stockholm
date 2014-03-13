@@ -181,7 +181,6 @@
         render: function(attrs) {
             this.options = attrs;
             $(this.el).html(this.template);
-            console.log(attrs);
             if (attrs.dataset != null) {
                 $('#step1-dataset').val(attrs.dataset);
             }
@@ -195,20 +194,28 @@
         render: function(attrs) {
             var filters = attrs.filters;
             $(this.el).html(this.template);
-            console.log('asdfsdafsdfdsaf');
+
             if (filters != null) {
+
                 for (var i = 0; i < filters.length; i++) {
+                
+                    // Render the view for the filter
                     var filter = filters[i];
-                    console.log(filter);
                     var filterView = new FilterView({
                         model: attrs.model
                     });
                     filterView.render();
+
+                    // This is really hacky but it works
+                    // It is responsible for setting the values in the filters
+                    // The idea is that we're always appending new form controls
+                    // Simply get the last one to get the one we want
                     $(".form-control[name*=attribute]").last().val(filter.attribute);
                     $(".form-control[name*=sign]").last().val(filter.sign);
                     $(".form-control[name*=value]").last().val(filter.value);
+
                 }
-                console.log(filters);
+
             }
         }
     });
@@ -435,8 +442,8 @@
 
             // Render with parameters
             var filters = this.visualization.get('filters');
-            console.log('step2');
-            console.log(filters);
+
+            // We pass in both the filters and model
             this.filtersView.render({
                 "filters": filters,
                 "model": this.visualization
