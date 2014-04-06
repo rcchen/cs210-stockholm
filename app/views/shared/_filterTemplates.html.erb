@@ -1,0 +1,44 @@
+<script id="filters-template" type="text/template">
+    <form id="filters-form">
+        <div id="filter-attributes">
+        </div>
+        <div id="filter-actions" style="margin: 20px 0px;">
+            <button type="button" class="btn btn-success" id="add-filter">Add Filter</button>
+            <button type="button" class="btn btn-primary" id="preview-filter">Preview</button>
+        </div>
+    </form>
+    <button role="button" class="btn btn-primary" id="step3">Continue</button>
+    <div id="visualization-preview"></div>
+</script>
+
+<!-- This is a filter that can be added in the second step -->
+<script id="filter-template" type="text/template">
+    <div class="form-attribute" style="margin: 10px 0px;">
+        <div class="row">
+            <div class="col-xs-5">
+                <select class="form-control" name="attribute">
+                    <@ for (var attr in jQuery.parseJSON(attrs)) { @>
+                        <option><@= attr @></option>
+                    <@ } @>
+                </select>
+            </div>
+            <div class="col-xs-3">
+                <select class="form-control" name="sign">
+                    <option value="<">less than (<)</option>
+                    <option value="<=">less than or equal (<=)</option>
+                    <option value="=">equals (=)</option>
+                    <option value=">=">greater than or equal (>=)</option>
+                    <option value=">">greater than (>)</option>
+                    <option value="!=">not equal (!=)</option>
+                    <option value="Contains">contains </option>
+                </select>
+            </div>  
+            <div class="col-xs-3">
+                <input class="form-control" name="value" />
+            </div>
+            <div class="col-xs-1">
+                <button type="button" class="btn btn-danger remove-filter">Remove</button>
+            </div>
+        </div>
+    </div>
+</script>
