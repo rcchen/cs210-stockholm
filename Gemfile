@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'dotenv-rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.2'
+gem 'rails', '4.1.0'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
@@ -57,6 +57,9 @@ gem 'bcrypt-ruby'
 
 # Use Chronic for parsing different time/date encodings
 gem 'chronic'
+
+# Our attempts at background processing
+gem "resque", "~> 1.25.2"
 
 # Use unicorn as the app server
 # gem 'unicorn'
