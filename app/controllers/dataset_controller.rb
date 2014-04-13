@@ -135,40 +135,7 @@ class DatasetController < ApplicationController
 			@dataset.attrs = @attributes.to_json
 			@dataset.save
 
-	 		# Rewrite the data types in the dataset
-	 		@hashes.each_with_index do |hash, index|
-	 			
-	 			# Create a new Datadoc
-	 			datadoc = Datadoc.new
-	 			
-	 			# Iterate through attributes of the hash
-	 			hash.each do |attribute|
-
-	 				# Retrieve the name and value of each attribute
-	 				name = attribute[0]
-	 				value = attribute[1]
-
-	 				puts name
-	 				puts value
-
-	 				# Typecast if the attribute type is Numeric
-	 				if @attributes[name] == 'Numeric'
-	 					value = value.to_f
-	 				elsif @attributes[name] == 'Date'
-	 					value = Chronic.parse(value)
-	 				else
-	 					value = value
-	 				end
-
-	 				# Dynamically create the attribute in our Datadoc
-	 				datadoc["#{name}"] = value
-
-	 			end
-
-	 			# Add the Datadoc into our Dataset
-	 			@dataset.datadocs.push(datadoc)
-
-	 		end
+	 		Resque.enqueue(DatasetProcessor, @dataset, @attributes, @hashes)
 
 	 		# Save dataset to the current user
 			user = User.find(session[:id])
