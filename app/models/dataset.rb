@@ -23,6 +23,10 @@ class Dataset
 	# Unique identifier for the base URL
 	field :identifier
 
+	# Expected count of datadocs
+	# Used to determine if there are jobs in the queue
+	field :expected_count
+
 	def self.find_by_identifier(identifier)
     	self.where(:identifier => identifier).first()
 	end

@@ -69,7 +69,11 @@ class DatasetController < ApplicationController
 	 				# Parse into hashes
 	 				h = Hash.new
 	 				attrNames.each_with_index do |attribute, index|
-	 					h[attribute] = row[index]
+	 					if row[index] != nil
+		 					h[attribute] = row[index].force_encoding("utf-8")
+	 					else
+	 						h[attribute] = row[index]
+	 					end
 	 				end
 
 	 				# Put it into our dataset
@@ -133,6 +137,7 @@ class DatasetController < ApplicationController
 
 			# Modify the attributes of the data model created earlier
 			@dataset.attrs = @attributes.to_json
+			@dataset.expected_count = @hashes.count
 			@dataset.save
 
 	 		Resque.enqueue(DatasetProcessor, @dataset, @attributes, @hashes)

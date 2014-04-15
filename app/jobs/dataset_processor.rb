@@ -4,10 +4,13 @@ class DatasetProcessor
 
 	@queue = :dataset
 
-	def self.perform(dataset, attributes, hashes)
+	def self.perform(data, attributes, hashes)
 
 		# Get the correct dataset
-		ds = Dataset.find_by_identifier(dataset['identifier'])
+		ds = Dataset.find_by_identifier(data['identifier'])
+
+ 		puts ds['identifier']
+ 		puts ds.datadocs.length
 
 		# Rewrite the data types in the dataset
  		hashes.each_with_index do |hash, index|
@@ -42,9 +45,6 @@ class DatasetProcessor
  			ds.datadocs.push(datadoc)
 
  		end
-
- 		puts ds['identifier']
- 		puts ds.datadocs.length
 
  		# Save the dataset
  		ds.save
