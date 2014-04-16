@@ -6,6 +6,8 @@ class Datadoc
 	# Defines the one to many relationship with Datasets	
 	belongs_to :dataset
 
+	field :c
+
 	# There are no attributes explicitly defined here
 	# Attributes are dynamically generated from the parser
 	# See http://mongoid.org/en/mongoid/docs/documents.html#dynamic_fields
