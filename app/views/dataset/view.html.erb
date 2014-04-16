@@ -4,7 +4,7 @@
 	  <li class="active"><%= @dataset.name %></li>
 	</ol>
 	<h3><%= @dataset.name %></h3>
-	<% if @dataset.datadocs.count < @dataset.expected_count %>
+	<% if @dataset.expected_count.nil? or @dataset.datadocs.count < @dataset.expected_count %>
 	<div class="alert alert-info">This dataset is still currently processing. Please check back later to see if it is done before processing any visualizations.</div>
 	<% end %>
 	<div id="information" style="margin: 30px 0px;">
@@ -34,7 +34,7 @@
 				</table>
 			</div>
 			<div class="col-xs-6">
-				<pre id="attributes"><%= JSON.pretty_generate(JSON.parse(@dataset.attrs)) %></pre>
+				<pre id="attributes"><%= JSON.pretty_generate(@dataset.attrs) %></pre>
 			</div>
 		</div>
 	</div>
@@ -52,8 +52,8 @@
 	<table class="table" style="margin-bottom: 80px;">
 		<thead>
 			<tr>
-			<% JSON.parse(@dataset.attrs).each do |key, value| %>
-			<th><%= key %></th>
+			<% @dataset.attrs.each do |attrHash| %>
+			<th><%= attrHash["id"] %></th>
 			<% end %>				
 			</tr>
 		</thead>
@@ -65,8 +65,8 @@
 		<div class="row">
 			<div class="col-xs-5">
 				<select class="form-control" name="attribute">
-					<% JSON.parse(@dataset.attrs).each do |key, value| %>
-					<option><%= key %></option>
+					<% @dataset.attrs.each do |attrHash| %>
+					<option><%= attrHash["id"] %></option>
 					<% end %>
 				</select>
 			</div>
@@ -91,8 +91,8 @@
 </script>
 <script id="dataTemplate" type="text/template">
 	<tr>
-		<% JSON.parse(@dataset.attrs).each do |key, value| %>
-		<td><@= <%= key %> @></td>
+		<% @dataset.attrs.each do |attrHash| %>
+		<td><@= <%= attrHash["id"] %> @></td>
 		<% end %>
 	</tr>
 </script>

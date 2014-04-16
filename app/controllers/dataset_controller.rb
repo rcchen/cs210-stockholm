@@ -22,140 +22,99 @@ class DatasetController < ApplicationController
 		if request.post?
 
 			# Uploaded data is located in the POST param :csv
-	 		@file_data = params[:csv]
-	 		
+			@file_data = params[:csv]
+
 	 		# Check that we are able to read the data
 	 		if @file_data.respond_to?(:read)
 
 	 			# Create an array to store CSV rows
-	 			rows = Array.new
 	 			
+	 			parsed_attributes = nil
+	 			firstValRow = nil
 	 			# Parse apart our CSV file and read the rows into our array
+	 			rows = Array.new
 	 			CSV.parse(@file_data.read) do |csv_obj|
-	 				rows.push(csv_obj)
-	 			end
+	 				csv_obj.each_with_index do |val, index|
+	 					if not csv_obj[index].nil?
+	 						csv_obj[index] = csv_obj[index].force_encoding("utf-8")
+	 					end
+	 				end
+	 				if (parsed_attributes.nil?)
+	 					parsed_attributes = csv_obj
+	 				elsif (firstValRow.nil?)
+	 					firstValRow = csv_obj
+	 					rows << csv_obj
+	 				else
+	 					rows << csv_obj
+	 				end
 
+	 			end
 	 			# We assume that attributes are in the header of the CSV
 	 			# TODO: Ask user whether these are actually the attributes
-	 			parsed_attributes = rows[0]
 
-	 			# Remove the row so we don't accidentally process it
-	 			rows.delete_at(0)
-
-	 			attrNames = Array.new
+	 			
+	 			colsArray = Array.new
 	 			# Create a new Hash object of attributes
-	 			@attributes = Hash.new
-	 			parsed_attributes.each do |attribute|
+	 			parsed_attributes.each_with_index do |attribute, index|
 	 				attribute_underscore = attribute.split.join('')
-	 				@attributes[attribute_underscore] = "String"
-	 				attrNames << attribute_underscore
+	 				attrHash = Hash.new
+	 				attrHash[:id] = attribute_underscore
+
+	 				if is_numeric?(firstValRow[index])
+	 					attrHash[:type] = 'number'
+	 				elsif not Chronic.parse(firstValRow[index]).nil?
+	 					attrHash[:type] = 'datetime'
+	 				else 
+	 					attrHash[:type] = 'string'
+	 				end
+
+
+	 				colsArray << attrHash
 	 			end
 
 
 				# Now create a representation of the model we want
 				@dataset = Dataset.new
 				@dataset.name = params[:name]
-				@dataset.attrs = @attributes.to_json
+				@dataset.attrs = colsArray
+				@dataset.datadocs = Array.new
 				@dataset.identifier = SecureRandom.hex(10)
 				# If base_url collides, find a new random hex values
 				while Dataset.where(:identifier => @dataset.identifier).exists? do
 					@dataset.identifier = SecureRandom.hex(10)
 				end
 
-	 			# Generate all the hashes
-	 			@hashes = Array.new
-	 			rows.each do |row|
 
-	 				# Parse into hashes
-	 				h = Hash.new
-	 				attrNames.each_with_index do |attribute, index|
-	 					if row[index] != nil
-		 					h[attribute] = row[index].force_encoding("utf-8")
-	 					else
-	 						h[attribute] = row[index]
-	 					end
-	 				end
 
-	 				# Put it into our dataset
-	 				@hashes.push(h)
-	 				
-	 			end
+				@dataset.attrs = colsArray
+				@dataset.expected_count = rows.count
+				@dataset.save
+				session[:dataset] = @dataset.id
 
-	 			# Create a JSON object from the hash
-	 			@sample = @hashes[0].to_json
-
-	 			# From the sample, figure out the proper types
-	 			attributes_copy = @attributes.clone
-	 			@attributes.each do |attribute, type|
-	 				if @hashes[0][attribute].match(/\$?\d*\.\d\d\z/)
- 						attrType = 'Monetary (USD)'
- 					elsif is_numeric?(@hashes[0][attribute])
- 						attrType = 'Numeric'
- 					elsif not Chronic.parse(@hashes[0][attribute]).nil?
- 						attrType = 'Date'
- 					end
-
-	 				if not attrType.nil?
- 						attributes_copy[attribute] = attrType
- 					end
- 				end
- 				@attributes = attributes_copy
- 				@dataset.attrs = @attributes.to_json
- 				@dataset.save
-
-	 			# We temporarily keep things in the cache to pass to the upload method
-	 			Rails.cache.write("dataset", @dataset)
-	 			Rails.cache.write("attributes", @attributes)
-	 			Rails.cache.write("hashes", @hashes)
+				Rails.cache.write("rows", rows);
 
 	 			# Redirect to the verification stage
 	 			redirect_to action: 'verify'
 
 	 		end
 
-		end
+	 	end
 
-	end
+	 end
+	 def verify
 
-	def verify
+	 	@dataset = Dataset.find(session[:dataset])
+	 	rows = Rails.cache.read("rows")
+	 	if request.post?
+	 		Resque.enqueue(DatasetProcessor, @dataset, rows)
 
-		if request.post?
-
-			# Recall items from the cache
-	 		# TODO: deprecate the cache. We shouldn't be doing this
-	 		@attributes = Rails.cache.read("attributes")
-	 		@hashes = Rails.cache.read("hashes")
-	 		@dataset = Rails.cache.read("dataset")
-
-			# Write new values for the attributes
-			attributes_copy = @attributes.clone
-			@attributes.each do |attribute, type|
-				attributes_copy.delete(attribute)
-				attributes_copy[attribute] = type
-			end
-			@attributes = attributes_copy
-
-			# Modify the attributes of the data model created earlier
-			@dataset.attrs = @attributes.to_json
-			@dataset.expected_count = @hashes.count
-			@dataset.save
-
-	 		Resque.enqueue(DatasetProcessor, @dataset, @attributes, @hashes)
-
-	 		# Save dataset to the current user
-			user = User.find(session[:id])
-			user.datasets << @dataset
-			user.save
+ 			# Save dataset to the current user
+ 			user = User.find(session[:id])
+ 			user.datasets << @dataset
+ 			user.save
 
 			# Render the view
 			redirect_to '/dataset/' + @dataset.identifier
-
-		else
-
-	 		@attributes = Rails.cache.read("attributes")
-	 		@hashes = Rails.cache.read("hashes")
-	 		@dataset = Rails.cache.read("dataset")
-
 		end
 
 	end

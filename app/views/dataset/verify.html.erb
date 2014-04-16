@@ -5,17 +5,17 @@
 			<%= form_tag({:action => 'verify'}, {}) do %>
 			<div id="json-attributes" style="margin: 10px 0px;">
 			<input type="hidden" value="<%= @file_data %>" />
-			<% @attributes.each do |attribute, type| %>
+			<% @dataset.attrs.each do |attrHash| %>
 			<div class="row" style="margin-bottom: 5px;">
 				<div class="col-xs-6">
-					<input type="text" class="form-control" value="<%= attribute %>" disabled />
+					<input type="text" class="form-control" value="<%= attrHash["id"] %>" disabled />
 				</div>
 				<div class="col-xs-6">
-					<select name="<%= attribute %>" class="form-control">
-						<option value="String" <%= type == 'String' ? "selected" : "" %>>String</option>
-						<option value="Numeric" <%= type == 'Numeric' ? "selected" : "" %>>Numeric</option>
-						<option value="Date" <%= type == 'Date' ? "selected" : "" %>>Date</option>
-						<option value="Monetary (USD)" <%= type == 'Monetary (USD)' ? "selected" : "" %>>Monetary (USD)</option>
+					<select name="<%= attrHash[:id] %>" class="form-control">
+						<option value="string" <%= attrHash["type"]== 'string' ? "selected" : "" %>>String</option>
+						<option value="number" <%= attrHash["type"] == 'number' ? "selected" : "" %>>Number</option>
+						<option value="datetime" <%= attrHash["type"] == 'datetime' ? "selected" : "" %>>Date</option>
+						
 					</select>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 		</div>
 		<div class="col-xs-6">
 			<strong>Sample JSON Preview</strong>
-			<pre id="json-preview" style="margin: 10px 0px;"><%= JSON.pretty_generate(JSON.parse(@dataset.attrs)) %>
+			<pre id="json-preview" style="margin: 10px 0px;"><%= JSON.pretty_generate(@dataset.attrs) %>
 			</pre>
 		</div>
 	</div>
