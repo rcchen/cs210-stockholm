@@ -137,6 +137,7 @@ class DatasetController < ApplicationController
 
 			# Modify the attributes of the data model created earlier
 			@dataset.attrs = @attributes.to_json
+			@dataset.expected_count = @hashes.count
 			@dataset.save
 
 	 		Resque.enqueue(DatasetProcessor, @dataset, @attributes, @hashes)
