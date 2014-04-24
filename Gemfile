@@ -20,6 +20,7 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -59,7 +60,7 @@ gem 'bcrypt-ruby'
 gem 'chronic'
 
 # Our attempts at background processing
-gem "resque", "~> 1.25.2"
+gem "resque", "~> 1.25.2", :require => "resque/server"
 
 # Use unicorn as the app server
 # gem 'unicorn'
