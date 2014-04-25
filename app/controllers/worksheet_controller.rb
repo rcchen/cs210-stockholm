@@ -36,6 +36,9 @@ class WorksheetController < ApplicationController
 		# Retrieve the corresponding worksheet
 		@worksheet = Worksheet.find_by_identifier(params[:id])
 
+		# Get the user's datasets
+		@datasets = User.find(session[:id]).datasets
+
 		# Render with the sparse layout
 		render layout: "sparse"
 

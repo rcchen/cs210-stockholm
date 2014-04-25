@@ -3,8 +3,8 @@
 		<button id="create" class="btn btn-success">Create</button>
 	</div>
 	<div id="options">
-		<div class="options-header">General</div>
-		<div class="options-panel">
+		<div id="options-general" class="options-panel">
+			<div class="options-header">General</div>
 			<div class="option">
 				<div class="option-label">Identifier</div>
 				<div class="option-value">
@@ -12,39 +12,56 @@
 				</div>
 			</div>
 			<div class="option">
-				<div class="option-label">Input</div>
+				<div class="option-label">Object</div>
 				<div class="option-value">
-					<input type="text" />
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">Dataset</div>
-				<div class="option-value">
-					<select>
-						<option>Option 1</option>
-						<option>Option 2</option>
-					</select>
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">TextArea</div>
-				<div class="option-value">
-					<textarea rows="3"></textarea>
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">Select</div>
-				<div class="option-value">
-					<select>
-						<option>Option 1</option>
-						<option>Option 2</option>
+					<select id="object">
+						<option value="text">Text</option>
+						<option value="barchart">Visualization</option>
 					</select>
 				</div>
 			</div>
 		</div>
-		<div class="options-header">Filters</div>
-		<div class="options-panel">
-
+		<div id="options-visualization" class="options-panel">
+			<div class="options-header">Visualization</div>
+			<div class="option">
+				<div class="option-label">Dataset</div>
+				<div class="option-value">
+					<select id="dataset">
+						<%= @datasets.each do |dataset| %>
+						<option value="<%= dataset.identifier %>"><%= dataset.name %></option>
+						<% end %>
+					</select>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Type</div>
+				<div class="option-value">
+					<select id="type">
+						<option value="bar">Bar</option>
+						<option value="pie">Pie</option>
+						<option value="line">Line</option>
+						<option value="geo">Geospatial</option> 
+					</select>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">X-Axis</div>
+				<div class="option-value">
+					<input id="xaxis" type="text" />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Y-Axis</div>
+				<div class="option-value">
+					<input id="yaxis" type="text" />
+				</div>
+			</div>
+		</div>
+		<div id="options-buttons" class="options-panel">
+			<div class="options-header">Buttons</div>
+			<div class="option">
+				<button id="save" class="btn btn-success">Save</button>
+			</div>
 		</div>
 	</div>
 	<div id="worksheet">
@@ -61,27 +78,35 @@
 		return Math.floor((Math.random()*high)+1);
 	}
 
+	var current;
+
 	var Visualization = Backbone.Model.extend({
 		
 		urlRoot: function() {
-			if (this.isNew()) {
+
+			if (!this.attributes.identifier) {
 				return '/visualization';
 			} else {
-				return '/visualization/' + this.identifier;
+				return '/visualization/' + this.attributes.identifier;
 			}
+
 		},
 		
 		initialize: function() {
+
 			this.on('change', this.updateOptions);
+		
 		},
 
 		updateOptions: function() {
-			var atts = this.attributes;
-			$('#identifier').val(atts.identifier);
+			
+			// Send things to the server
+			// this.save();
+
 		}
 
 	});
-	
+
 	var container = document.querySelector('#page');
 	var packery = new Packery(container, {
 		gutter: 20,
@@ -123,7 +148,13 @@
 		visualization.save({worksheet: '<%= @worksheet.identifier %>' }, {
 
 			success: function(model, response) {
+			
+				// Set the id 
 				elem.id = response.identifier;
+
+				// Simulation of a visualization click event
+				clickVisualization(elem);
+		
 			},
 
 			error: function(model, response) {
@@ -138,8 +169,52 @@
 		draggable.on('dragEnd', evaluateEvent);
 		packery.bindDraggabillyEvents(draggable);
 
-		// Simulation of a visualization click event
-		clickVisualization(elem);
+	});
+
+	$('#object').change(function() {
+
+		// Get the selected type
+		var object = $(this).find(':selected').val();
+
+		// Open the Visualization panels
+		if (object == 'visualization') {
+
+			// Show the visualization sidebar editors
+			loadVisualizationSidebar();
+
+		}
+
+		if (object == 'text') {
+
+			// Show the text sidebar editors
+
+		}
+
+	});
+
+	$('#dataset').change(function() {
+
+		// Get the selected dataset
+		var dataset = $(this).find(':selected').val();
+
+		// Save it to the current object
+		current.set('dataset', dataset);
+
+	});
+
+	$('#type').change(function() {
+
+		// Get the selected dataset
+		var type = $(this).find(':selected').val();
+
+		// Save it to the current object
+		current.set('chart_type', type);
+
+	});
+
+	$('#save').click(function() {
+
+		current.save();
 
 	});
 
@@ -181,12 +256,37 @@
 
 	function clickVisualization(element) {
 
+		// Set the selection
+		setSelection(element);
+
 		// Load the sidebar
 		loadSidebar(element);
 
 	}
 
 	function loadSidebar(element) {
+
+		// Get the identifier of the element
+		var identifier = element.id;
+
+		// Attempt to fetch the model
+		var model = new Visualization({ 'identifier': identifier });
+		model.fetch({
+
+			success: function() {
+
+				$('#identifier').val(model.attributes.identifier);
+				current = model;
+
+			}
+
+		});
+
+	}
+
+	function loadVisualizationSidebar() {
+
+
 
 	}
 

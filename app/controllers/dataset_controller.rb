@@ -175,4 +175,12 @@ class DatasetController < ApplicationController
 
 	end
 
+	def get
+
+		dataset = Dataset.find_by_identifier(params[:id])
+
+		json: dataset
+
+	end
+
 end

@@ -65,7 +65,7 @@ body {
 	width: 940px;
 	background-color: white;
 	margin: 0 auto;
-	height: 1000px;
+	height: 800px;
 }
 
 #insert {
@@ -88,6 +88,8 @@ body {
 	vertical-align: top;
 	width: 280px;
 	background-color: #FFF;
+	box-shadow: -5px -1px 5px #888;
+	z-index: 999;
 
 	.options-header {
 		background-color: $darkwii;
@@ -99,11 +101,11 @@ body {
 	.options-panel {
 		background-color: $lighterwii;
 		color: $darkwii;
-		padding: 10px;
+		padding-bottom: 10px;
 	}
 
 	.option {
-		margin-bottom: 8px;
+		padding: 8px 0px;
 	}
 
 	.option-label {
@@ -111,6 +113,7 @@ body {
 		width: 60px;
 		text-align: right;
 		vertical-align: top;
+		margin-left: 10px;
 	}
 
 	.option-value {
@@ -124,6 +127,7 @@ body {
 input {
 	&[type="text"] {
 		border: 1px solid #CCC;
+		padding: 2px 5px;
 		width: 100%;
 		box-sizing: border-box;
 	}

@@ -9,7 +9,7 @@ class VisualizationController < ApplicationController
 		visualization.identifier = SecureRandom.uuid
 		while Visualization.find_by_identifier(visualization.identifier)
 			visualization.identifier = SecureRandom.uuid
-		end		
+		end
 
 		# Save the visualization
 		visualization.save
@@ -26,6 +26,19 @@ class VisualizationController < ApplicationController
 
 		# Return the JSON data
 		render json: visualization
+
+	end
+
+	def put
+
+		# Retrieve the correct visualization
+		visualization = Visualization.find_by_identifier(params[:id])
+
+		# Replace the attributes that are passed in
+		puts params
+
+		# Return the JSON data
+		render status: 200, json: visualization		
 
 	end
 
