@@ -18,3 +18,121 @@
 iframe {
 	margin-bottom: 30px;
 }
+
+/* THESE STYLES ARE ASSOCIATED WITH THE EDITOR */
+
+$background: #F1EBEB;
+$lace: #EEE8E8;
+$grey: #CACACA;
+$darkwii: #1A9ABD;
+$wiiblue: #24C0EB;
+$lightwii: #5CCEEE;
+$lighterwii: #B7DFEB;
+$white: #F3F3F3;
+
+body {
+	height: 100%;
+}
+
+#workspace {
+	width: 100%;
+	height: 100%;
+}
+
+#sidebar {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	vertical-align: top;
+	width: 90px;
+	background-color: $darkwii;
+	text-align: center;
+	height: 100%;
+	float: left;
+}
+
+#worksheet {
+	
+	position: relative;
+	background-color: white;
+	padding: 40px 10px;
+	margin-left: 90px;
+	margin-right: 280px;
+
+}
+
+#page-container {
+	width: 940px;
+	background-color: white;
+	margin: 0 auto;
+	height: 1000px;
+}
+
+#insert {
+}
+
+.visualization {
+	border: 1px solid #CCC;
+}
+
+.selected {
+	border: 1px solid $wiiblue;
+}
+
+#options {
+
+	float: right;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	vertical-align: top;
+	width: 280px;
+	background-color: #FFF;
+
+	.options-header {
+		background-color: $darkwii;
+		color: $background;
+		font-weight: 300;
+		padding: 8px 10px;
+	}
+
+	.options-panel {
+		background-color: $lighterwii;
+		color: $darkwii;
+		padding: 10px;
+	}
+
+	.option {
+		margin-bottom: 8px;
+	}
+
+	.option-label {
+		display: inline-block;
+		width: 60px;
+		text-align: right;
+		vertical-align: top;
+	}
+
+	.option-value {
+		display: inline-block;
+		margin-left: 10px;
+		width: 180px;
+	}
+
+}
+
+input {
+	&[type="text"] {
+		border: 1px solid #CCC;
+		width: 100%;
+		box-sizing: border-box;
+	}
+}
+
+select {
+	width: 100%;
+}
+
+textarea {
+	width: 100%;
+}

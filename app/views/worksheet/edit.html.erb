@@ -1,29 +1,201 @@
-<div class="container">
-	<div id="edit">
-		<h3>Edit Worksheet</h3>
-		<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>Identifier</th>
-				<th>View</th>
-				<th>Destroy</th>
-			</tr>
-		</thead>
-		<tbody>
-		<% @worksheet.visualizations.each do |visualization| %>
-			<tr>
-				<td><%= visualization.identifier %></td>
-				<td><a href="/visualization/<%= visualization.identifier %>">View</a></td>
-				<td><a href="/visualization/<%= visualization.identifier %>/destroy">Destroy</a></td>
-			</tr>
-		<% end %>
-		</tbody>
-		</table>
-		<%= link_to image_tag("buttons/newvis.png", {:id=> "create-visualization", :class => "img-rounded"}), {controller: 'visualization', action: 'create', worksheet: params[:id]} %>
+<div id="workspace">
+	<div id="sidebar">
+		<button id="create" class="btn btn-success">Create</button>
+	</div>
+	<div id="options">
+		<div class="options-header">General</div>
+		<div class="options-panel">
+			<div class="option">
+				<div class="option-label">Identifier</div>
+				<div class="option-value">
+					<input id="identifier" type="text" disabled />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Input</div>
+				<div class="option-value">
+					<input type="text" />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Dataset</div>
+				<div class="option-value">
+					<select>
+						<option>Option 1</option>
+						<option>Option 2</option>
+					</select>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">TextArea</div>
+				<div class="option-value">
+					<textarea rows="3"></textarea>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Select</div>
+				<div class="option-value">
+					<select>
+						<option>Option 1</option>
+						<option>Option 2</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="options-header">Filters</div>
+		<div class="options-panel">
+
+		</div>
+	</div>
+	<div id="worksheet">
+		<div id="page-container">
+			<div id="page"></div>
+		</div>
 	</div>
 </div>
+
+
 <script>
 
+	function randomNumber(high) {
+		return Math.floor((Math.random()*high)+1);
+	}
+
+	var Visualization = Backbone.Model.extend({
+		
+		urlRoot: function() {
+			if (this.isNew()) {
+				return '/visualization';
+			} else {
+				return '/visualization/' + this.identifier;
+			}
+		},
+		
+		initialize: function() {
+			this.on('change', this.updateOptions);
+		},
+
+		updateOptions: function() {
+			var atts = this.attributes;
+			$('#identifier').val(atts.identifier);
+		}
+
+	});
 	
+	var container = document.querySelector('#page');
+	var packery = new Packery(container, {
+		gutter: 20,
+		columnWidth: 220,
+		rowHeight: 200
+	});
+
+	var itemElems = packery.getItemElements();
+	for (var i = 0, len = itemElems.length; i < len; i++) {
+		var elem = itemElems[i];
+		var draggable = new Draggabilly(elem);
+		draggable.on('dragEnd', evaluateEvent);
+		packery.bindDraggabillyEvents(draggable);
+	}
+
+	$('#create').click(function() {
+
+		var rand = randomNumber(4);
+
+		var genWidth = 220 * rand + 20 * (rand - 1);
+		var genHeight = 200 * rand + 20 * (rand - 1);
+
+		// Create a new element
+		var elem = document.createElement('div');
+		elem.className = 'visualization';
+		elem.style.width = 220 + 'px';
+		elem.style.height = 200 + 'px';
+
+		// Put it inside the container
+		container.appendChild(elem);
+
+		// Add to Packery
+		packery.appended(elem);
+
+		// Create a new Visualization object
+		var visualization = new Visualization();
+
+		// Attempt to save it
+		visualization.save({worksheet: '<%= @worksheet.identifier %>' }, {
+
+			success: function(model, response) {
+				elem.id = response.identifier;
+			},
+
+			error: function(model, response) {
+
+			}
+
+		});
+
+		// Activate Draggabilly on it
+		var draggable = new Draggabilly(elem);
+		draggable.on('dragStart', startEvent);
+		draggable.on('dragEnd', evaluateEvent);
+		packery.bindDraggabillyEvents(draggable);
+
+		// Simulation of a visualization click event
+		clickVisualization(elem);
+
+	});
+
+	function startEvent(draggable) {
+
+		setSelection(draggable.element);
+
+	}
+
+	function setSelection(element) {
+
+		// First deselect all
+		deselectAll();
+
+		// Toggle the selected class for the visualization in question
+		$(element).toggleClass('selected');
+
+	}
+
+	function evaluateEvent(draggable) {
+
+		var dragPoint = draggable.dragPoint;
+
+		// Corresponds to a click event
+		if (dragPoint.x === 0 && dragPoint.y === 0) {
+
+			clickVisualization(draggable.element);
+
+		} 
+
+		// Corresponds to a drag event
+		else {
+
+
+
+		}
+
+	}
+
+	function clickVisualization(element) {
+
+		// Load the sidebar
+		loadSidebar(element);
+
+	}
+
+	function loadSidebar(element) {
+
+	}
+
+	function deselectAll() {
+
+		$('.visualization').each(function() {
+			$(this).removeClass('selected');
+		});
+
+	}
 
 </script>

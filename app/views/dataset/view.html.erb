@@ -49,16 +49,18 @@
 			</div>
 		</form>
 	</div>
-	<table class="table" style="margin-bottom: 80px;">
-		<thead>
-			<tr>
-			<% JSON.parse(@dataset.attrs).each do |key, value| %>
-			<th><%= key %></th>
-			<% end %>				
-			</tr>
-		</thead>
-		<tbody id="table-data"></tbody>
-	</table>
+	<div id="table">
+		<table class="table" style="margin-bottom: 80px; overflow: scroll; max-width: 960px; ">
+			<thead>
+				<tr>
+				<% JSON.parse(@dataset.attrs).each do |key, value| %>
+				<th><%= key %></th>
+				<% end %>				
+				</tr>
+			</thead>
+			<tbody id="table-data"></tbody>
+		</table>
+	</div>
 </div>
 <script id="filterTemplate" type="text/template">
 	<div class="form-attribute" style="margin: 10px 0px;">

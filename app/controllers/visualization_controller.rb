@@ -2,8 +2,30 @@ class VisualizationController < ApplicationController
 
 	def create
 
-		# Get the current user
-		@user = User.find(session[:id])
+		# Create a new Visualization object
+		visualization = Visualization.new
+
+		# Generate an identifier for it
+		visualization.identifier = SecureRandom.uuid
+		while Visualization.find_by_identifier(visualization.identifier)
+			visualization.identifier = SecureRandom.uuid
+		end		
+
+		# Save the visualization
+		visualization.save
+
+		# Return the identifier
+		render json: visualization
+
+	end
+
+	def get
+
+		# Retrieve the correct visualization
+		visualization = Visualization.find_by_identifier(params[:id])
+
+		# Return the JSON data
+		render json: visualization
 
 	end
 

@@ -32,13 +32,17 @@ Cs210Stockholm::Application.routes.draw do
   get "worksheet/:id/destroy", to: "worksheet#destroy"
   
   # These routes are associated with visualizations
-  get "visualization/create"
-  post "visualization/create"
-  get "visualization/:id", to: "visualization#view"
-  get "visualization/:id/edit", to: "visualization#edit"
-  post "visualization/:id/edit", to: "visualization#edit"
-  post "visualization/save"
-  get "visualization/:id/destroy", to: "visualization#destroy"
+  post "visualization", to: "visualization#create"
+  
+  get "visualization/:id", to: "visualization#get"
+  put "visualization/:id", to: "visualization#update"
+
+  #get "visualization/create"
+  #post "visualization/create"
+  #get "visualization/:id/edit", to: "visualization#edit"
+  #post "visualization/:id/edit", to: "visualization#edit"
+  #post "visualization/save"
+  #get "visualization/:id/destroy", to: "visualization#destroy"
 
   # This is a registration URL
   get "users/login"

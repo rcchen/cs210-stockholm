@@ -36,6 +36,9 @@ class WorksheetController < ApplicationController
 		# Retrieve the corresponding worksheet
 		@worksheet = Worksheet.find_by_identifier(params[:id])
 
+		# Render with the sparse layout
+		render layout: "sparse"
+
 	end
 
 	def view
