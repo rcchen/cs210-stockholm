@@ -4,51 +4,33 @@ class DatasetProcessor
 
 	@queue = :dataset
 
-	def self.perform(data, attributes, hashes)
+	def self.perform(data, rows)
 
 		# Get the correct dataset
 		ds = Dataset.find_by_identifier(data['identifier'])
 
- 		puts ds['identifier']
- 		puts ds.datadocs.length
+		# Generate all the hashes
+		rows.each do |row|
+			thisRow = Array.new
+			row.each_with_index do |attribute, index|
+				if row[index] != nil
+					row[index] = row[index].force_encoding("utf-8")
+				end
+				cellHash = Hash.new
+				cellHash[:v] = row[index]
+				thisRow << cellHash
+			end
+			newDoc = Datadoc.new
+			newDoc.c = thisRow
+			newDoc.dataset = data
 
-		# Rewrite the data types in the dataset
- 		hashes.each_with_index do |hash, index|
- 			
- 			# Create a new Datadoc
- 			datadoc = Datadoc.new
- 			
- 			# Iterate through attributes of the hash
- 			hash.each do |attribute|
+			newDoc.save
 
- 				# Retrieve the name and value of each attribute
- 				name = attribute[0]
- 				value = attribute[1]
-
- 				# Typecast if the attribute type is Numeric
- 				if attributes[name] == 'Numeric'
- 					value = value.to_f
- 				elsif attributes[name] == 'Date'
- 					value = Chronic.parse(value)
- 				else
- 					value = value
- 				end
-
- 				# Dynamically create the attribute in our Datadoc
- 				datadoc["#{name}"] = value
-
- 				datadoc.save
-
- 			end
-
- 			# Add the Datadoc into our Dataset
- 			ds.datadocs.push(datadoc)
-
- 		end
-
- 		# Save the dataset
+			# Put it into our dataset
+			ds.datadocs.push(newDoc)
+			
+		end
  		ds.save
-
 	end
 
 end
