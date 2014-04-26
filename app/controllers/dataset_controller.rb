@@ -179,7 +179,7 @@ class DatasetController < ApplicationController
 
 		dataset = Dataset.find_by_identifier(params[:id])
 
-		json: dataset
+		render json: dataset
 
 	end
 

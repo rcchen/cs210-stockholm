@@ -145,7 +145,54 @@
 
 <script>
 
-	var current;
+	var currentModel;
+	var currentDataset;
+
+	var Visualization = Backbone.Model.extend({
+		
+		urlRoot: function() {
+
+			if (!this.attributes.identifier) {
+				return '/visualization';
+			} else {
+				return '/visualization/' + this.attributes.identifier;
+			}
+
+		},
+		
+		initialize: function() {
+
+			this.on('change', this.updateOptions);
+		
+		},
+
+		updateOptions: function() {
+			
+			// Send things to the server
+
+		}
+
+	});
+
+	var Dataset = Backbone.Model.extend({
+
+		urlRoot: function() {
+
+			if (!this.attributes.identifier) {
+				return '/dataset';
+			} else {
+				return '/dataset/' + this.attributes.identifier;
+			}
+
+		},
+
+		initialize: function() {
+
+			this.on('change', this.updateOptions);
+		
+		}
+
+	});
 
 	var GeneralOptions = Backbone.View.extend({
 
@@ -162,15 +209,13 @@
 			
 			// Create the template from our options
 			var template = _.template($('#general-options-template').html(), {
-				'identifier': current.get('identifier'),
+				'identifier': currentModel.get('identifier'),
 			});
-
-			console.log(current);
 
 			// Replate everything in the options panel
 			$('#options').html(template);
 			$('#general-options').show();
-			$('#object').val(current.get('object'));
+			$('#object').val(currentModel.get('object'));
 
 			// Load the right editor
 			this.changeObject();
@@ -200,7 +245,7 @@
 			// Get the selected type
 			var object = $('#object').find(':selected').val();
 
-			current.set('object', object);
+			currentModel.set('object', object);
 
 			// Open the Visualization panels
 			if (object == 'visualization') {
@@ -243,10 +288,11 @@
 			$('#options').append(template);
 			$('#visualization-options').slideDown();
 
-			$('#dataset').val(current.get('dataset'));
-			$('#chart').val(current.get('chart_type'));
+			$('#dataset').val(currentModel.get('dataset'));
+			$('#chart').val(currentModel.get('chart_type'));
 
 			// Load the right editors
+			this.changeDataset();
 			this.changeChart();
 
 		},
@@ -268,7 +314,24 @@
 			// Get the selected type
 			var dataset = $('#dataset').find(':selected').val();
 
-			current.set('dataset', dataset);		
+			currentModel.set('dataset', dataset);
+
+			// Attempt to preload data about the dataset
+			var datasetModel = new Dataset({ 'identifier': dataset });
+			datasetModel.fetch({
+
+				success: function() {
+
+					// Cache the current dataset
+					currentDataset = datasetModel;
+
+					// Reload certain things
+					console.log(currentDataset);
+
+				}
+
+			});
+
 
 		},
 
@@ -277,7 +340,7 @@
 			// Get the selected type
 			var chart = $('#chart').find(':selected').val();
 
-			current.set('chart_type', chart);
+			currentModel.set('chart_type', chart);
 
 			// Open the Visualization panels
 			if (chart == 'bar') {
@@ -400,32 +463,6 @@
 
 	});
 
-	var Visualization = Backbone.Model.extend({
-		
-		urlRoot: function() {
-
-			if (!this.attributes.identifier) {
-				return '/visualization';
-			} else {
-				return '/visualization/' + this.attributes.identifier;
-			}
-
-		},
-		
-		initialize: function() {
-
-			this.on('change', this.updateOptions);
-		
-		},
-
-		updateOptions: function() {
-			
-			// Send things to the server
-
-		}
-
-	});
-
 	var container = document.querySelector('#page');
 	var packery = new Packery(container, {
 		gutter: 20,
@@ -487,7 +524,7 @@
 
 	$('#save').click(function() {
 
-		current.save();
+		currentModel.save();
 
 	});
 
@@ -549,7 +586,10 @@
 
 			success: function() {
 
-				current = model;
+				// Unload listeners associated with the sidebar
+				$('#sidebar').off();
+
+				currentModel = model;
 				//$('#identifier').val(model.attributes.identifier);
 				var generalOptions = new GeneralOptions();
 
