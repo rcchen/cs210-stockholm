@@ -2,9 +2,12 @@
 	<div id="sidebar">
 		<button id="create" class="btn btn-success">Create</button>
 	</div>
-	<div id="options">
+	<div id="rightbar">
+		<div id="options">
 
-		<div id="options-buttons" class="options-panel">
+
+		</div>
+		<div id="options-buttons">
 			<div class="options-header">Buttons</div>
 			<div class="option">
 				<button id="save" class="btn btn-success">Save</button>
@@ -25,7 +28,7 @@
 			<div class="option">
 				<div class="option-label">Identifier</div>
 				<div class="option-value">
-					<input id="identifier" type="text" disabled />
+					<input id="identifier" type="text" disabled value="<%%= identifier %>"/>
 				</div>
 			</div>
 			<div class="option">
@@ -49,6 +52,7 @@
 				<div class="option-label">Dataset</div>
 				<div class="option-value">
 					<select id="dataset">
+						<option value="---">----</option>
 						<%= @datasets.each do |dataset| %>
 						<option value="<%= dataset.identifier %>"><%= dataset.name %></option>
 						<% end %>
@@ -148,18 +152,28 @@
 		el: '#options',
 
 		initialize: function() {
+
 			this.render();
+
 		},
 		
 		// Render the filterTemplate within the filterAttribute div
 		render: function() {
 			
 			// Create the template from our options
-			var template = _.template($('#general-options-template').html(), {});
+			var template = _.template($('#general-options-template').html(), {
+				'identifier': current.get('identifier'),
+			});
+
+			console.log(current);
 
 			// Replate everything in the options panel
 			$('#options').html(template);
 			$('#general-options').show();
+			$('#object').val(current.get('object'));
+
+			// Load the right editor
+			this.changeObject();
 
 		},
 
@@ -185,6 +199,8 @@
 
 			// Get the selected type
 			var object = $('#object').find(':selected').val();
+
+			current.set('object', object);
 
 			// Open the Visualization panels
 			if (object == 'visualization') {
@@ -225,13 +241,19 @@
 
 			// Append to the options panel
 			$('#options').append(template);
-			$('#general-options').find('.options').slideUp();
 			$('#visualization-options').slideDown();
+
+			$('#dataset').val(current.get('dataset'));
+			$('#chart').val(current.get('chart_type'));
+
+			// Load the right editors
+			this.changeChart();
 
 		},
 
 		events: {
 
+			'change #dataset'									: 'changeDataset',
 			'change #chart'										: 'changeChart',
 			'click #visualization-options div.options-header'	: 'showVizOptions'
 
@@ -239,11 +261,14 @@
 
 		showVizOptions: function() {
 
-			$('.options').slideUp(function() {
+		},
 
-				$('#visualization-options div.options').slideDown();
+		changeDataset: function() {
 
-			});
+			// Get the selected type
+			var dataset = $('#dataset').find(':selected').val();
+
+			current.set('dataset', dataset);		
 
 		},
 
@@ -251,6 +276,8 @@
 
 			// Get the selected type
 			var chart = $('#chart').find(':selected').val();
+
+			current.set('chart_type', chart);
 
 			// Open the Visualization panels
 			if (chart == 'bar') {
@@ -298,7 +325,6 @@
 
 			// Append to the options panel
 			$('#options').append(template);
-			$('.options-object').find('.options').slideUp();
 			$('#bar-options').slideDown();
 
 		}
@@ -322,6 +348,7 @@
 
 			// Append to the options panel
 			$('#options').append(template);
+			$('#line-options').slideDown();
 
 		}
 
@@ -344,6 +371,7 @@
 
 			// Append to the options panel
 			$('#options').append(template);
+			$('#pie-options').slideDown();
 
 		}
 
@@ -366,6 +394,7 @@
 
 			// Append to the options panel
 			$('#options').append(template);
+			$('#geo-options').slideDown();
 
 		}
 
@@ -392,7 +421,6 @@
 		updateOptions: function() {
 			
 			// Send things to the server
-			// this.save();
 
 		}
 
@@ -521,9 +549,9 @@
 
 			success: function() {
 
+				current = model;
 				//$('#identifier').val(model.attributes.identifier);
 				var generalOptions = new GeneralOptions();
-				current = model;
 
 			}
 

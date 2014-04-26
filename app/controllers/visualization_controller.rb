@@ -35,7 +35,12 @@ class VisualizationController < ApplicationController
 		visualization = Visualization.find_by_identifier(params[:id])
 
 		# Replace the attributes that are passed in
-		puts params
+		visualization.object = params[:object]
+		visualization.dataset = params[:dataset]
+		visualization.chart_type = params[:chart_type]
+
+		# Save the visualization
+		visualization.save
 
 		# Return the JSON data
 		render status: 200, json: visualization		
