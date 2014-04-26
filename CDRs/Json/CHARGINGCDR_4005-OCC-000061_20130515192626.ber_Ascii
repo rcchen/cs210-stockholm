@@ -1,0 +1,244 @@
+{
+  "CHARGINGCDR_1319.ChargingDataOutputRecord.onlineCreditControlRecord": {
+    "resultCode": "'2001'D",
+    "triggerTime": "'315051912233302000'H",
+    "nodeName": "'743532323078313138302D372E6574652E6B612E73772E6572696373736F6E2E7365'H",
+    "serviceContextID": "'382E333232353140336770702E6F7267'H",
+    "chargingContextID": "'4572696373736F6E5F4F43535F56315F302E302E302E31302E333232353140336770702E6F7267'H",
+    "serviceSessionID": "'363830303A2D3A31'H",
+    "recordIdentificationNumber": "'4E'H",
+    "partialSequenceNumber": "'4'D",
+    "lastPartialOutput": "'1'D",
+    "servedSubscriptionID": [
+      {
+        "subscriptionIDType": "'endUserE164 (0)'",
+        "subscriptionIDValue": "'33363536313132323232'H"
+      },
+      {
+        "subscriptionIDType": "'endUserIMSI (1)'",
+        "subscriptionIDValue": "'323136353630303030303030303232'H"
+      }
+    ],
+    "correlationID": {
+      "dccCorrelationId": {
+        "ccCorrelationId": "'B71FB9'H",
+        "sessionId": "'63312D31302D33372D31312D3135342D73656C6E776531303365706730312E6572696373736F6E2E73653B313336373632343337373B313631'H"
+      }
+    },
+    "servingElement": {
+      "originInfo": {
+        "originRealm": "'73656C6E776531303365706730312E6572696373736F6E2E7365'H",
+        "originHost": "'63312D31302D33372D31312D3135342D73656C6E776531303365706730312E6572696373736F6E2E7365'H"
+      }
+    },
+    "creditControlRecords": {
+      "creditControlRecord": {
+        "serviceIdentifier": "'6800'D",
+        "usedServiceUnits": [
+          {
+            "tariffChangeUsage": "'before (0)'",
+            "totalOctetsUnit": "'9975'D"
+          }
+        ],
+        "eventTime": "\"20130515192625+0200\"",
+        "triggerTime": "\"20130515192624+0200\"",
+        "serviceScenario": "'mobileOriginating (0)'",
+        "roamingPosition": "'insideHPLMN (0)'",
+        "tariffInfo": [
+          {
+            "selectionTreeID": "'3737'H",
+            "selectionTreeVersion": "'3230313231313236543134343435323030302D3133362E3232352E34322E37372D363239313032392D3537373538343636302C207665723A203338'H",
+            "selectionTreeType": "'rating (0)'"
+          }
+        ],
+        "cCAccountData": {
+          "servedAccount": "'8165112222'H",
+          "serviceClassID": "'77'D",
+          "accountGroupID": "'0'D",
+          "accountValueBefore": {
+            "amount": "'95704'D",
+            "decimals": "'6'D",
+            "currency": "'752'D"
+          },
+          "accountValueAfter": {
+            "amount": "'5704'D",
+            "decimals": "'6'D",
+            "currency": "'752'D"
+          },
+          "serviceOfferings": "'0'D",
+          "accumulatedCost": {
+            "amount": "'3370000'D",
+            "decimals": "'6'D",
+            "currency": "'752'D"
+          },
+          "accountValueDeducted": {
+            "amount": "'90000'D",
+            "decimals": "'6'D",
+            "currency": "'752'D"
+          },
+          "accumulatedUnits": "'0'D",
+          "accountUnitsDeducted": "'0'D"
+        },
+        "chargingContextSpecific": [
+          {
+            "parameterID": "'16778226'D",
+            "parameterValue": {
+              "unsigned32": "'12001209'D"
+            }
+          },
+          {
+            "parameterID": "'16778227'D",
+            "parameterValue": {
+              "unsigned32": "'0'D"
+            }
+          },
+          {
+            "parameterID": "'16778228'D",
+            "parameterValue": {
+              "octetString": "'0A200804'H"
+            }
+          },
+          {
+            "parameterID": "'16778230'D",
+            "parameterValue": {
+              "octetString": "'0A250A3A'H"
+            }
+          },
+          {
+            "parameterID": "'16778232'D",
+            "parameterValue": {
+              "string": "'323136353630'H"
+            }
+          },
+          {
+            "parameterID": "'16778234'D",
+            "parameterValue": {
+              "string": "'35'H"
+            }
+          },
+          {
+            "parameterID": "'16778235'D",
+            "parameterValue": {
+              "string": "'6779743532323078313138302D372E6B612E73772E6572696373736F6E2E7365'H"
+            }
+          },
+          {
+            "parameterID": "'16778237'D",
+            "parameterValue": {
+              "string": "'31'H"
+            }
+          },
+          {
+            "parameterID": "'16778238'D",
+            "parameterValue": {
+              "string": "'30333030'H"
+            }
+          },
+          {
+            "parameterID": "'16778239'D",
+            "parameterValue": {
+              "string": "'3234303937'H"
+            }
+          },
+          {
+            "parameterID": "'16778254'D",
+            "parameterValue": {
+              "unsigned32": "'6800'D"
+            }
+          },
+          {
+            "parameterID": "'16778229'D",
+            "parameterValue": {
+              "octetString": "'0A250C81'H"
+            }
+          },
+          {
+            "parameterID": "'16778240'D",
+            "parameterValue": {
+              "unsigned32": "'1'D"
+            }
+          },
+          {
+            "parameterID": "'16778249'D",
+            "parameterValue": {
+              "string": "'3234303937'H"
+            }
+          },
+          {
+            "parameterID": "'16778250'D",
+            "parameterValue": {
+              "octetString": "'00C8'H"
+            }
+          },
+          {
+            "parameterID": "'16778252'D",
+            "parameterValue": {
+              "octetString": "'0001'H"
+            }
+          },
+          {
+            "parameterID": "'16778409'D",
+            "parameterValue": {
+              "unsigned32": "'8640000'D"
+            }
+          },
+          {
+            "parameterID": "'16778410'D",
+            "parameterValue": {
+              "unsigned32": "'16000000'D"
+            }
+          },
+          {
+            "parameterID": "'16778259'D",
+            "parameterValue": {
+              "unsigned32": "'1'D"
+            }
+          },
+          {
+            "parameterID": "'16778261'D",
+            "parameterValue": {
+              "unsigned32": "'1'D"
+            }
+          },
+          {
+            "parameterID": "'16778265'D",
+            "parameterValue": {
+              "unsigned32": "'6'D"
+            }
+          }
+        ],
+        "ratedUnits": {
+          "debitUnits": {
+            "ratedTimeUnits": "'0'D",
+            "ratedTotalOctetsUnits": "'9000'D",
+            "ratedUplinkOctetsUnits": "'0'D",
+            "ratedDownlinkOctetsUnits": "'0'D",
+            "ratedServiceSpecificUnits": "'0'D"
+          },
+          "creditUnits": {
+            "ratedTimeUnits": "'0'D",
+            "ratedTotalOctetsUnits": "'0'D",
+            "ratedUplinkOctetsUnits": "'0'D",
+            "ratedDownlinkOctetsUnits": "'0'D",
+            "ratedServiceSpecificUnits": "'0'D"
+          },
+          "freeUnits": {
+            "ratedTimeUnits": "'0'D",
+            "ratedTotalOctetsUnits": "'0'D",
+            "ratedUplinkOctetsUnits": "'0'D",
+            "ratedDownlinkOctetsUnits": "'0'D",
+            "ratedServiceSpecificUnits": "'0'D"
+          }
+        }
+      }
+    },
+    "authorizedQoS": [
+      {
+        "triggerTime": "'315051916252302000'H",
+        "qoSClassIdentifier": "'6'D",
+        "priorityLevel": "'1'D",
+        "preEmptionVulnerability": "'0'D"
+      }
+    ]
+  }
+}
