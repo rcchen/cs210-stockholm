@@ -21,15 +21,6 @@ iframe {
 
 /* THESE STYLES ARE ASSOCIATED WITH THE EDITOR */
 
-$background: #F1EBEB;
-$lace: #EEE8E8;
-$grey: #CACACA;
-$darkwii: #1A9ABD;
-$wiiblue: #24C0EB;
-$lightwii: #5CCEEE;
-$lighterwii: #B7DFEB;
-$white: #F3F3F3;
-
 body {
 	height: 100%;
 }
@@ -45,7 +36,7 @@ body {
 	left: 0px;
 	vertical-align: top;
 	width: 90px;
-	background-color: $darkwii;
+	background-color: #CBE86B;
 	text-align: center;
 	height: 100%;
 	float: left;
@@ -76,7 +67,7 @@ body {
 }
 
 .selected {
-	border: 1px solid $wiiblue;
+	border: 1px solid #69927F;
 }
 
 #options {
@@ -88,20 +79,20 @@ body {
 	vertical-align: top;
 	width: 280px;
 	background-color: #FFF;
-	box-shadow: -5px -1px 5px #888;
 	z-index: 999;
 
 	.options-header {
-		background-color: $darkwii;
-		color: $background;
+		background-color: #B0A9AE;
+		color: #FFF;
 		font-weight: 300;
 		padding: 8px 10px;
 	}
 
 	.options-panel {
-		background-color: $lighterwii;
-		color: $darkwii;
+		background-color: #F5F2FC;
+		color: #000;
 		padding-bottom: 10px;
+		display: none;
 	}
 
 	.option {
@@ -123,6 +114,8 @@ body {
 	}
 
 }
+
+
 
 input {
 	&[type="text"] {

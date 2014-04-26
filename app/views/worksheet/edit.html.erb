@@ -3,60 +3,7 @@
 		<button id="create" class="btn btn-success">Create</button>
 	</div>
 	<div id="options">
-		<div id="options-general" class="options-panel">
-			<div class="options-header">General</div>
-			<div class="option">
-				<div class="option-label">Identifier</div>
-				<div class="option-value">
-					<input id="identifier" type="text" disabled />
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">Object</div>
-				<div class="option-value">
-					<select id="object">
-						<option value="text">Text</option>
-						<option value="barchart">Visualization</option>
-					</select>
-				</div>
-			</div>
-		</div>
-		<div id="options-visualization" class="options-panel">
-			<div class="options-header">Visualization</div>
-			<div class="option">
-				<div class="option-label">Dataset</div>
-				<div class="option-value">
-					<select id="dataset">
-						<%= @datasets.each do |dataset| %>
-						<option value="<%= dataset.identifier %>"><%= dataset.name %></option>
-						<% end %>
-					</select>
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">Type</div>
-				<div class="option-value">
-					<select id="type">
-						<option value="bar">Bar</option>
-						<option value="pie">Pie</option>
-						<option value="line">Line</option>
-						<option value="geo">Geospatial</option> 
-					</select>
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">X-Axis</div>
-				<div class="option-value">
-					<input id="xaxis" type="text" />
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">Y-Axis</div>
-				<div class="option-value">
-					<input id="yaxis" type="text" />
-				</div>
-			</div>
-		</div>
+
 		<div id="options-buttons" class="options-panel">
 			<div class="options-header">Buttons</div>
 			<div class="option">
@@ -71,14 +18,358 @@
 	</div>
 </div>
 
+<script id="general-options-template" type="text/template">
+	<div id="general-options" class="options-panel">
+		<div class="options-header">General</div>
+		<div class="options">
+			<div class="option">
+				<div class="option-label">Identifier</div>
+				<div class="option-value">
+					<input id="identifier" type="text" disabled />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Object</div>
+				<div class="option-value">
+					<select id="object">
+						<option value="text">Text</option>
+						<option value="visualization">Visualization</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="visualization-options-template" type="text/template">
+	<div id="visualization-options" class="options-panel options-object">
+		<div class="options-header">Visualization</div>
+		<div class="options">
+			<div class="option">
+				<div class="option-label">Dataset</div>
+				<div class="option-value">
+					<select id="dataset">
+						<%= @datasets.each do |dataset| %>
+						<option value="<%= dataset.identifier %>"><%= dataset.name %></option>
+						<% end %>
+					</select>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Type</div>
+				<div class="option-value">
+					<select id="chart">
+						<option value="---">----</option>
+						<option value="bar">Bar</option>
+						<option value="pie">Pie</option>
+						<option value="line">Line</option>
+						<option value="geo">Geospatial</option> 
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="bar-options-template" type="text/template">
+	<div id="bar-options" class="options-panel options-chart">
+		<div class="options-header">Bar Chart</div>
+		<div class="options">
+			<div class="option">
+				<div class="option-label">X-Axis</div>
+				<div class="option-value">
+					<input id="xaxis" type="text" />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Y-Axis</div>
+				<div class="option-value">
+					<input id="yaxis" type="text" />
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="line-options-template" type="text/template">
+	<div id="line-options" class="options-panel options-chart">
+		<div class="options-header">Line Chart</div>
+		<div class="options">
+			<div class="option">
+				<div class="option-label">X-Axis</div>
+				<div class="option-value">
+					<input id="xaxis" type="text" />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Y-Axis</div>
+				<div class="option-value">
+					<input id="yaxis" type="text" />
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="pie-options-template" type="text/template">
+	<div id="pie-options" class="options-panel options-chart">
+		<div class="options-header">Pie Chart</div>
+		<div class="options">
+			<div class="option">
+				<div class="option-label">Label</div>
+				<div class="option-value">
+					<input id="label" type="text" />
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Aggregate</div>
+				<div class="option-value">
+					<input id="label" type="text" />
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="geo-options-template" type="text/template">
+	<div id="geo-options" class="options-panel options-chart">
+		<div class="options-header">Geo Chart</div>
+		<div class="options"></div>
+	</div>
+</script>
+
 
 <script>
 
-	function randomNumber(high) {
-		return Math.floor((Math.random()*high)+1);
-	}
-
 	var current;
+
+	var GeneralOptions = Backbone.View.extend({
+
+		el: '#options',
+
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			
+			// Create the template from our options
+			var template = _.template($('#general-options-template').html(), {});
+
+			// Replate everything in the options panel
+			$('#options').html(template);
+			$('#general-options').show();
+
+		},
+
+		// Events that the view responds to
+		events: {
+
+			'change #object'							: 'changeObject',
+			'click #general-options div.options-header'	: 'showGenOptions'
+
+		},
+
+		showGenOptions: function() {
+
+			$('.options').slideUp(function() {
+
+				$('#general-options div.options').slideDown();
+
+			});
+
+		},
+
+		changeObject: function() {
+
+			// Get the selected type
+			var object = $('#object').find(':selected').val();
+
+			// Open the Visualization panels
+			if (object == 'visualization') {
+
+				var visualizationOptions = new VisualizationOptions();
+
+			}
+
+			if (object == 'text') {
+
+				// Show the text sidebar editors
+
+			}
+
+		}
+
+	});
+
+	var VisualizationOptions = Backbone.View.extend({
+
+		el: '#options',
+
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			
+			// Create the template from our options
+			var template = _.template($('#visualization-options-template').html(), {});
+
+			// Remove any items tagged with options-chart
+			$('.options-chart').remove();
+
+			// Also remove anything tagged options-object
+			$('.options-object').remove();
+
+			// Append to the options panel
+			$('#options').append(template);
+			$('#general-options').find('.options').slideUp();
+			$('#visualization-options').slideDown();
+
+		},
+
+		events: {
+
+			'change #chart'										: 'changeChart',
+			'click #visualization-options div.options-header'	: 'showVizOptions'
+
+		},
+
+		showVizOptions: function() {
+
+			$('.options').slideUp(function() {
+
+				$('#visualization-options div.options').slideDown();
+
+			});
+
+		},
+
+		changeChart: function() {
+
+			// Get the selected type
+			var chart = $('#chart').find(':selected').val();
+
+			// Open the Visualization panels
+			if (chart == 'bar') {
+
+				var barOptions = new BarOptions();
+
+			}
+
+			if (chart == 'line') {
+
+				var lineOptions = new LineOptions();
+
+			}		
+			
+			if (chart == 'pie') {
+
+				var pieOptions = new PieOptions();
+
+			}	
+
+			if (chart == 'geo') {
+
+				var geoOptions = new GeoOptions();
+
+			}	
+
+		}
+
+	});
+
+	var BarOptions = Backbone.View.extend({
+
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			
+			// Create the template from our options
+			var template = _.template($('#bar-options-template').html(), {});
+
+			// Remove any items tagged with options-chart
+			$('.options-chart').remove();
+
+			// Append to the options panel
+			$('#options').append(template);
+			$('.options-object').find('.options').slideUp();
+			$('#bar-options').slideDown();
+
+		}
+
+	});
+
+	var LineOptions = Backbone.View.extend({
+
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			
+			// Create the template from our options
+			var template = _.template($('#line-options-template').html(), {});
+
+			// Remove any items tagged with options-chart
+			$('.options-chart').remove();
+
+			// Append to the options panel
+			$('#options').append(template);
+
+		}
+
+	});
+
+	var PieOptions = Backbone.View.extend({
+
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			
+			// Create the template from our options
+			var template = _.template($('#pie-options-template').html(), {});
+
+			// Remove any items tagged with options-chart
+			$('.options-chart').remove();
+
+			// Append to the options panel
+			$('#options').append(template);
+
+		}
+
+	});
+
+	var GeoOptions = Backbone.View.extend({
+
+		initialize: function() {
+			this.render();
+		},
+		
+		// Render the filterTemplate within the filterAttribute div
+		render: function() {
+			
+			// Create the template from our options
+			var template = _.template($('#geo-options-template').html(), {});
+
+			// Remove any items tagged with options-chart
+			$('.options-chart').remove();
+
+			// Append to the options panel
+			$('#options').append(template);
+
+		}
+
+	});
 
 	var Visualization = Backbone.Model.extend({
 		
@@ -124,11 +415,6 @@
 
 	$('#create').click(function() {
 
-		var rand = randomNumber(4);
-
-		var genWidth = 220 * rand + 20 * (rand - 1);
-		var genHeight = 200 * rand + 20 * (rand - 1);
-
 		// Create a new element
 		var elem = document.createElement('div');
 		elem.className = 'visualization';
@@ -171,47 +457,6 @@
 
 	});
 
-	$('#object').change(function() {
-
-		// Get the selected type
-		var object = $(this).find(':selected').val();
-
-		// Open the Visualization panels
-		if (object == 'visualization') {
-
-			// Show the visualization sidebar editors
-			loadVisualizationSidebar();
-
-		}
-
-		if (object == 'text') {
-
-			// Show the text sidebar editors
-
-		}
-
-	});
-
-	$('#dataset').change(function() {
-
-		// Get the selected dataset
-		var dataset = $(this).find(':selected').val();
-
-		// Save it to the current object
-		current.set('dataset', dataset);
-
-	});
-
-	$('#type').change(function() {
-
-		// Get the selected dataset
-		var type = $(this).find(':selected').val();
-
-		// Save it to the current object
-		current.set('chart_type', type);
-
-	});
-
 	$('#save').click(function() {
 
 		current.save();
@@ -234,6 +479,7 @@
 
 	}
 
+	// Evaluates the dragging of a worksheet item
 	function evaluateEvent(draggable) {
 
 		var dragPoint = draggable.dragPoint;
@@ -275,7 +521,8 @@
 
 			success: function() {
 
-				$('#identifier').val(model.attributes.identifier);
+				//$('#identifier').val(model.attributes.identifier);
+				var generalOptions = new GeneralOptions();
 				current = model;
 
 			}
@@ -286,6 +533,16 @@
 
 	function loadVisualizationSidebar() {
 
+
+
+	}
+
+	function loadLineSidebar() {
+
+		// Remove sidebars that correspond to other data types
+		removeChartSidebars();
+		
+		// Load our new sidebar in
 
 
 	}
