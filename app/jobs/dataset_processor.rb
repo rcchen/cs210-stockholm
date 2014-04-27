@@ -16,15 +16,10 @@ class DatasetProcessor
 				if row[index] != nil
 					row[index] = row[index].force_encoding("utf-8")
 				end
-				cellHash = Hash.new
-				cellHash[:v] = row[index]
-				thisRow << cellHash
+				thisRow << row[index]
 			end
 			newDoc = Datadoc.new
-			newDoc.c = thisRow
-			newDoc.dataset = data
-
-			newDoc.save
+			newDoc.row = thisRow
 
 			# Put it into our dataset
 			ds.datadocs.push(newDoc)

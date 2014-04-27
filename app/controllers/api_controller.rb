@@ -67,6 +67,15 @@ class ApiController < ApplicationController
 		return json_data.sort_by { |hash| hash["label"] }
 
 	end
+
+	def attrNameToIndex(attrs, filter_attribute) 
+		attrs.each_with_index do |attrHash, index|
+			if (attrHash["id"] == filter_attribute)
+				return index
+			end
+		end
+		return (0-1)
+	end
 	
 	def filter_documents(filters)
 		# Start construction our query here
@@ -81,7 +90,7 @@ class ApiController < ApplicationController
 		puts filters
 
 		# Get a pointer to the attributes from the dataset
-		attrs = JSON.parse(@dataset.attrs)
+		attrs = @dataset.attrs
 
 		# Iterate through the objects in the filter to build the query
 		filters.each do |filter|
@@ -97,10 +106,11 @@ class ApiController < ApplicationController
 			filter_sign = filter[1]["sign"]
 			filter_value = filter[1]["value"]
 
+			attributeIndex = attrNameToIndex(attrs, filter_attribute)
 			# Cast for numerics
-			if attrs[filter_attribute] == 'Numeric'
+			if attrs[attributeIndex]['type'] == 'number'
 				filter_value = filter_value.to_f
-			elsif attrs[filter_attribute] == "Date"
+			elsif attrs[attributeIndex]['type'] == 'datetime'
 				filter_value = Chronic.parse(filter_value)
 			end
 
@@ -111,18 +121,17 @@ class ApiController < ApplicationController
 				end
 	 			equals_filters[filter_attribute].push(filter_value)
 			elsif filter_sign == "<"
-				query = query.lt(:"#{filter_attribute}" => filter_value)
+				query = query.lt(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == "<="
-				query = query.lte(:"#{filter_attribute}" => filter_value)
+				query = query.lte(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == ">"
-				query = query.gt(:"#{filter_attribute}" => filter_value)
+				query = query.gt(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == ">="
-				query = query.gte(:"#{filter_attribute}" => filter_value)
+				query = query.gte(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == "!="
-				query = query.ne(:"#{filter_attribute}" => filter_value)
+				query = query.ne(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == "Contains" 
-				puts "INSIDE CONTAINS FILTER"
-				query = query.where(:"#{filter_attribute}" => Regexp.new(filter_value) )
+				query = query.where(:"row[#{attributeIndex}]" => Regexp.new(filter_value) )
 			end
 
 		end
@@ -256,8 +265,25 @@ class ApiController < ApplicationController
 
 	 	# If it is a GET request, return basic information
 	 	else
+	 		dataTableHash = Hash.new
+	 		dataTableHash["cols"] = @dataset.attrs
+	 		dataTableHash["rows"] = Array.new
+	 		@dataset.datadocs.each do |doc|
+	 			rowHash = Hash.new
+	 			rowHash["c"] = Array.new
+	 			doc.row.each do |attrVal|
+	 				attrHash = Hash.new
+	 				attrHash['v'] = attrVal
 
-	 		render json: @dataset
+	 				# Add this cell to the row
+	 				rowHash['c'] << attrHash
+	 			end
+
+	 			# Add this row to the overall object
+	 			dataTableHash['rows'] << rowHash
+	 		end
+
+	 		render json: dataTableHash
 
 	 	end
 

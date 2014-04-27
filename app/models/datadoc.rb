@@ -6,7 +6,7 @@ class Datadoc
 	# Defines the one to many relationship with Datasets	
 	belongs_to :dataset
 
-	field :c
+	field :row
 
 	# There are no attributes explicitly defined here
 	# Attributes are dynamically generated from the parser

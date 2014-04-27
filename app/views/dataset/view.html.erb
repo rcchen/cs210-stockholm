@@ -53,7 +53,9 @@
 		<table class="table" style="margin-bottom: 80px; overflow: scroll; max-width: 960px; ">
 			<thead>
 				<tr>
-								
+				<% @dataset.attrs.each do |attrHash| %>
+				<th><%=  attrHash["id"] %></th>
+				<% end %>				
 				</tr>
 			</thead>
 			<tbody id="table-data"></tbody>
