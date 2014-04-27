@@ -24,6 +24,8 @@ class VisualizationController < ApplicationController
 		# Retrieve the correct visualization
 		visualization = Visualization.find_by_identifier(params[:id])
 
+		visualization.chart_options = visualization.chart_options.to_s.html_safe
+
 		# Return the JSON data
 		render json: visualization
 
@@ -51,8 +53,19 @@ class VisualizationController < ApplicationController
 		worksheet.visualizations << visualization
 		worksheet.save
 
-		# Return the JSON data
-		head 200, :content_type => 'text/html'
+		# Return success
+		render json: ''
+
+	end
+
+	def delete
+
+		# Retrieve the correct visualization
+		visualization = Visualization.find_by_identifier(params[:id])
+		visualization.destroy
+
+		# Return a success
+		render json: ''
 
 	end
 

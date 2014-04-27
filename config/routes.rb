@@ -36,7 +36,8 @@ Cs210Stockholm::Application.routes.draw do
   post "visualization", to: "visualization#create"
   
   get "visualization/:id", to: "visualization#get"
-  post "visualization/:id", to: "visualization#put"
+  put "visualization/:id", to: "visualization#put"
+  delete "visualization/:id", to: "visualization#delete"
 
   get "visualization/:id/view", to: "visualization#view"
 

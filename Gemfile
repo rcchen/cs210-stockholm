@@ -39,6 +39,9 @@ gem 'rails-backbone'
 # Add Bootstrap
 gem 'bootstrap-sass'
 
+# Font Awesome for Rails
+gem 'font-awesome-rails'
+
 # Static assets
 gem 'rails_serve_static_assets'
 
