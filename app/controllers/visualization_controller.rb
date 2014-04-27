@@ -35,6 +35,7 @@ class VisualizationController < ApplicationController
 		visualization = Visualization.find_by_identifier(params[:id])
 
 		# Replace the attributes that are passed in
+		visualization.worksheet = params[:worksheet]
 		visualization.object = params[:object]
 		visualization.dataset = params[:dataset]
 		visualization.chart_type = params[:chart_type]
@@ -46,7 +47,7 @@ class VisualizationController < ApplicationController
 		visualization.save
 
 		# Return the JSON data
-		render status: 200, json: visualization		
+		head 200, :content_type => 'text/html'
 
 	end
 

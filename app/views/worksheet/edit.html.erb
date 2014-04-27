@@ -221,6 +221,7 @@
 
 		initialize: function() {
 
+			this.set('worksheet', '<%= @worksheet.identifier %>');
 			this.on('change', this.updateOptions);
 		
 		}
@@ -452,6 +453,8 @@
 			chart_options['xaxis'] = $('#xaxis').val();
 
 			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);
 
 		},
 
