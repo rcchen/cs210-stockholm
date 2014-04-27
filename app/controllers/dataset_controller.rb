@@ -114,9 +114,9 @@ class DatasetController < ApplicationController
  			user.save
 
 			# Render the view
-			redirect_to '/dataset/' + @dataset.identifier
+			redirect_to '/dataset/' + @dataset.identifier + "/view"
 		end
-
+		
 	end
 
 	def view

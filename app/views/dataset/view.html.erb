@@ -53,8 +53,8 @@
 		<table class="table" style="margin-bottom: 80px; overflow: scroll; max-width: 960px; ">
 			<thead>
 				<tr>
-				<% JSON.parse(@dataset.attrs).each do |key, value| %>
-				<th><%= key %></th>
+				<% @dataset.attrs.each do |attrHash| %>
+				<th><%=  attrHash["id"]%></th>
 				<% end %>				
 				</tr>
 			</thead>
