@@ -13,15 +13,35 @@ class ApiController < ApplicationController
 		# We collect all the keys in the data hash and 
 		# aggregate values for the keys
 		data = Hash.new
-		@results.each do |datadoc|
+
+		key_index = 0
+		aggregate_index = 0
+
+		@results.attrs.each_with_index do |object, index|
+
+			if object['id'] == key
+
+				key_index = index
+
+			end
+
+			if object['id'] == aggregate
+
+				aggregate_index = index
+
+			end
+
+		end
+
+		@results.datadocs.each do |datadoc|
 			
 			# Get the key
-			key_value = datadoc["#{key}"]
+			key_value = datadoc["c"][key_index]['v']
 
 			# By default, we count the aggregate
 			aggregate_value = 1
 			if key != aggregate
-				aggregate_value = datadoc["#{aggregate}"].to_i
+				aggregate_value = datadoc["c"][aggregate_index]['v'].to_i
 			end
 
 			# If the key does not exist yet, set it to zero
@@ -157,6 +177,8 @@ class ApiController < ApplicationController
 	 		# Handles bar chart data requests
 	 		elsif chart == 'bar'
 
+	 			puts 'THIS IS A BAR'
+
 	 			# Get the key and aggregate
 	 			key = params[:key]
 	 			aggregate = params[:aggregate]
@@ -164,6 +186,7 @@ class ApiController < ApplicationController
 	 			# Put in the format expected of bar charts
 	 			bar_data = Hash.new
 	 			bar_data["key"] = key
+	 			bar_data["aggregate"] = aggregate
 	 			bar_data["values"] = aggregate_data(key, aggregate)
 
 	 			# Render as JSON data

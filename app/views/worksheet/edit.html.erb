@@ -12,10 +12,17 @@
 				<button id="save" class="btn btn-success">Save</button>
 			</div>
 		</div>
+		<div id="temporary">
+			<%= @worksheet.visualizations.length %>
+		</div>
 	</div>
 	<div id="worksheet">
 		<div id="page-container">
-			<div id="page"></div>
+			<div id="page">
+			<% @worksheet.visualizations.each do |visualization| %>
+			<div class="visualization" id="<%= visualization.identifier %>" style="width: 460px; height: 200px;"><iframe src="/visualization/<%= visualization.identifier %>/view" frameBorder="0"></iframe></div>
+			<% end %>
+			</div>
 		</div>
 	</div>
 </div>
@@ -81,13 +88,21 @@
 			<div class="option">
 				<div class="option-label">X-Axis</div>
 				<div class="option-value">
-					<input id="xaxis" type="text" data-role="tagsinput" />
+					<select id="xaxis">
+					<%% for (var key in attributes) { %>
+						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 			<div class="option">
 				<div class="option-label">Y-Axis</div>
 				<div class="option-value">
-					<input id="yaxis" type="text" data-role="tagsinput" />
+					<select id="yaxis">
+					<%% for (var key in attributes) { %>
+						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -123,7 +138,7 @@
 				<div class="option-value">
 					<select id="selection">
 					<%% for (var key in attributes) { %>
-						<option value="<%%= key %>"><%%= key %></option>
+						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
 					<%% } %>
 					</select>
 				</div>
@@ -336,6 +351,8 @@
 
 		changeDataset: function() {
 
+			var _this = this;
+
 			// Get the selected type
 			var dataset = $('#dataset').find(':selected').val();
 
@@ -352,6 +369,9 @@
 
 					// Reload certain things
 					console.log(currentDataset);
+
+					// Call a chart change as well just in case
+					_this.changeChart();
 
 				}
 
@@ -398,6 +418,8 @@
 
 	var BarOptions = Backbone.View.extend({
 
+		el: '#options',
+
 		initialize: function() {
 			this.render();
 		},
@@ -406,15 +428,7 @@
 		render: function() {
 			
 			// Parse the attributes to a valid JSON object
-			var attrs = JSON.parse(currentDataset.get('attrs'));
-
-			// Create an array of tags
-			tags = []
-			for (attr in attrs) {
-				tags.push(attr);
-			}
-
-			console.log(tags);
+			var attrs = currentDataset.get('attrs');
 
 			// Create the template from our options
 			var template = _.template($('#bar-options-template').html(), { 'attributes': attrs });
@@ -426,12 +440,56 @@
 			$('#options').append(template);
 			$('#bar-options').slideDown();
 
-			// Activate tagged input
-			$("input[data-role=tagsinput]").tagit({
-				availableTags: tags
-			});
+			// Set the values of X and Y to the correct things
+			var options = JSON.parse(currentModel.get('chart_options'));
+
+			// Set the defaults
+			$('#xaxis').val(options['xaxis']);
+			$('#yaxis').val(options['yaxis']);
+
+			// Trigger the X and Y axis settings
+			this.changeXAxis();
+			this.changeYAxis();
+
+		},
+
+		events: {
+
+			'change #xaxis'						: 'changeXAxis',
+			'change #yaxis'						: 'changeYAxis'
+
+		},
+
+		changeXAxis: function() {
+
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}
+
+			chart_options['xaxis'] = $('#xaxis').val();
+
+			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);
+
+		},
+
+		changeYAxis: function() {
+			
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}		
+
+			chart_options['yaxis'] = $('#yaxis').val();
+
+			currentModel.set('chart_options', chart_options);
 
 		}
+
 
 	});
 
@@ -635,7 +693,9 @@
 
 				// Set the current model to the model we just retrieved
 				currentModel = model;
-				
+
+				currentModel.set('worksheet_id', '<%= @worksheet.identifier %>');
+
 				// Create a new instance of the general options view
 				generalOptions = new GeneralOptions();
 

@@ -1,5 +1,53 @@
-<h3 id="title"></h3>
-<div id="visualization-preview"></div>
+<div id="visualization" style="width: 100%; height: 100%;">
+</div>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+
+  var dataset = '<%= @visualization.dataset %>';
+  var chart_type = '<%= @visualization.chart_type %>';
+  var chart_options = jQuery.parseJSON('<%= @visualization.chart_options.to_s.html_safe %>');
+
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+
+    console.log(chart_options);
+
+    $.post('/api/' + dataset, { chart: chart_type, key: chart_options['xaxis'], aggregate: chart_options['yaxis']}, function(data) {
+     
+      var payload = [];
+      var headers = [data[0].key, data[0].aggregate];
+      var values = data[0].values;
+
+      payload.push(headers);
+
+      for (var i in values) {
+
+        var value = values[i];
+        var row = [value['label'], value['value']];
+        payload.push(row);
+
+      }
+
+      var google_data = google.visualization.arrayToDataTable(payload);
+      var chart = new google.visualization.BarChart(document.getElementById('visualization'));
+      chart.draw(google_data);
+
+    });
+
+  }
+
+</script>
+
+
+
+
+
+
+
+
+
 <!--<script>
 
   var w = window;
