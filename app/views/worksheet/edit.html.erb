@@ -81,13 +81,13 @@
 			<div class="option">
 				<div class="option-label">X-Axis</div>
 				<div class="option-value">
-					<input id="xaxis" type="text" />
+					<input id="xaxis" type="text" data-role="tagsinput" />
 				</div>
 			</div>
 			<div class="option">
 				<div class="option-label">Y-Axis</div>
 				<div class="option-value">
-					<input id="yaxis" type="text" />
+					<input id="yaxis" type="text" data-role="tagsinput" />
 				</div>
 			</div>
 		</div>
@@ -121,13 +121,11 @@
 			<div class="option">
 				<div class="option-label">Label</div>
 				<div class="option-value">
-					<input id="label" type="text" />
-				</div>
-			</div>
-			<div class="option">
-				<div class="option-label">Aggregate</div>
-				<div class="option-value">
-					<input id="label" type="text" />
+					<select id="selection">
+					<%% for (var key in attributes) { %>
+						<option value="<%%= key %>"><%%= key %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -149,6 +147,31 @@
 	var generalOptions;
 	var objectOptions;
 	var chartOptions;
+
+	// Taken from http://twitter.github.io/typeahead.js/examples/
+	var substringMatcher = function(strs) {
+	  return function findMatches(q, cb) {
+	    var matches, substringRegex;
+	 
+	    // an array that will be populated with substring matches
+	    matches = [];
+	 
+	    // regex used to determine if a string contains the substring `q`
+	    substrRegex = new RegExp(q, 'i');
+	 
+	    // iterate through the pool of strings and for any string that
+	    // contains the substring `q`, add it to the `matches` array
+	    $.each(strs, function(i, str) {
+	      if (substrRegex.test(str)) {
+	        // the typeahead jQuery plugin expects suggestions to a
+	        // JavaScript object, refer to typeahead docs for more info
+	        matches.push({ value: str });
+	      }
+	    });
+	 
+	    cb(matches);
+	  };
+	};
 
 	var Visualization = Backbone.Model.extend({
 		
@@ -382,8 +405,19 @@
 		// Render the filterTemplate within the filterAttribute div
 		render: function() {
 			
+			// Parse the attributes to a valid JSON object
+			var attrs = JSON.parse(currentDataset.get('attrs'));
+
+			// Create an array of tags
+			tags = []
+			for (attr in attrs) {
+				tags.push(attr);
+			}
+
+			console.log(tags);
+
 			// Create the template from our options
-			var template = _.template($('#bar-options-template').html(), {});
+			var template = _.template($('#bar-options-template').html(), { 'attributes': attrs });
 
 			// Remove any items tagged with options-chart
 			$('.options-chart').remove();
@@ -391,6 +425,11 @@
 			// Append to the options panel
 			$('#options').append(template);
 			$('#bar-options').slideDown();
+
+			// Activate tagged input
+			$("input[data-role=tagsinput]").tagit({
+				availableTags: tags
+			});
 
 		}
 
@@ -428,8 +467,11 @@
 		// Render the filterTemplate within the filterAttribute div
 		render: function() {
 			
+			// Parse the attributes to a valid JSON object
+			var attrs = JSON.parse(currentDataset.get('attrs'));
+
 			// Create the template from our options
-			var template = _.template($('#pie-options-template').html(), {});
+			var template = _.template($('#pie-options-template').html(), { 'attributes': attrs });
 
 			// Remove any items tagged with options-chart
 			$('.options-chart').remove();
