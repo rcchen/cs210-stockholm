@@ -49,6 +49,7 @@ class WorksheetController < ApplicationController
 		# Retrieve the corresponding worksheet
 		@worksheet = Worksheet.find_by_identifier(params[:id])
 
+
 	end
 
 	def destroy

@@ -12,10 +12,17 @@
 				<button id="save" class="btn btn-success">Save</button>
 			</div>
 		</div>
+		<div id="temporary">
+			<%= @worksheet.visualizations.length %>
+		</div>
 	</div>
 	<div id="worksheet">
 		<div id="page-container">
-			<div id="page"></div>
+			<div id="page">
+			<% @worksheet.visualizations.each do |visualization| %>
+			<div class="visualization" id="<%= visualization.identifier %>" style="width: 460px; height: 200px;"><iframe src="/visualization/<%= visualization.identifier %>/view" frameBorder="0"></iframe></div>
+			<% end %>
+			</div>
 		</div>
 	</div>
 </div>
@@ -221,7 +228,6 @@
 
 		initialize: function() {
 
-			this.set('worksheet', '<%= @worksheet.identifier %>');
 			this.on('change', this.updateOptions);
 		
 		}
@@ -345,6 +351,8 @@
 
 		changeDataset: function() {
 
+			var _this = this;
+
 			// Get the selected type
 			var dataset = $('#dataset').find(':selected').val();
 
@@ -361,6 +369,9 @@
 
 					// Reload certain things
 					console.log(currentDataset);
+
+					// Call a chart change as well just in case
+					_this.changeChart();
 
 				}
 
@@ -428,6 +439,13 @@
 			// Append to the options panel
 			$('#options').append(template);
 			$('#bar-options').slideDown();
+
+			// Set the values of X and Y to the correct things
+			var options = JSON.parse(currentModel.get('chart_options'));
+
+			// Set the defaults
+			$('#xaxis').val(options['xaxis']);
+			$('#yaxis').val(options['yaxis']);
 
 			// Trigger the X and Y axis settings
 			this.changeXAxis();
@@ -675,7 +693,9 @@
 
 				// Set the current model to the model we just retrieved
 				currentModel = model;
-				
+
+				currentModel.set('worksheet_id', '<%= @worksheet.identifier %>');
+
 				// Create a new instance of the general options view
 				generalOptions = new GeneralOptions();
 
