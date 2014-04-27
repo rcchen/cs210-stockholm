@@ -81,13 +81,21 @@
 			<div class="option">
 				<div class="option-label">X-Axis</div>
 				<div class="option-value">
-					<input id="xaxis" type="text" data-role="tagsinput" />
+					<select id="xaxis">
+					<%% for (var key in attributes) { %>
+						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 			<div class="option">
 				<div class="option-label">Y-Axis</div>
 				<div class="option-value">
-					<input id="yaxis" type="text" data-role="tagsinput" />
+					<select id="yaxis">
+					<%% for (var key in attributes) { %>
+						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -123,7 +131,7 @@
 				<div class="option-value">
 					<select id="selection">
 					<%% for (var key in attributes) { %>
-						<option value="<%%= key %>"><%%= key %></option>
+						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
 					<%% } %>
 					</select>
 				</div>
@@ -398,6 +406,8 @@
 
 	var BarOptions = Backbone.View.extend({
 
+		el: '#options',
+
 		initialize: function() {
 			this.render();
 		},
@@ -406,15 +416,7 @@
 		render: function() {
 			
 			// Parse the attributes to a valid JSON object
-			var attrs = JSON.parse(currentDataset.get('attrs'));
-
-			// Create an array of tags
-			tags = []
-			for (attr in attrs) {
-				tags.push(attr);
-			}
-
-			console.log(tags);
+			var attrs = currentDataset.get('attrs');
 
 			// Create the template from our options
 			var template = _.template($('#bar-options-template').html(), { 'attributes': attrs });
@@ -426,12 +428,47 @@
 			$('#options').append(template);
 			$('#bar-options').slideDown();
 
-			// Activate tagged input
-			$("input[data-role=tagsinput]").tagit({
-				availableTags: tags
-			});
+			// Trigger the X and Y axis settings
+			this.changeXAxis();
+			this.changeYAxis();
+
+		},
+
+		events: {
+
+			'change #xaxis'						: 'changeXAxis',
+			'change #yaxis'						: 'changeYAxis'
+
+		},
+
+		changeXAxis: function() {
+
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}
+
+			chart_options['xaxis'] = $('#xaxis').val();
+
+			currentModel.set('chart_options', chart_options);
+
+		},
+
+		changeYAxis: function() {
+			
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}		
+
+			chart_options['yaxis'] = $('#yaxis').val();
+
+			currentModel.set('chart_options', chart_options);
 
 		}
+
 
 	});
 

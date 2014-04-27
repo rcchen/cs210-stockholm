@@ -39,6 +39,9 @@ class VisualizationController < ApplicationController
 		visualization.dataset = params[:dataset]
 		visualization.chart_type = params[:chart_type]
 
+		# Now set the chart options
+		visualization.chart_options = params[:chart_options].to_json
+
 		# Save the visualization
 		visualization.save
 
@@ -108,9 +111,6 @@ class VisualizationController < ApplicationController
 
 		# Retrieve the correct visualization
 		@visualization = Visualization.find_by_identifier(params[:id])
-
-		puts @visualization.chart_options
-		puts @visualization.filters
 
 		render layout: "sparse"
 
