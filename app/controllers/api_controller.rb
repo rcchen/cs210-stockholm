@@ -144,6 +144,29 @@ class ApiController < ApplicationController
 	end
 
 
+	def fullDatasetGoogleData()
+		dataTableHash = Hash.new
+	 	dataTableHash["cols"] = @dataset.attrs
+	 	dataTableHash["cols"].each_with_index do |colHash, index|
+	 		colHash["label"] = colHash["id"]
+	 	end
+ 		dataTableHash["rows"] = Array.new
+ 		@dataset.datadocs.each do |doc|
+ 			rowHash = Hash.new
+ 			rowHash["c"] = Array.new
+ 			doc.row.each do |attrVal|
+ 				attrHash = Hash.new
+ 				attrHash['v'] = attrVal
+
+ 				# Add this cell to the row
+ 				rowHash['c'] << attrHash
+			end
+
+			# Add this row to the overall object
+			dataTableHash['rows'] << rowHash
+		end
+		return dataTableHash
+	end
 
 	# Shows information on a single dataset
 	def explore
@@ -171,8 +194,11 @@ class ApiController < ApplicationController
 				key = params[:key]
 				aggregate = params[:aggregate]
 
+				# Limit to only one aggregate value in pie charts
+				aggregate = aggregate.slice(0, 1);
+
 	 			# Render as JSON data
-	 			render json: aggregate_data(key, aggregate)
+	 			render json: getGoogleData(key, aggregate)
 
 	 		# Handles bar chart data requests
 	 		elsif chart == 'bar'
@@ -185,16 +211,7 @@ class ApiController < ApplicationController
 
 	 			render json: getGoogleData(key_values, aggregate_values)
 
-	 			# Put in the format expected of bar charts
-	 			#bar_data = Hash.new
-	 			#bar_data["key"] = key
-	 			#bar_data["aggregate"] = aggregate
-	 			#bar_data["values"] = aggregate_data(key, aggregate)
 
-	 			# Render as JSON data
-	 			#json_data = Array.new
-	 			#json_data.push(bar_data)
-	 			#render json: json_data
 
 	 		# Handles line chart data requests
 	 		elsif chart == 'line'
@@ -203,30 +220,12 @@ class ApiController < ApplicationController
 	 			key = params[:key]
 	 			aggregate = params[:aggregate]
 
-	 			# Line charts are slightly different because they expect many XY objects
-	 			# We accomplish this by taking the results of the aggregate data and transforming it
-	 			json_values = Array.new
-	 			values = aggregate_data(key, aggregate);
-	 			values.each do |hash|
-	 				xy_pair = Hash.new
-	 				xy_pair["x"] = hash["label"]
-	 				xy_pair["y"] = hash["value"]
-	 				json_values << xy_pair
-	 			end
+	 			render json: getGoogleData(key, aggregate)
 
-	 			# Construct the line chart
-	 			json_object = Hash.new
-	 			json_object["values"] = json_values
-	 			json_object["key"] = key
-
-	 			# TODO: Line charts need to pass the name of the line as well
-
-	 			json_data = Array.new
-	 			json_data.push(json_object)
-	 			render json: json_data
 
 	 		# Handles the geo chart data request
 	 		elsif chart == 'geo'
+	 			# TODO: Make this work with google charts format
 
 	 			# This one is special because we need latitude and longitude
 	 			# TODO: Change the parameters so it's not just piggybacking on key/aggregate
@@ -259,22 +258,21 @@ class ApiController < ApplicationController
 
 	 		# If we don't receive a chart type, handle as a filtered data request
 	 		else
-
-	 			# Render the result as JSON
-	 			render json: @results
-
+	 			render json: fullDatasetGoogleData()
 	 		end
 
 	 	# If it is a GET request, return basic information
 	 	else
 
-	 		render json: ''
+	 		render json: fullDatasetGoogleData()
 
 	 	end
 
 	end
 
 	def getGoogleData(key_values, aggregate_values)
+		# This method also performs a projection, stripping any columns
+		# not explicitly required by key or aggregates
 
 		# Both key_values and aggregate_values are represented as arrays
 		# This supports multi-series charts
