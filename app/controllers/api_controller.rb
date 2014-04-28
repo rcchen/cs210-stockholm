@@ -290,6 +290,7 @@ class ApiController < ApplicationController
  			dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_value)
  			keyAttrs = @dataset.attrs[dataTableKeyIndex]
  			keyAttrs['label'] = keyAttrs['id']
+ 			keyAttrs['type'] = 'string'
  			dataTableHash["cols"] << keyAttrs
  		end
 
