@@ -70,7 +70,6 @@ class ApiController < ApplicationController
 
 	def attrNameToIndex(attrs, filter_attribute) 
 		attrs.each_with_index do |attrHash, index|
-			puts attrHash
 			if (attrHash["id"] == filter_attribute)
 				return index
 			end
@@ -300,10 +299,10 @@ class ApiController < ApplicationController
  		aggregate_values.each do |aggregate_value|
  			index = attrNameToIndex(@dataset.attrs, aggregate_value)
  			dataTableValueIndices << index
- 			dataTableHash["cols"] << @dataset.attrs[index]
+ 			colAttrs = @dataset.attrs[index]
+ 			colAttrs['label'] = colAttrs['id']
+ 			dataTableHash["cols"] << colAttrs
  		end
-
- 		puts dataTableValueIndices
 
  		# Complete aggregate hashing
  		dataTableAggregateHash = Hash.new
@@ -318,10 +317,6 @@ class ApiController < ApplicationController
  			end
 
  			dataTableValueIndices.each_with_index do |rowIndex, index| 
-
- 				puts dataTableValueIndices
- 				puts dataTableAggregateHash[datadoc.row[dataTableKeyIndex]]
- 				puts datadoc.row[rowIndex]
 
  				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]][index]
 

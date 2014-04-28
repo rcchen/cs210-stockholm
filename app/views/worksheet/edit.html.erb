@@ -457,11 +457,17 @@
 
 			console.log(currentModel);
 
-			/*for (var i in options['key']) {
+			for (var i in options['key']) {
 
 				$('#key').tagit('createTag', options['key'][i]);
 
-			}*/
+			}
+
+			for (var i in options['value']) {
+
+				$('#value').tagit('createTag', options['value'][i]);
+
+			}
 
 			// Set the defaults
 			/*if (options) {
@@ -767,14 +773,12 @@
 				// Convert the chart_options from a string to a JSON object
 				var chart_options = currentModel.get('chart_options');
 
-				console.log('ASDFASDF');
-				console.log(chart_options);
-
+				// Set the chart options to a Javascript object
 				currentModel.set('chart_options', jQuery.parseJSON(chart_options));
 
+				// Set the worksheet identifier
 				currentModel.set('worksheet_id', '<%= @worksheet.identifier %>');
 
-				console.log(currentModel);
 
 				// Create a new instance of the general options view
 				generalOptions = new GeneralOptions();
