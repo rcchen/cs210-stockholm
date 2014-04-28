@@ -326,7 +326,10 @@ class ApiController < ApplicationController
 
  		# Add our aggregated values as rows into the table hash
  		dataTableHash["rows"] = Array.new
- 		dataTableAggregateHash.each do |key, values|
+
+ 		# Access the hash by order of sorted keys
+ 		dataTableAggregateHash.keys.sort.each do |key|
+ 			values = dataTableAggregateHash[key]
  			rowHash = Hash.new
  			rowHash["c"] = Array.new
  			rowHash["c"] << { 'v' => key }
