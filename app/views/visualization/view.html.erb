@@ -5,7 +5,7 @@
 
   var dataset = '<%= @visualization.dataset %>';
   var chart_type = '<%= @visualization.chart_type %>';
-  var chart_options = jQuery.parseJSON('<%= @visualization.chart_options.to_s.html_safe %>');
+  var chart_options = jQuery.parseJSON('<%= @visualization.chart_options.html_safe %>');
 
   google.load("visualization", "1", {packages:["corechart"]});
   google.setOnLoadCallback(drawChart);
@@ -14,9 +14,14 @@
 
     console.log(chart_options);
 
-    $.post('/api/' + dataset, { chart: chart_type, key: chart_options['xaxis'], aggregate: chart_options['yaxis']}, function(data) {
+    $.post('/api/' + dataset, { chart: chart_type, key: chart_options['key'], aggregate: chart_options['value']}, function(data) {
      
-      var payload = [];
+      console.log(data);
+
+      var chart = new google.visualization.BarChart(document.getElementById('visualization'));
+      chart.draw(new google.visualization.DataTable(data));
+
+      /*var payload = [];
       var headers = [data[0].key, data[0].aggregate];
       var values = data[0].values;
 
@@ -33,6 +38,8 @@
       var google_data = google.visualization.arrayToDataTable(payload);
       var chart = new google.visualization.BarChart(document.getElementById('visualization'));
       chart.draw(google_data);
+
+      */
 
     });
 

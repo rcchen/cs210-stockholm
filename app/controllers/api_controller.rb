@@ -36,12 +36,12 @@ class ApiController < ApplicationController
 		@results.datadocs.each do |datadoc|
 			
 			# Get the key
-			key_value = datadoc["c"][key_index]['v']
+			key_value = datadoc["row"][key_index]
 
 			# By default, we count the aggregate
 			aggregate_value = 1
 			if key != aggregate
-				aggregate_value = datadoc["c"][aggregate_index]['v'].to_i
+				aggregate_value = datadoc["row"][aggregate_index].to_i
 			end
 
 			# If the key does not exist yet, set it to zero
@@ -70,6 +70,7 @@ class ApiController < ApplicationController
 
 	def attrNameToIndex(attrs, filter_attribute) 
 		attrs.each_with_index do |attrHash, index|
+			puts attrHash
 			if (attrHash["id"] == filter_attribute)
 				return index
 			end
@@ -180,19 +181,21 @@ class ApiController < ApplicationController
 	 			puts 'THIS IS A BAR'
 
 	 			# Get the key and aggregate
-	 			key = params[:key]
-	 			aggregate = params[:aggregate]
+	 			key_values = params[:key]
+	 			aggregate_values = params[:aggregate]
+
+	 			render json: getGoogleData(key_values, aggregate_values)
 
 	 			# Put in the format expected of bar charts
-	 			bar_data = Hash.new
-	 			bar_data["key"] = key
-	 			bar_data["aggregate"] = aggregate
-	 			bar_data["values"] = aggregate_data(key, aggregate)
+	 			#bar_data = Hash.new
+	 			#bar_data["key"] = key
+	 			#bar_data["aggregate"] = aggregate
+	 			#bar_data["values"] = aggregate_data(key, aggregate)
 
 	 			# Render as JSON data
-	 			json_data = Array.new
-	 			json_data.push(bar_data)
-	 			render json: json_data
+	 			#json_data = Array.new
+	 			#json_data.push(bar_data)
+	 			#render json: json_data
 
 	 		# Handles line chart data requests
 	 		elsif chart == 'line'
@@ -265,27 +268,81 @@ class ApiController < ApplicationController
 
 	 	# If it is a GET request, return basic information
 	 	else
-	 		dataTableHash = Hash.new
-	 		dataTableHash["cols"] = @dataset.attrs
-	 		dataTableHash["rows"] = Array.new
-	 		@dataset.datadocs.each do |doc|
-	 			rowHash = Hash.new
-	 			rowHash["c"] = Array.new
-	 			doc.row.each do |attrVal|
-	 				attrHash = Hash.new
-	 				attrHash['v'] = attrVal
 
-	 				# Add this cell to the row
-	 				rowHash['c'] << attrHash
-	 			end
-
-	 			# Add this row to the overall object
-	 			dataTableHash['rows'] << rowHash
-	 		end
-
-	 		render json: dataTableHash
+	 		render json: ''
 
 	 	end
+
+	end
+
+	def getGoogleData(key_values, aggregate_values)
+
+		# Both key_values and aggregate_values are represented as arrays
+		# This supports multi-series charts
+
+ 		dataTableHash = Hash.new
+
+ 		dataTableKeyIndex = 0
+		dataTableValueIndices = Array.new	
+ 		dataTableHash["cols"] = Array.new
+
+ 		# Adds all the corresponding keys to cols
+ 		# For now, this only happens once because there is only one key value
+ 		key_values.each do |key_value|
+ 			dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_value)
+ 			keyAttrs = @dataset.attrs[dataTableKeyIndex]
+ 			keyAttrs['label'] = keyAttrs['id']
+ 			dataTableHash["cols"] << keyAttrs
+ 		end
+
+ 		# Adds all the corresponding values to cols
+ 		aggregate_values.each do |aggregate_value|
+ 			index = attrNameToIndex(@dataset.attrs, aggregate_value)
+ 			dataTableValueIndices << index
+ 			dataTableHash["cols"] << @dataset.attrs[index]
+ 		end
+
+ 		puts dataTableValueIndices
+
+ 		# Complete aggregate hashing
+ 		dataTableAggregateHash = Hash.new
+
+ 		# Iterate over all datadocs
+ 		@dataset.datadocs.each do |datadoc|
+
+ 			if !dataTableAggregateHash.has_key?(datadoc.row[dataTableKeyIndex])
+
+ 				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]] = Array.new(dataTableValueIndices.length, 0)
+
+ 			end
+
+ 			dataTableValueIndices.each_with_index do |rowIndex, index| 
+
+ 				puts dataTableValueIndices
+ 				puts dataTableAggregateHash[datadoc.row[dataTableKeyIndex]]
+ 				puts datadoc.row[rowIndex]
+
+ 				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]][index]
+
+ 				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]][index] += datadoc.row[rowIndex].to_f
+
+ 			end
+
+ 		end
+
+ 		# Add our aggregated values as rows into the table hash
+ 		dataTableHash["rows"] = Array.new
+ 		dataTableAggregateHash.each do |key, values|
+ 			rowHash = Hash.new
+ 			rowHash["c"] = Array.new
+ 			rowHash["c"] << { 'v' => key }
+ 			values.each do |value|
+ 				rowHash["c"] << { 'v' => value}
+ 			end
+ 			dataTableHash["rows"] << rowHash
+ 		end
+
+ 		return dataTableHash
 
 	end
 

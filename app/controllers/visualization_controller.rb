@@ -131,6 +131,8 @@ class VisualizationController < ApplicationController
 		# Retrieve the correct visualization
 		@visualization = Visualization.find_by_identifier(params[:id])
 
+		puts @visualization.chart_options
+
 		render layout: "sparse"
 
 	end

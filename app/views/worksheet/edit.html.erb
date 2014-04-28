@@ -86,23 +86,15 @@
 		<div class="options-header">Bar Chart</div>
 		<div class="options">
 			<div class="option">
-				<div class="option-label">X-Axis</div>
+				<div class="option-label">Key</div>
 				<div class="option-value">
-					<select id="xaxis">
-					<%% for (var key in attributes) { %>
-						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
-					<%% } %>
-					</select>
+					<input id="key" />
 				</div>
 			</div>
 			<div class="option">
-				<div class="option-label">Y-Axis</div>
+				<div class="option-label">Value</div>
 				<div class="option-value">
-					<select id="yaxis">
-					<%% for (var key in attributes) { %>
-						<option value="<%%= attributes[key].id %>"><%%= attributes[key].id %></option>
-					<%% } %>
-					</select>
+					<input id="value" />
 				</div>
 			</div>
 		</div>
@@ -444,29 +436,53 @@
 			$('#options').append(template);
 			$('#bar-options').slideDown();
 
+			// Create a string array of attributes that we can use for tags
+			var attrs_arr = []
+			for (var i in attrs) {
+				attrs_arr.push(attrs[i].id);
+			}
+
+			// Set up autocompleting tags for the key
+			$('#key').tagit({
+				availableTags: attrs_arr
+			});
+
+			// Set up autcompleting tags for the value
+			$('#value').tagit({
+				availableTags: attrs_arr
+			});
+
 			// Set the values of X and Y to the correct things
 			var options = currentModel.get('chart_options');
 
+			console.log(currentModel);
+
+			/*for (var i in options['key']) {
+
+				$('#key').tagit('createTag', options['key'][i]);
+
+			}*/
+
 			// Set the defaults
-			if (options) {
-				$('#xaxis').val(options['xaxis']);
-				$('#yaxis').val(options['yaxis']);
-			}
+			/*if (options) {
+				$('#key').attr('value', options['key'].join(","));
+				$('#value').val(options['value'].join(","));
+			}*/
 
 			// Trigger the X and Y axis settings
-			this.changeXAxis();
-			this.changeYAxis();
+			this.changeKey();
+			this.changeValue();
 
 		},
 
 		events: {
 
-			'change #xaxis'						: 'changeXAxis',
-			'change #yaxis'						: 'changeYAxis'
+			'change #key'						: 'changeKey',
+			'change #value'						: 'changeValue'
 
 		},
 
-		changeXAxis: function() {
+		changeKey: function() {
 
 			var chart_options = currentModel.get('chart_options');
 
@@ -474,7 +490,7 @@
 				chart_options = {}
 			}
 
-			chart_options['xaxis'] = $('#xaxis').val();
+			chart_options['key'] = $('#key').tagit('assignedTags');
 
 			currentModel.set('chart_options', chart_options);
 
@@ -482,7 +498,7 @@
 
 		},
 
-		changeYAxis: function() {
+		changeValue: function() {
 			
 			var chart_options = currentModel.get('chart_options');
 
@@ -490,7 +506,7 @@
 				chart_options = {}
 			}		
 
-			chart_options['yaxis'] = $('#yaxis').val();
+			chart_options['value'] = $('#value').tagit('assignedTags');
 
 			currentModel.set('chart_options', chart_options);
 
