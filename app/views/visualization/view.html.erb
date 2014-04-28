@@ -12,36 +12,31 @@
 
   function drawChart() {
 
-    console.log(chart_options);
-
     $.post('/api/' + dataset, { chart: chart_type, key: chart_options['key'], aggregate: chart_options['value']}, function(data) {
      
-      console.log(data);
-
-      var chart = new google.visualization.BarChart(document.getElementById('visualization'));
-      chart.draw(new google.visualization.DataTable(data));
-
-      /*var payload = [];
-      var headers = [data[0].key, data[0].aggregate];
-      var values = data[0].values;
-
-      payload.push(headers);
-
-      for (var i in values) {
-
-        var value = values[i];
-        var row = [value['label'], value['value']];
-        payload.push(row);
-
+      if (chart_type == 'bar') {
+        drawBarChart(data);
       }
 
-      var google_data = google.visualization.arrayToDataTable(payload);
-      var chart = new google.visualization.BarChart(document.getElementById('visualization'));
-      chart.draw(google_data);
-
-      */
+      if (chart_type == 'line') {
+        drawLineChart(data);
+      }
 
     });
+
+  }
+
+  function drawBarChart(data) {
+
+    var chart = new google.visualization.BarChart(document.getElementById('visualization'));
+    chart.draw(new google.visualization.DataTable(data));
+
+  }
+
+  function drawLineChart(data) {
+
+    var chart = new google.visualization.LineChart(document.getElementById('visualization'));
+    chart.draw(new google.visualization.DataTable(data));
 
   }
 
