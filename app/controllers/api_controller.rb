@@ -6,6 +6,24 @@ class ApiController < ApplicationController
 		include Origin::Queryable
 	end
 
+	class Location
+		attr_accessor :latitude, :longitude
+		def initialize(latitude, longitude)
+			@latitude = latitude
+			@longitude = longitude
+		end
+		def eql?(location)
+			if @latitude == location.latitude and
+				@longitude == location.longitude
+				return true
+			end
+			return false
+		end
+		def hash
+			[@latitude, @longitude].hash
+		end
+	end
+
 	# Route for data aggregation
 	def aggregate_data(key, aggregate)
 
@@ -191,8 +209,8 @@ class ApiController < ApplicationController
  			if chart == 'pie'
 
 				# Get the key and the aggregate
-				key = params[:key]
-				aggregate = params[:aggregate]
+				key = params[:chart_options]['key']
+				aggregate = params[:chart_options]['value']
 
 				# Limit to only one aggregate value in pie charts
 				aggregate = aggregate.slice(0, 1);
@@ -203,58 +221,30 @@ class ApiController < ApplicationController
 	 		# Handles bar chart data requests
 	 		elsif chart == 'bar'
 
-	 			puts 'THIS IS A BAR'
-
 	 			# Get the key and aggregate
-	 			key_values = params[:key]
-	 			aggregate_values = params[:aggregate]
+	 			key_values = params[:chart_options]['key']
+	 			aggregate_values = params[:chart_options]['value']
 
 	 			render json: getGoogleData(key_values, aggregate_values)
-
-
 
 	 		# Handles line chart data requests
 	 		elsif chart == 'line'
 
 	 			# Get the key and aggregate
-	 			key = params[:key]
-	 			aggregate = params[:aggregate]
+	 			key = params[:chart_options]['key']
+	 			aggregate = params[:chart_options]['value']
 
 	 			render json: getGoogleData(key, aggregate)
 
 
 	 		# Handles the geo chart data request
 	 		elsif chart == 'geo'
-	 			# TODO: Make this work with google charts format
 
-	 			# This one is special because we need latitude and longitude
-	 			# TODO: Change the parameters so it's not just piggybacking on key/aggregate
-	 			latitude = params[:key]
-	 			longitude = params[:aggregate]
+	 			latitude = params[:chart_options]['latitude']
+	 			longitude = params[:chart_options]['longitude']
+	 			aggregate = params[:chart_options]['value']
 
-	 			# Stores the results of our iteration
-	 			json_data = Array.new
-
-	 			# Iterate through all of the datadocs for the latitude and longitude
-	 			@results.each do |datadoc|
-
-	 				# Get the latitude and longitude
-					data_latitude = datadoc["#{latitude}"]
-					data_longitude = datadoc["#{longitude}"]
-
-					# Put them in an object
-					# TODO: Also grab a label for the object
-					location_object = Hash.new
-					location_object["latitude"] = data_latitude
-					location_object["longitude"] = data_longitude
-
-					# Put this into the results array
-					json_data << location_object
-
-	 			end
-
-	 			# Return the array as JSON data
-	 			render json: json_data 
+	 			render json: getGeoData(latitude, longitude, aggregate)
 
 	 		# If we don't receive a chart type, handle as a filtered data request
 	 		else
@@ -337,6 +327,47 @@ class ApiController < ApplicationController
  				rowHash["c"] << { 'v' => value}
  			end
  			dataTableHash["rows"] << rowHash
+ 		end
+
+ 		return dataTableHash
+
+	end
+
+	def getGeoData(latitude, longitude, aggregate_values)
+
+		dataTableHash = Hash.new
+
+ 		dataTableLatitudeIndex = attrNameToIndex(@dataset.attrs, latitude[0])
+ 		dataTableLongitudeIndex = attrNameToIndex(@dataset.attrs, longitude[0])
+		dataTableValueIndices = Array.new
+
+ 		# Adds all the corresponding values to cols
+ 		aggregate_values.each do |aggregate_value|
+ 			index = attrNameToIndex(@dataset.attrs, aggregate_value)
+ 			dataTableValueIndices << index
+ 		end
+
+		puts dataTableLatitudeIndex, dataTableLongitudeIndex, dataTableValueIndices
+
+ 		@dataset.datadocs.each do |datadoc|
+
+ 			latitude = datadoc.row[dataTableLatitudeIndex]
+ 			longitude = datadoc.row[dataTableLongitudeIndex]
+
+ 			# puts datadoc.row
+
+ 			location = Location.new(latitude, longitude)
+
+ 			if !dataTableHash.has_key?(location)
+ 				dataTableHash[location] = Array.new(dataTableValueIndices.length, 0)
+ 			end
+
+  			dataTableValueIndices.each_with_index do |rowIndex, index| 
+
+  				dataTableHash[location][index] += datadoc.row[rowIndex].to_f
+
+ 			end
+
  		end
 
  		return dataTableHash

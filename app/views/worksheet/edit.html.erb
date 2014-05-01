@@ -153,7 +153,36 @@
 	<div id="geo-options" class="options-panel options-chart">
 		<div class="options-header">Geo Chart</div>
 		<div class="options">
-			<div class="option">Not currently implemented</div>
+			<div class="option">
+				<div class="option-label">Latitude</div>
+				<div class="option-value">
+					<select id="latitude">
+					<%% for (var index in attributes) { %>
+						<option value="<%%= attributes[index].id %>"><%%= attributes[index].id %></option>
+					<%% } %>
+					</select>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Longitude</div>
+				<div class="option-value">
+					<select id="longitude">
+					<%% for (var index in attributes) { %>
+						<option value="<%%= attributes[index].id %>"><%%= attributes[index].id %></option>
+					<%% } %>
+					</select>
+				</div>
+			</div>
+			<div class="option">
+				<div class="option-label">Value</div>
+				<div class="option-value">
+					<select id="value">
+					<%% for (var index in attributes) { %>
+						<option value="<%%= attributes[index].id %>"><%%= attributes[index].id %></option>
+					<%% } %>
+					</select>
+				</div>
+			</div>
 		</div>
 	</div>
 </script>
@@ -730,6 +759,8 @@
 
 	var GeoOptions = Backbone.View.extend({
 
+		el: '#options',
+
 		initialize: function() {
 			this.render();
 		},
@@ -737,8 +768,11 @@
 		// Render the filterTemplate within the filterAttribute div
 		render: function() {
 			
+			// Parse the attributes to a valid JSON object
+			var attrs = currentDataset.get('attrs');
+
 			// Create the template from our options
-			var template = _.template($('#geo-options-template').html(), {});
+			var template = _.template($('#geo-options-template').html(), { 'attributes': attrs });
 
 			// Remove any items tagged with options-chart
 			$('.options-chart').remove();
@@ -746,6 +780,84 @@
 			// Append to the options panel
 			$('#options').append(template);
 			$('#geo-options').slideDown();
+
+			// Create a string array of attributes that we can use for tags
+			var attrs_arr = []
+			for (var i in attrs) {
+				attrs_arr.push(attrs[i].id);
+			}
+
+			// Set the values of X and Y to the correct things
+			var options = currentModel.get('chart_options');
+
+			if (options != null) {
+
+				$('#latitude').val(options['latitude'][0]);
+				$('#longitude').val(options['longitude'][0]);
+				$('#value').val(options['value'][0]);
+
+			}
+
+			// Trigger the X and Y axis settings
+			this.changeLatitude();
+			this.changeLongitude();
+			this.changeValue();
+
+		},
+
+		events: {
+
+			'change #latitude'						: 'changeLatitude',
+			'change #longitude'						: 'changeLongitude',
+			'change #value'							: 'changeValue'
+
+		},
+
+		changeLatitude: function() {
+
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}
+
+			chart_options['latitude'] = [$('#latitude').val()];
+
+			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);
+
+		},
+
+		changeLongitude: function() {
+
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}
+
+			chart_options['longitude'] = [$('#longitude').val()];
+
+			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);			
+
+		},
+
+		changeValue: function() {
+			
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}		
+
+			chart_options['value'] = [$('#value').val()];
+
+			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);
 
 		}
 

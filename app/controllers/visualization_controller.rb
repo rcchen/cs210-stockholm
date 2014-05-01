@@ -133,7 +133,7 @@ class VisualizationController < ApplicationController
 
 		puts @visualization.chart_options
 
-		render layout: "sparse"
+		render layout: "sparse_graph"
 
 	end
 

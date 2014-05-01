@@ -12,7 +12,7 @@
 
   function drawChart() {
 
-    $.post('/api/' + dataset, { chart: chart_type, key: chart_options['key'], aggregate: chart_options['value']}, function(data) {
+    $.post('/api/' + dataset, { chart: chart_type, chart_options: chart_options }, function(data) {
      
       if (chart_type == 'bar') {
         drawBarChart(data);
@@ -24,6 +24,10 @@
 
       if (chart_type == 'pie') {
         drawPieChart(data);
+      }
+
+      if (chart_type == 'geo') {
+        drawGeoChart(data);
       }
 
     });
@@ -48,6 +52,12 @@
 
     var chart = new google.visualization.PieChart(document.getElementById('visualization'));
     chart.draw(new google.visualization.DataTable(data));
+
+  }
+
+  function drawGeoChart(data) {
+
+    console.log(data);
 
   }
 
