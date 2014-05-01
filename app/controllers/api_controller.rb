@@ -393,7 +393,7 @@ class ApiController < ApplicationController
 		puts dataTableLatitudeIndex, dataTableLongitudeIndex, dataTableValueIndices
 
  		@dataset.datadocs.each do |datadoc|
-
+ 			next if not meetsCriteria(datadoc)
  			latitude = datadoc.row[dataTableLatitudeIndex]
  			longitude = datadoc.row[dataTableLongitudeIndex]
 
@@ -412,8 +412,15 @@ class ApiController < ApplicationController
  			end
 
  		end
+ 		returnArray = Array.new
+ 		dataTableHash.each do |location, valArray|
+ 			rowArr = Array.new
+ 			rowArr << location.latitude
+ 			rowArr << location.longitude
+ 			returnArray << (rowArr + valArray)
+ 		end
 
- 		return dataTableHash
+ 		return returnArray
 
 	end
 
