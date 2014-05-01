@@ -96,7 +96,8 @@ class ApiController < ApplicationController
 	end
 	
 	def filter_documents(filters)
-		# Start construction our query here
+		return
+			# Start construction our query here
 		query = @dataset.datadocs
 
 		# Construct a query with criteria
@@ -139,7 +140,7 @@ class ApiController < ApplicationController
 				end
 	 			equals_filters[filter_attribute].push(filter_value)
 			elsif filter_sign == "<"
-				query = query.lt(:"row[#{attributeIndex}]" => filter_value)
+				query = query.lt(:row["#{attributeIndex}"] =>  filter_value)
 			elsif filter_sign == "<="
 				query = query.lte(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == ">"
@@ -147,7 +148,7 @@ class ApiController < ApplicationController
 			elsif filter_sign == ">="
 				query = query.gte(:"row[#{attributeIndex}]" => filter_value)
 			elsif filter_sign == "!="
-				query = query.ne(:"row[#{attributeIndex}]" => filter_value)
+				query = query.ne(row[attributeIndex] => filter_value)
 			elsif filter_sign == "Contains" 
 				query = query.where(:"row[#{attributeIndex}]" => Regexp.new(filter_value) )
 			end
@@ -161,6 +162,51 @@ class ApiController < ApplicationController
 		@results = query
 	end
 
+	def meetsCriteria(doc)
+		return true if params[:filters].nil?
+
+		# Iterate through the objects in the filter to build the query
+		params[:filters].each do |filter|
+
+			# When we build the query, if we have multiple things fulfilling
+			# the same pattern (eg. two attributes that are both equals) the
+			# default is to apply an OR clause on the two statements. There
+			# is currently no override for this. This should be the behavior
+			# that is expected by the user.
+
+			# Pull the correct values out from the filter
+			filter_attribute = filter[1]["attribute"]
+			filter_sign = filter[1]["sign"]
+			filter_value = filter[1]["value"]
+
+			attributeIndex = attrNameToIndex(@dataset.attrs, filter_attribute)
+			# Cast for numerics
+			if @dataset.attrs[attributeIndex]['type'] == 'number'
+				filter_value = filter_value.to_f
+			elsif @dataset.attrs[attributeIndex]['type'] == 'datetime'
+				filter_value = Chronic.parse(filter_value)
+			end
+
+			# Start building our query filter
+			if filter_sign == "="
+				return false if  not doc.row[attributeIndex] == filter_value
+			elsif filter_sign == "<"
+				return false if not doc.row[attributeIndex].to_f < filter_value
+			elsif filter_sign == "<="
+				return false if not doc.row[attributeIndex] <= filter_value
+			elsif filter_sign == ">"
+				return false if not doc.row[attributeIndex] > filter_value
+			elsif filter_sign == ">="
+				return false if not doc.row[attributeIndex] >= filter_value
+			elsif filter_sign == "!="
+				return false if not doc.row[attributeIndex] != filter_value
+			elsif filter_sign == "Contains" 
+				return false if not Regexp.new(filter_value).match doc.row[attributeIndex]
+			end
+
+		end
+		return true
+	end
 
 	def fullDatasetGoogleData()
 		dataTableHash = Hash.new
@@ -170,6 +216,8 @@ class ApiController < ApplicationController
 	 	end
  		dataTableHash["rows"] = Array.new
  		@dataset.datadocs.each do |doc|
+ 			next if not meetsCriteria(doc)
+
  			rowHash = Hash.new
  			rowHash["c"] = Array.new
  			doc.row.each do |attrVal|
@@ -192,12 +240,6 @@ class ApiController < ApplicationController
 		# Retrieve the data set
 		id = params[:id]
 		@dataset = Dataset.where(:identifier => id).first
-
-		if not params[:filters].nil?
-			filter_documents(params[:filters])
-		else
-			@results = @dataset
-		end
 
 		# POST requests are typically associated with some chart
  		if request.post?
@@ -297,6 +339,7 @@ class ApiController < ApplicationController
 
  		# Iterate over all datadocs
  		@dataset.datadocs.each do |datadoc|
+ 			next if ! meetsCriteria(datadoc)
 
  			if !dataTableAggregateHash.has_key?(datadoc.row[dataTableKeyIndex])
 
