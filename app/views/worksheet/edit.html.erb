@@ -128,13 +128,21 @@
 			<div class="option">
 				<div class="option-label">Key</div>
 				<div class="option-value">
-					<input id="key" />
+					<select id="key">
+					<%% for (var index in attributes) { %>
+						<option value="<%%= attributes[index].id %>"><%%= attributes[index].id %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 			<div class="option">
 				<div class="option-label">Value</div>
 				<div class="option-value">
-					<input id="value" />
+					<select id="value">
+					<%% for (var index in attributes) { %>
+						<option value="<%%= attributes[index].id %>"><%%= attributes[index].id %></option>
+					<%% } %>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -634,6 +642,8 @@
 
 	var PieOptions = Backbone.View.extend({
 
+		el: '#options',
+
 		initialize: function() {
 			this.render();
 		},
@@ -642,7 +652,7 @@
 		render: function() {
 			
 			// Parse the attributes to a valid JSON object
-			var attrs = JSON.parse(currentDataset.get('attrs'));
+			var attrs = currentDataset.get('attrs');
 
 			// Create the template from our options
 			var template = _.template($('#pie-options-template').html(), { 'attributes': attrs });
@@ -654,7 +664,67 @@
 			$('#options').append(template);
 			$('#pie-options').slideDown();
 
+			// Create a string array of attributes that we can use for tags
+			var attrs_arr = []
+			for (var i in attrs) {
+				attrs_arr.push(attrs[i].id);
+			}
+
+			// Set the values of X and Y to the correct things
+			var options = currentModel.get('chart_options');
+
+			if (options != null) {
+
+				$('#key').val(options['key'][0]);
+				$('#value').val(options['value'][0]);
+
+			}
+
+			// Trigger the X and Y axis settings
+			this.changeKey();
+			this.changeValue();
+
+		},
+
+		events: {
+
+			'change #key'						: 'changeKey',
+			'change #value'						: 'changeValue'
+
+		},
+
+		changeKey: function() {
+
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}
+
+			chart_options['key'] = [$('#key').val()];
+
+			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);
+
+		},
+
+		changeValue: function() {
+			
+			var chart_options = currentModel.get('chart_options');
+
+			if (!chart_options) {
+				chart_options = {}
+			}		
+
+			chart_options['value'] = [$('#value').val()];
+
+			currentModel.set('chart_options', chart_options);
+
+			console.log(currentModel);
+
 		}
+
 
 	});
 
