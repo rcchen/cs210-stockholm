@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>draggabilly.pkgd.js - RDoc Documentation</title>
+
+<link href="./fonts.css" rel="stylesheet">
+<link href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/search_index.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/searcher.js"></script>
+<script src="./js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="project-metadata">
+    <div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./api_js_coffee.html">api.js.coffee</a>
+  
+    <li><a href="./application_js.html">application.js</a>
+  
+    <li><a href="./backbone/cs210_stockholm_js_coffee.html">cs210_stockholm.js.coffee</a>
+  
+    <li><a href="./bootstrap-tagsinput_js.html">bootstrap-tagsinput.js</a>
+  
+    <li><a href="./collections_js_coffee.html">collections.js.coffee</a>
+  
+    <li><a href="./create_js_coffee.html">create.js.coffee</a>
+  
+    <li><a href="./d3_min_js.html">d3.min.js</a>
+  
+    <li><a href="./dashboard_js_coffee.html">dashboard.js.coffee</a>
+  
+    <li><a href="./dataset_js_coffee.html">dataset.js.coffee</a>
+  
+    <li><a href="./draggabilly_pkgd_js.html">draggabilly.pkgd.js</a>
+  
+    <li><a href="./entries_js_coffee.html">entries.js.coffee</a>
+  
+    <li><a href="./gmaps_js.html">gmaps.js</a>
+  
+    <li><a href="./graph_js_coffee.html">graph.js.coffee</a>
+  
+    <li><a href="./jquery_form_min_js.html">jquery.form.min.js</a>
+  
+    <li><a href="./nv_d3_js.html">nv.d3.js</a>
+  
+    <li><a href="./packery_pkgd_min_js.html">packery.pkgd.min.js</a>
+  
+    <li><a href="./parser_js_coffee.html">parser.js.coffee</a>
+  
+    <li><a href="./properties_js_coffee.html">properties.js.coffee</a>
+  
+    <li><a href="./spin_min_js.html">spin.min.js</a>
+  
+    <li><a href="./tag-it_min_js.html">tag-it.min.js</a>
+  
+    <li><a href="./typeahead_js.html">typeahead.js</a>
+  
+    <li><a href="./users_js_coffee.html">users.js.coffee</a>
+  
+    <li><a href="./visualization_js_coffee.html">visualization.js.coffee</a>
+  
+    <li><a href="./welcome_js_coffee.html">welcome.js.coffee</a>
+  
+    <li><a href="./worksheet_js_coffee.html">worksheet.js.coffee</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-label="Page draggabilly.pkgd.js">
+
+<pre class="ruby"><span class="ruby-operator">!</span>
+ <span class="ruby-constant">Draggabilly</span> <span class="ruby-constant">PACKAGED</span> <span class="ruby-identifier">v1</span><span class="ruby-value">.1</span><span class="ruby-value">.0</span>
+ <span class="ruby-constant">Make</span> <span class="ruby-identifier">that</span> <span class="ruby-identifier">shiz</span> <span class="ruby-identifier">draggable</span>
+ <span class="ruby-identifier">http</span>:<span class="ruby-operator">/</span><span class="ruby-regexp">/draggabilly.desandro.com
+ MIT license
+
+!
+ classie - class helper functions
+ from bonzo https:/</span><span class="ruby-operator">/</span><span class="ruby-identifier">github</span>.<span class="ruby-identifier">com</span><span class="ruby-operator">/</span><span class="ruby-identifier">ded</span><span class="ruby-operator">/</span><span class="ruby-identifier">bonzo</span>
+
+ <span class="ruby-identifier">classie</span>.<span class="ruby-identifier">has</span>( <span class="ruby-identifier">elem</span>, <span class="ruby-string">&#39;my-class&#39;</span> ) <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span><span class="ruby-operator">/</span><span class="ruby-keyword">false</span>
+ <span class="ruby-identifier">classie</span>.<span class="ruby-identifier">add</span>( <span class="ruby-identifier">elem</span>, <span class="ruby-string">&#39;my-new-class&#39;</span> )
+ <span class="ruby-identifier">classie</span>.<span class="ruby-identifier">remove</span>( <span class="ruby-identifier">elem</span>, <span class="ruby-string">&#39;my-unwanted-class&#39;</span> )
+ <span class="ruby-identifier">classie</span>.<span class="ruby-identifier">toggle</span>( <span class="ruby-identifier">elem</span>, <span class="ruby-string">&#39;my-class&#39;</span> )
+<span class="ruby-regexp">/
+</span></pre>
+
+<p>/*jshint browser: true, strict: true, undef: true</p>
+
+<p>/*global define: false */</p>
+
+<p>( function( window ) {</p>
+
+<p>// class helper functions from bonzo <a
+href="https://github.com/ded/bonzo">github.com/ded/bonzo</a></p>
+
+<p>function classReg( className ) {</p>
+
+<pre>return new RegExp(&quot;(^|\\s+)&quot; + className + &quot;(\\s+|$)&quot;);</pre>
+
+<p>}</p>
+
+<p>// classList support for class management // altho to be fair, the api
+sucks because it won&#39;t accept multiple classes at once var hasClass,
+addClass, removeClass;</p>
+
+<p>if ( &#39;classList&#39; in document.documentElement ) {</p>
+
+<pre>hasClass = function( elem, c ) {
+  return elem.classList.contains( c );
+};
+addClass = function( elem, c ) {
+  elem.classList.add( c );
+};
+removeClass = function( elem, c ) {
+  elem.classList.remove( c );
+};</pre>
+
+<p>} else {</p>
+
+<pre>hasClass = function( elem, c ) {
+  return classReg( c ).test( elem.className );
+};
+addClass = function( elem, c ) {
+  if ( !hasClass( elem, c ) ) {
+    elem.className = elem.className + &#39; &#39; + c;
+  }
+};
+removeClass = function( elem, c ) {
+  elem.className = elem.className.replace( classReg( c ), &#39; &#39; );
+};</pre>
+
+<p>}</p>
+
+<p>function toggleClass( elem, c ) {</p>
+
+<pre>var fn = hasClass( elem, c ) ? removeClass : addClass;
+fn( elem, c );</pre>
+
+<p>}</p>
+
+<p>var classie = {</p>
+
+<pre>// full names
+hasClass: hasClass,
+addClass: addClass,
+removeClass: removeClass,
+toggleClass: toggleClass,
+// short names
+has: hasClass,
+add: addClass,
+remove: removeClass,
+toggle: toggleClass</pre>
+
+<p>};</p>
+
+<p>// transport if ( typeof define === &#39;function&#39; &amp;&amp;
+define.amd ) {</p>
+
+<pre>// AMD
+define( &#39;classie/classie&#39;,classie );</pre>
+
+<p>} else {</p>
+
+<pre>// browser global
+window.classie = classie;</pre>
+
+<p>}</p>
+
+<p>})( window );</p>
+
+<p>/*!</p>
+
+<pre> EventEmitter v4.2.7 - git.io/ee
+ Oliver Caldwell
+ MIT license
+ @preserve
+/</pre>
+
+<p>(function () {</p>
+
+<pre class="ruby">     <span class="ruby-regexp">/**
+ Class for managing events.
+ Can be extended to provide event functionality in other classes.
+
+ @class EventEmitter Manages event registering and emitting.
+/</span>
+     <span class="ruby-identifier">function</span> <span class="ruby-constant">EventEmitter</span>() {}
+
+     <span class="ruby-regexp">//</span> <span class="ruby-constant">Shortcuts</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">improve</span> <span class="ruby-identifier">speed</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">size</span>
+     <span class="ruby-identifier">var</span> <span class="ruby-identifier">proto</span> = <span class="ruby-constant">EventEmitter</span>.<span class="ruby-identifier">prototype</span>;
+     <span class="ruby-identifier">var</span> <span class="ruby-identifier">exports</span> = <span class="ruby-identifier">this</span>;
+     <span class="ruby-identifier">var</span> <span class="ruby-identifier">originalGlobalValue</span> = <span class="ruby-identifier">exports</span>.<span class="ruby-constant">EventEmitter</span>;
+
+     <span class="ruby-regexp">/**
+ Finds the index of the listener for the event in it&#39;s storage array.
+
+ @param {Function[]} listeners Array of listeners to search through.
+ @param {Function} listener Method to look for.
+ @return {Number} Index of the specified listener, -1 if not found
+ @api private
+/</span>
+     <span class="ruby-identifier">function</span> <span class="ruby-identifier">indexOfListener</span>(<span class="ruby-identifier">listeners</span>, <span class="ruby-identifier">listener</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">i</span> = <span class="ruby-identifier">listeners</span>.<span class="ruby-identifier">length</span>;
+             <span class="ruby-keyword">while</span> (<span class="ruby-identifier">i</span><span class="ruby-operator">-</span><span class="ruby-operator">-</span>) {
+                     <span class="ruby-keyword">if</span> (<span class="ruby-identifier">listeners</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">listener</span> <span class="ruby-operator">===</span> <span class="ruby-identifier">listener</span>) {
+                             <span class="ruby-keyword">return</span> <span class="ruby-identifier">i</span>;
+                     }
+             }
+
+             <span class="ruby-keyword">return</span> <span class="ruby-value">-1</span>;
+     }
+
+     <span class="ruby-regexp">/**
+ Alias a method while keeping the context correct, to allow for overwriting of target method.
+
+ @param {String} name The name of the target method.
+ @return {Function} The aliased method
+ @api private
+/</span>
+     <span class="ruby-identifier">function</span> <span class="ruby-keyword">alias</span>(<span class="ruby-identifier">name</span>) {
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">function</span> <span class="ruby-identifier">aliasClosure</span>() {
+                     <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>[<span class="ruby-identifier">name</span>].<span class="ruby-identifier">apply</span>(<span class="ruby-identifier">this</span>, <span class="ruby-identifier">arguments</span>);
+             };
+     }
+
+     <span class="ruby-regexp">/**
+ Returns the listener array for the specified event.
+ Will initialise the event object and listener arrays if required.
+ Will return an object if you use a regex search. The object contains keys for each matched event. So /</span><span class="ruby-identifier">ba</span>[<span class="ruby-identifier">rz</span>]<span class="ruby-operator">/</span> <span class="ruby-identifier">might</span> <span class="ruby-keyword">return</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">object</span> <span class="ruby-identifier">containing</span> <span class="ruby-identifier">bar</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">baz</span>. <span class="ruby-constant">But</span> <span class="ruby-identifier">only</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">you</span> <span class="ruby-identifier">have</span> <span class="ruby-identifier">either</span> <span class="ruby-identifier">defined</span> <span class="ruby-identifier">them</span> <span class="ruby-identifier">with</span> <span class="ruby-identifier">defineEvent</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">added</span> <span class="ruby-identifier">some</span> <span class="ruby-identifier">listeners</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">them</span>.
+ <span class="ruby-constant">Each</span> <span class="ruby-identifier">property</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">object</span> <span class="ruby-identifier">response</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">array</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">listener</span> <span class="ruby-identifier">functions</span>.
+
+ <span class="ruby-ivar">@param</span> {<span class="ruby-constant">String</span><span class="ruby-operator">|</span><span class="ruby-constant">RegExp</span>} <span class="ruby-identifier">evt</span> <span class="ruby-constant">Name</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">event</span> <span class="ruby-identifier">to</span> <span class="ruby-keyword">return</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">listeners</span> <span class="ruby-identifier">from</span>.
+ <span class="ruby-ivar">@return</span> {<span class="ruby-constant">Function</span>[]<span class="ruby-operator">|</span><span class="ruby-constant">Object</span>} <span class="ruby-constant">All</span> <span class="ruby-identifier">listener</span> <span class="ruby-identifier">functions</span> <span class="ruby-keyword">for</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">event</span>.
+<span class="ruby-operator">/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">getListeners</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">getListeners</span>(<span class="ruby-identifier">evt</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">events</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">_getEvents</span>();
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">response</span>;
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">key</span>;
+
+             <span class="ruby-regexp">//</span> <span class="ruby-constant">Return</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">concatenated</span> <span class="ruby-identifier">array</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">all</span> <span class="ruby-identifier">matching</span> <span class="ruby-identifier">events</span> <span class="ruby-keyword">if</span>
+             <span class="ruby-regexp">//</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">selector</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">regular</span> <span class="ruby-identifier">expression</span>.
+             <span class="ruby-identifier">if</span> (<span class="ruby-identifier">evt</span> <span class="ruby-identifier">instanceof</span> <span class="ruby-constant">RegExp</span>) {
+                     <span class="ruby-identifier">response</span> = {};
+                     <span class="ruby-keyword">for</span> (<span class="ruby-identifier">key</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">events</span>) {
+                             <span class="ruby-keyword">if</span> (<span class="ruby-identifier">events</span>.<span class="ruby-identifier">hasOwnProperty</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">evt</span>.<span class="ruby-identifier">test</span>(<span class="ruby-identifier">key</span>)) {
+                                     <span class="ruby-identifier">response</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">events</span>[<span class="ruby-identifier">key</span>];
+                             }
+                     }
+             }
+             <span class="ruby-keyword">else</span> {
+                     <span class="ruby-identifier">response</span> = <span class="ruby-identifier">events</span>[<span class="ruby-identifier">evt</span>] <span class="ruby-operator">||</span> (<span class="ruby-identifier">events</span>[<span class="ruby-identifier">evt</span>] = []);
+             }
+
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">response</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Takes a list of listener objects and flattens it into a list of listener functions.
+
+ @param {Object[]} listeners Raw listener objects.
+ @return {Function[]} Just the listener functions.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">flattenListeners</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">flattenListeners</span>(<span class="ruby-identifier">listeners</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">flatListeners</span> = [];
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">i</span>;
+
+             <span class="ruby-keyword">for</span> (<span class="ruby-identifier">i</span> = <span class="ruby-value">0</span>; <span class="ruby-identifier">i</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">listeners</span>.<span class="ruby-identifier">length</span>; <span class="ruby-identifier">i</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>) {
+                     <span class="ruby-identifier">flatListeners</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">listeners</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">listener</span>);
+             }
+
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">flatListeners</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+
+ @param {String|RegExp} evt Name of the event to return the listeners from.
+ @return {Object} All listener functions for an event in an object.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">getListenersAsObject</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">getListenersAsObject</span>(<span class="ruby-identifier">evt</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">listeners</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">getListeners</span>(<span class="ruby-identifier">evt</span>);
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">response</span>;
+
+             <span class="ruby-keyword">if</span> (<span class="ruby-identifier">listeners</span> <span class="ruby-identifier">instanceof</span> <span class="ruby-constant">Array</span>) {
+                     <span class="ruby-identifier">response</span> = {};
+                     <span class="ruby-identifier">response</span>[<span class="ruby-identifier">evt</span>] = <span class="ruby-identifier">listeners</span>;
+             }
+
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">response</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">listeners</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Adds a listener function to the specified event.
+ The listener will not be added if it is a duplicate.
+ If the listener returns true then it will be removed after it is called.
+ If you pass a regular expression as the event name then the listener will be added to all events that match it.
+
+ @param {String|RegExp} evt Name of the event to attach the listener to.
+ @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">addListener</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">addListener</span>(<span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listener</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">listeners</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">getListenersAsObject</span>(<span class="ruby-identifier">evt</span>);
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">listenerIsWrapped</span> = <span class="ruby-identifier">typeof</span> <span class="ruby-identifier">listener</span> <span class="ruby-operator">===</span> <span class="ruby-string">&#39;object&#39;</span>;
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">key</span>;
+
+             <span class="ruby-keyword">for</span> (<span class="ruby-identifier">key</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">listeners</span>) {
+                     <span class="ruby-keyword">if</span> (<span class="ruby-identifier">listeners</span>.<span class="ruby-identifier">hasOwnProperty</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">indexOfListener</span>(<span class="ruby-identifier">listeners</span>[<span class="ruby-identifier">key</span>], <span class="ruby-identifier">listener</span>) <span class="ruby-operator">===</span> <span class="ruby-value">-1</span>) {
+                             <span class="ruby-identifier">listeners</span>[<span class="ruby-identifier">key</span>].<span class="ruby-identifier">push</span>(<span class="ruby-identifier">listenerIsWrapped</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">listener</span> <span class="ruby-operator">:</span> {
+                                     <span class="ruby-identifier">listener</span><span class="ruby-operator">:</span> <span class="ruby-identifier">listener</span>,
+                                     <span class="ruby-identifier">once</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>
+                             });
+                     }
+             }
+
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Alias of addListener
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">on</span> = <span class="ruby-keyword">alias</span>(<span class="ruby-string">&#39;addListener&#39;</span>);
+
+     <span class="ruby-regexp">/**
+ Semi-alias of addListener. It will add a listener that will be
+ automatically removed after it&#39;s first execution.
+
+ @param {String|RegExp} evt Name of the event to attach the listener to.
+ @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">addOnceListener</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">addOnceListener</span>(<span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listener</span>) {
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">addListener</span>(<span class="ruby-identifier">evt</span>, {
+                     <span class="ruby-identifier">listener</span><span class="ruby-operator">:</span> <span class="ruby-identifier">listener</span>,
+                     <span class="ruby-identifier">once</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>
+             });
+     };
+
+     <span class="ruby-regexp">/**
+ Alias of addOnceListener.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">once</span> = <span class="ruby-keyword">alias</span>(<span class="ruby-string">&#39;addOnceListener&#39;</span>);
+
+     <span class="ruby-regexp">/**
+ Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don&#39;t do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+ You need to tell it what event names should be matched by a regex.
+
+ @param {String} evt Name of the event to create.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">defineEvent</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">defineEvent</span>(<span class="ruby-identifier">evt</span>) {
+             <span class="ruby-identifier">this</span>.<span class="ruby-identifier">getListeners</span>(<span class="ruby-identifier">evt</span>);
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Uses defineEvent to define multiple events.
+
+ @param {String[]} evts An array of event names to define.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">defineEvents</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">defineEvents</span>(<span class="ruby-identifier">evts</span>) {
+             <span class="ruby-keyword">for</span> (<span class="ruby-identifier">var</span> <span class="ruby-identifier">i</span> = <span class="ruby-value">0</span>; <span class="ruby-identifier">i</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">evts</span>.<span class="ruby-identifier">length</span>; <span class="ruby-identifier">i</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>) {
+                     <span class="ruby-identifier">this</span>.<span class="ruby-identifier">defineEvent</span>(<span class="ruby-identifier">evts</span>[<span class="ruby-identifier">i</span>]);
+             }
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Removes a listener function from the specified event.
+ When passed a regular expression as the event name, it will remove the listener from all events that match it.
+
+ @param {String|RegExp} evt Name of the event to remove the listener from.
+ @param {Function} listener Method to remove from the event.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">removeListener</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">removeListener</span>(<span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listener</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">listeners</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">getListenersAsObject</span>(<span class="ruby-identifier">evt</span>);
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">index</span>;
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">key</span>;
+
+             <span class="ruby-keyword">for</span> (<span class="ruby-identifier">key</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">listeners</span>) {
+                     <span class="ruby-keyword">if</span> (<span class="ruby-identifier">listeners</span>.<span class="ruby-identifier">hasOwnProperty</span>(<span class="ruby-identifier">key</span>)) {
+                             <span class="ruby-identifier">index</span> = <span class="ruby-identifier">indexOfListener</span>(<span class="ruby-identifier">listeners</span>[<span class="ruby-identifier">key</span>], <span class="ruby-identifier">listener</span>);
+
+                             <span class="ruby-keyword">if</span> (<span class="ruby-identifier">index</span> <span class="ruby-operator">!=</span>= <span class="ruby-value">-1</span>) {
+                                     <span class="ruby-identifier">listeners</span>[<span class="ruby-identifier">key</span>].<span class="ruby-identifier">splice</span>(<span class="ruby-identifier">index</span>, <span class="ruby-value">1</span>);
+                             }
+                     }
+             }
+
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>;
+     };
+
+     <span class="ruby-regexp">/**
+ Alias of removeListener
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">off</span> = <span class="ruby-keyword">alias</span>(<span class="ruby-string">&#39;removeListener&#39;</span>);
+
+     <span class="ruby-regexp">/**
+ Adds listeners in bulk using the manipulateListeners method.
+ If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+ You can also pass it a regular expression to add the array of listeners to all events that match it.
+ Yeah, this function does quite a bit. That&#39;s probably a bad thing.
+
+ @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+ @param {Function[]} [listeners] An optional array of listener functions to add.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">addListeners</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">addListeners</span>(<span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listeners</span>) {
+             <span class="ruby-regexp">//</span> <span class="ruby-constant">Pass</span> <span class="ruby-identifier">through</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">manipulateListeners</span>
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">manipulateListeners</span>(<span class="ruby-keyword">false</span>, <span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listeners</span>);
+     };
+
+     <span class="ruby-regexp">/**
+ Removes listeners in bulk using the manipulateListeners method.
+ If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+ You can also pass it an event name and an array of listeners to be removed.
+ You can also pass it a regular expression to remove the listeners from all events that match it.
+
+ @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+ @param {Function[]} [listeners] An optional array of listener functions to remove.
+ @return {Object} Current instance of EventEmitter for chaining.
+/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">removeListeners</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">removeListeners</span>(<span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listeners</span>) {
+             <span class="ruby-regexp">//</span> <span class="ruby-constant">Pass</span> <span class="ruby-identifier">through</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">manipulateListeners</span>
+             <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">manipulateListeners</span>(<span class="ruby-keyword">true</span>, <span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listeners</span>);
+     };
+
+     <span class="ruby-regexp">/**
+ Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+ The first argument will determine if the listeners are removed (true) or added (false).
+ If you pass an object as the second argument you can add/</span><span class="ruby-identifier">remove</span> <span class="ruby-identifier">from</span> <span class="ruby-identifier">multiple</span> <span class="ruby-identifier">events</span> <span class="ruby-identifier">at</span> <span class="ruby-identifier">once</span>. <span class="ruby-constant">The</span> <span class="ruby-identifier">object</span> <span class="ruby-identifier">should</span> <span class="ruby-identifier">contain</span> <span class="ruby-identifier">key</span> <span class="ruby-identifier">value</span> <span class="ruby-identifier">pairs</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">events</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">listeners</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">listener</span> <span class="ruby-identifier">arrays</span>.
+ <span class="ruby-constant">You</span> <span class="ruby-identifier">can</span> <span class="ruby-identifier">also</span> <span class="ruby-identifier">pass</span> <span class="ruby-identifier">it</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">event</span> <span class="ruby-identifier">name</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">array</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">listeners</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">be</span> <span class="ruby-identifier">added</span><span class="ruby-operator">/</span><span class="ruby-identifier">removed</span>.
+ <span class="ruby-constant">You</span> <span class="ruby-identifier">can</span> <span class="ruby-identifier">also</span> <span class="ruby-identifier">pass</span> <span class="ruby-identifier">it</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">regular</span> <span class="ruby-identifier">expression</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">manipulate</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">listeners</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">all</span> <span class="ruby-identifier">events</span> <span class="ruby-identifier">that</span> <span class="ruby-identifier">match</span> <span class="ruby-identifier">it</span>.
+
+ <span class="ruby-ivar">@param</span> {<span class="ruby-constant">Boolean</span>} <span class="ruby-identifier">remove</span> <span class="ruby-constant">True</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">you</span> <span class="ruby-identifier">want</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">remove</span> <span class="ruby-identifier">listeners</span>, <span class="ruby-keyword">false</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">you</span> <span class="ruby-identifier">want</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">add</span>.
+ <span class="ruby-ivar">@param</span> {<span class="ruby-constant">String</span><span class="ruby-operator">|</span><span class="ruby-constant">Object</span><span class="ruby-operator">|</span><span class="ruby-constant">RegExp</span>} <span class="ruby-identifier">evt</span> <span class="ruby-constant">An</span> <span class="ruby-identifier">event</span> <span class="ruby-identifier">name</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">you</span> <span class="ruby-identifier">will</span> <span class="ruby-identifier">pass</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">array</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">listeners</span> <span class="ruby-keyword">next</span>. <span class="ruby-constant">An</span> <span class="ruby-identifier">object</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">you</span> <span class="ruby-identifier">wish</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">add</span><span class="ruby-operator">/</span><span class="ruby-identifier">remove</span> <span class="ruby-identifier">from</span> <span class="ruby-identifier">multiple</span> <span class="ruby-identifier">events</span> <span class="ruby-identifier">at</span> <span class="ruby-identifier">once</span>.
+ <span class="ruby-ivar">@param</span> {<span class="ruby-constant">Function</span>[]} [<span class="ruby-identifier">listeners</span>] <span class="ruby-constant">An</span> <span class="ruby-identifier">optional</span> <span class="ruby-identifier">array</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">listener</span> <span class="ruby-identifier">functions</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">add</span><span class="ruby-operator">/</span><span class="ruby-identifier">remove</span>.
+ <span class="ruby-ivar">@return</span> {<span class="ruby-constant">Object</span>} <span class="ruby-constant">Current</span> <span class="ruby-identifier">instance</span> <span class="ruby-identifier">of</span> <span class="ruby-constant">EventEmitter</span> <span class="ruby-keyword">for</span> <span class="ruby-identifier">chaining</span>.
+<span class="ruby-operator">/</span>
+     <span class="ruby-identifier">proto</span>.<span class="ruby-identifier">manipulateListeners</span> = <span class="ruby-identifier">function</span> <span class="ruby-identifier">manipulateListeners</span>(<span class="ruby-identifier">remove</span>, <span class="ruby-identifier">evt</span>, <span class="ruby-identifier">listeners</span>) {
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">i</span>;
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">value</span>;
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">single</span> = <span class="ruby-identifier">remove</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">removeListener</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">addListener</span>;
+             <span class="ruby-identifier">var</span> <span class="ruby-identifier">multiple</span> = <span class="ruby-identifier">remove</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">removeListeners</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">addListeners</span>;
+
+             <span class="ruby-regexp">//</span> <span class="ruby-constant">If</span> <span class="ruby-identifier">evt</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">object</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">pass</span> <span class="ruby-identifier">each</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">it</span><span class="ruby-string">&#39;s properties to this method
+             if (typeof evt === &#39;</span><span class="ruby-identifier">object</span><span class="ruby-string">&#39; &amp;&amp; !(evt instanceof RegExp)) {
+                     for (i in evt) {
+                             if (evt.hasOwnProperty(i) &amp;&amp; (value = evt[i])) {
+                                     // Pass the single listener straight through to the singular method
+                                     if (typeof value === &#39;</span><span class="ruby-identifier">function</span><span class="ruby-string">&#39;) {
+                                             single.call(this, i, value);
+                                     }
+                                     else {
+                                             // Otherwise pass back to the multiple function
+                                             multiple.call(this, i, value);
+                                     }
+                             }
+                     }
+             }
+             else {
+                     // So evt must be a string
+                     // And listeners must be an array of listeners
+                     // Loop over it and pass each one to the multiple method
+                     i = listeners.length;
+                     while (i--) {
+                             single.call(this, evt, listeners[i]);
+                     }
+             }
+
+             return this;
+     };
+
+     /**
+ Removes all listeners from a specified event.
+ If you do not specify an event then all listeners will be removed.
+ That means every event will be emptied.
+ You can also pass a regex to remove all events that match it.
+
+ @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+ @return {Object} Current instance of EventEmitter for chaining.
+/
+     proto.removeEvent = function removeEvent(evt) {
+             var type = typeof evt;
+             var events = this._getEvents();
+             var key;
+
+             // Remove different things depending on the state of evt
+             if (type === &#39;</span><span class="ruby-identifier">string</span><span class="ruby-string">&#39;) {
+                     // Remove all listeners for the specified event
+                     delete events[evt];
+             }
+             else if (evt instanceof RegExp) {
+                     // Remove all events matching the regex.
+                     for (key in events) {
+                             if (events.hasOwnProperty(key) &amp;&amp; evt.test(key)) {
+                                     delete events[key];
+                             }
+                     }
+             }
+             else {
+                     // Remove all listeners in all events
+                     delete this._events;
+             }
+
+             return this;
+     };
+
+     /**
+ Alias of removeEvent.
+
+ Added to mirror the node API.
+/
+     proto.removeAllListeners = alias(&#39;</span><span class="ruby-identifier">removeEvent</span><span class="ruby-string">&#39;);
+
+     /**
+ Emits an event of your choice.
+ When emitted, every listener attached to that event will be executed.
+ If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+ Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+ So they will not arrive within the array on the other side, they will be separate.
+ You can also pass a regular expression to emit to all events that match it.
+
+ @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+ @param {Array} [args] Optional array of arguments to be passed to each listener.
+ @return {Object} Current instance of EventEmitter for chaining.
+/
+     proto.emitEvent = function emitEvent(evt, args) {
+             var listeners = this.getListenersAsObject(evt);
+             var listener;
+             var i;
+             var key;
+             var response;
+
+             for (key in listeners) {
+                     if (listeners.hasOwnProperty(key)) {
+                             i = listeners[key].length;
+
+                             while (i--) {
+                                     // If the listener returns true then it shall be removed from the event
+                                     // The function is executed either with a basic call or an apply if there is an args array
+                                     listener = listeners[key][i];
+
+                                     if (listener.once === true) {
+                                             this.removeListener(evt, listener.listener);
+                                     }
+
+                                     response = listener.listener.apply(this, args || []);
+
+                                     if (response === this._getOnceReturnValue()) {
+                                             this.removeListener(evt, listener.listener);
+                                     }
+                             }
+                     }
+             }
+
+             return this;
+     };
+
+     /**
+ Alias of emitEvent
+/
+     proto.trigger = alias(&#39;</span><span class="ruby-identifier">emitEvent</span><span class="ruby-string">&#39;);
+
+     /**
+ Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+ As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+
+ @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+ @param {...*} Optional additional arguments to be passed to each listener.
+ @return {Object} Current instance of EventEmitter for chaining.
+/
+     proto.emit = function emit(evt) {
+             var args = Array.prototype.slice.call(arguments, 1);
+             return this.emitEvent(evt, args);
+     };
+
+     /**
+ Sets the current value to check against when executing listeners. If a
+ listeners return value matches the one set here then it will be removed
+ after execution. This value defaults to true.
+
+ @param {*} value The new value to check for when executing listeners.
+ @return {Object} Current instance of EventEmitter for chaining.
+/
+     proto.setOnceReturnValue = function setOnceReturnValue(value) {
+             this._onceReturnValue = value;
+             return this;
+     };
+
+     /**
+ Fetches the current value to check against when executing listeners. If
+ the listeners return value matches this one then it should be removed
+ automatically. It will return true by default.
+
+ @return {*|Boolean} The current value to check for or the default, true.
+ @api private
+/
+     proto._getOnceReturnValue = function _getOnceReturnValue() {
+             if (this.hasOwnProperty(&#39;</span><span class="ruby-identifier">_onceReturnValue</span><span class="ruby-string">&#39;)) {
+                     return this._onceReturnValue;
+             }
+             else {
+                     return true;
+             }
+     };
+
+     /**
+ Fetches the events object and creates one if required.
+
+ @return {Object} The events storage object.
+ @api private
+/
+     proto._getEvents = function _getEvents() {
+             return this._events || (this._events = {});
+     };
+
+     /**
+ Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
+
+ @return {Function} Non conflicting EventEmitter class.
+/
+     EventEmitter.noConflict = function noConflict() {
+             exports.EventEmitter = originalGlobalValue;
+             return EventEmitter;
+     };
+
+     // Expose the class either via AMD, CommonJS or the global object
+     if (typeof define === &#39;</span><span class="ruby-identifier">function</span><span class="ruby-string">&#39; &amp;&amp; define.amd) {
+             define(&#39;</span><span class="ruby-identifier">eventEmitter</span><span class="ruby-operator">/</span><span class="ruby-constant">EventEmitter</span><span class="ruby-string">&#39;,[],function () {
+                     return EventEmitter;
+             });
+     }
+     else if (typeof module === &#39;</span><span class="ruby-identifier">object</span><span class="ruby-string">&#39; &amp;&amp; module.exports){
+             module.exports = EventEmitter;
+     }
+     else {
+             this.EventEmitter = EventEmitter;
+     }
+</span></pre>
+
+<p>}.call(this));</p>
+
+<p>/*!</p>
+
+<pre> eventie v1.0.5
+ event binding helper
+   eventie.bind( elem, &#39;click&#39;, myFn )
+   eventie.unbind( elem, &#39;click&#39;, myFn )
+ MIT license
+/</pre>
+
+<p>/*jshint browser: true, undef: true, unused: true */ /*global define:
+false, module: false */</p>
+
+<p>( function( window ) {</p>
+
+<p>var docElem = document.documentElement;</p>
+
+<p>var bind = function() {};</p>
+
+<p>function getIEEvent( obj ) {</p>
+
+<pre>var event = window.event;
+// add event.target
+event.target = event.target || event.srcElement || obj;
+return event;</pre>
+
+<p>}</p>
+
+<p>if ( docElem.addEventListener ) {</p>
+
+<pre>bind = function( obj, type, fn ) {
+  obj.addEventListener( type, fn, false );
+};</pre>
+
+<p>} else if ( docElem.attachEvent ) {</p>
+
+<pre>bind = function( obj, type, fn ) {
+  obj[ type + fn ] = fn.handleEvent ?
+    function() {
+      var event = getIEEvent( obj );
+      fn.handleEvent.call( fn, event );
+    } :
+    function() {
+      var event = getIEEvent( obj );
+      fn.call( obj, event );
+    };
+  obj.attachEvent( &quot;on&quot; + type, obj[ type + fn ] );
+};</pre>
+
+<p>}</p>
+
+<p>var unbind = function() {};</p>
+
+<p>if ( docElem.removeEventListener ) {</p>
+
+<pre>unbind = function( obj, type, fn ) {
+  obj.removeEventListener( type, fn, false );
+};</pre>
+
+<p>} else if ( docElem.detachEvent ) {</p>
+
+<pre>unbind = function( obj, type, fn ) {
+  obj.detachEvent( &quot;on&quot; + type, obj[ type + fn ] );
+  try {
+    delete obj[ type + fn ];
+  } catch ( err ) {
+    // can&#39;t delete window object properties
+    obj[ type + fn ] = undefined;
+  }
+};</pre>
+
+<p>}</p>
+
+<p>var eventie = {</p>
+
+<pre>bind: bind,
+unbind: unbind</pre>
+
+<p>};</p>
+
+<p>// —– module definition —– //</p>
+
+<p>if ( typeof define === &#39;function&#39; &amp;&amp; define.amd ) {</p>
+
+<pre>// AMD
+define( &#39;eventie/eventie&#39;,eventie );</pre>
+
+<p>} else if ( typeof exports === &#39;object&#39; ) {</p>
+
+<pre>// CommonJS
+module.exports = eventie;</pre>
+
+<p>} else {</p>
+
+<pre>// browser global
+window.eventie = eventie;</pre>
+
+<p>}</p>
+
+<p>})( this );</p>
+
+<p>/*!</p>
+
+<pre> getStyleProperty v1.0.3
+ original by kangax
+ http://perfectionkills.com/feature-testing-css-properties/
+/</pre>
+
+<p>/*jshint browser: true, strict: true, undef: true */ /*global define:
+false, exports: false, module: false */</p>
+
+<p>( function( window ) {</p>
+
+<p>var prefixes = &#39;Webkit Moz ms Ms O&#39;.split(&#39; &#39;); var
+docElemStyle = document.documentElement.style;</p>
+
+<p>function getStyleProperty( propName ) {</p>
+
+<pre>if ( !propName ) {
+  return;
+}
+
+// test standard property first
+if ( typeof docElemStyle[ propName ] === &#39;string&#39; ) {
+  return propName;
+}
+
+// capitalize
+propName = propName.charAt(0).toUpperCase() + propName.slice(1);
+
+// test vendor specific properties
+var prefixed;
+for ( var i=0, len = prefixes.length; i &lt; len; i++ ) {
+  prefixed = prefixes[i] + propName;
+  if ( typeof docElemStyle[ prefixed ] === &#39;string&#39; ) {
+    return prefixed;
+  }
+}</pre>
+
+<p>}</p>
+
+<p>// transport if ( typeof define === &#39;function&#39; &amp;&amp;
+define.amd ) {</p>
+
+<pre>// AMD
+define( &#39;get-style-property/get-style-property&#39;,[],function() {
+  return getStyleProperty;
+});</pre>
+
+<p>} else if ( typeof exports === &#39;object&#39; ) {</p>
+
+<pre>// CommonJS for Component
+module.exports = getStyleProperty;</pre>
+
+<p>} else {</p>
+
+<pre>// browser global
+window.getStyleProperty = getStyleProperty;</pre>
+
+<p>}</p>
+
+<p>})( window );</p>
+
+<p>/**</p>
+
+<pre> getSize v1.1.7
+ measure size of elements
+/</pre>
+
+<p>/*jshint browser: true, strict: true, undef: true, unused: true */ /*global
+define: false, exports: false, require: false, module: false */</p>
+
+<p>( function( window, undefined ) {</p>
+
+<p>// ————————– helpers ————————– //</p>
+
+<p>var getComputedStyle = window.getComputedStyle; var getStyle =
+getComputedStyle ?</p>
+
+<pre>function( elem ) {
+  return getComputedStyle( elem, null );
+} :
+function( elem ) {
+  return elem.currentStyle;
+};</pre>
+
+<p>// get a number from a string, not a percentage function getStyleSize(
+value ) {</p>
+
+<pre>var num = parseFloat( value );
+// not a percent like &#39;100%&#39;, and a number
+var isValid = value.indexOf(&#39;%&#39;) === -1 &amp;&amp; !isNaN( num );
+return isValid &amp;&amp; num;</pre>
+
+<p>}</p>
+
+<p>// ————————– measurements ————————– //</p>
+
+<p>var measurements = [</p>
+
+<pre>&#39;paddingLeft&#39;,
+&#39;paddingRight&#39;,
+&#39;paddingTop&#39;,
+&#39;paddingBottom&#39;,
+&#39;marginLeft&#39;,
+&#39;marginRight&#39;,
+&#39;marginTop&#39;,
+&#39;marginBottom&#39;,
+&#39;borderLeftWidth&#39;,
+&#39;borderRightWidth&#39;,
+&#39;borderTopWidth&#39;,
+&#39;borderBottomWidth&#39;</pre>
+
+<p>];</p>
+
+<p>function getZeroSize() {</p>
+
+<pre>var size = {
+  width: 0,
+  height: 0,
+  innerWidth: 0,
+  innerHeight: 0,
+  outerWidth: 0,
+  outerHeight: 0
+};
+for ( var i=0, len = measurements.length; i &lt; len; i++ ) {
+  var measurement = measurements[i];
+  size[ measurement ] = 0;
+}
+return size;</pre>
+
+<p>}</p>
+
+<p>function defineGetSize( getStyleProperty ) {</p>
+
+<p>// ————————– box sizing ————————– //</p>
+
+<p>var boxSizingProp = getStyleProperty(&#39;boxSizing&#39;); var
+isBoxSizeOuter;</p>
+
+<p>/**</p>
+
+<pre> WebKit measures the outer-width on style.width on border-box elems
+ IE &amp; Firefox measures the inner-width
+/</pre>
+
+<p>( function() {</p>
+
+<pre>if ( !boxSizingProp ) {
+  return;
+}
+
+var div = document.createElement(&#39;div&#39;);
+div.style.width = &#39;200px&#39;;
+div.style.padding = &#39;1px 2px 3px 4px&#39;;
+div.style.borderStyle = &#39;solid&#39;;
+div.style.borderWidth = &#39;1px 2px 3px 4px&#39;;
+div.style[ boxSizingProp ] = &#39;border-box&#39;;
+
+var body = document.body || document.documentElement;
+body.appendChild( div );
+var style = getStyle( div );
+
+isBoxSizeOuter = getStyleSize( style.width ) === 200;
+body.removeChild( div );</pre>
+
+<p>})();</p>
+
+<p>// ————————– getSize ————————– //</p>
+
+<p>function getSize( elem ) {</p>
+
+<pre>// use querySeletor if elem is string
+if ( typeof elem === &#39;string&#39; ) {
+  elem = document.querySelector( elem );
+}
+
+// do not proceed on non-objects
+if ( !elem || typeof elem !== &#39;object&#39; || !elem.nodeType ) {
+  return;
+}
+
+var style = getStyle( elem );
+
+// if hidden, everything is 0
+if ( style.display === &#39;none&#39; ) {
+  return getZeroSize();
+}
+
+var size = {};
+size.width = elem.offsetWidth;
+size.height = elem.offsetHeight;
+
+var isBorderBox = size.isBorderBox = !!( boxSizingProp &amp;&amp;
+  style[ boxSizingProp ] &amp;&amp; style[ boxSizingProp ] === &#39;border-box&#39; );
+
+// get all measurements
+for ( var i=0, len = measurements.length; i &lt; len; i++ ) {
+  var measurement = measurements[i];
+  var value = style[ measurement ];
+  value = mungeNonPixel( elem, value );
+  var num = parseFloat( value );
+  // any &#39;auto&#39;, &#39;medium&#39; value will be 0
+  size[ measurement ] = !isNaN( num ) ? num : 0;
+}
+
+var paddingWidth = size.paddingLeft + size.paddingRight;
+var paddingHeight = size.paddingTop + size.paddingBottom;
+var marginWidth = size.marginLeft + size.marginRight;
+var marginHeight = size.marginTop + size.marginBottom;
+var borderWidth = size.borderLeftWidth + size.borderRightWidth;
+var borderHeight = size.borderTopWidth + size.borderBottomWidth;
+
+var isBorderBoxSizeOuter = isBorderBox &amp;&amp; isBoxSizeOuter;
+
+// overwrite width and height if we can get it from style
+var styleWidth = getStyleSize( style.width );
+if ( styleWidth !== false ) {
+  size.width = styleWidth +
+    // add padding and border unless it&#39;s already including it
+    ( isBorderBoxSizeOuter ? 0 : paddingWidth + borderWidth );
+}
+
+var styleHeight = getStyleSize( style.height );
+if ( styleHeight !== false ) {
+  size.height = styleHeight +
+    // add padding and border unless it&#39;s already including it
+    ( isBorderBoxSizeOuter ? 0 : paddingHeight + borderHeight );
+}
+
+size.innerWidth = size.width - ( paddingWidth + borderWidth );
+size.innerHeight = size.height - ( paddingHeight + borderHeight );
+
+size.outerWidth = size.width + marginWidth;
+size.outerHeight = size.height + marginHeight;
+
+return size;</pre>
+
+<p>}</p>
+
+<p>// IE8 returns percent values, not pixels // taken from jQuery&#39;s curCSS
+function mungeNonPixel( elem, value ) {</p>
+
+<pre>// IE8 and has percent value
+if ( getComputedStyle || value.indexOf(&#39;%&#39;) === -1 ) {
+  return value;
+}
+var style = elem.style;
+// Remember the original values
+var left = style.left;
+var rs = elem.runtimeStyle;
+var rsLeft = rs &amp;&amp; rs.left;
+
+// Put in the new values to get a computed value out
+if ( rsLeft ) {
+  rs.left = elem.currentStyle.left;
+}
+style.left = value;
+value = style.pixelLeft;
+
+// Revert the changed values
+style.left = left;
+if ( rsLeft ) {
+  rs.left = rsLeft;
+}
+
+return value;</pre>
+
+<p>}</p>
+
+<p>return getSize;</p>
+
+<p>}</p>
+
+<p>// transport if ( typeof define === &#39;function&#39; &amp;&amp;
+define.amd ) {</p>
+
+<pre>// AMD for RequireJS
+define( &#39;get-size/get-size&#39;,[ &#39;get-style-property/get-style-property&#39; ], defineGetSize );</pre>
+
+<p>} else if ( typeof exports === &#39;object&#39; ) {</p>
+
+<pre>// CommonJS for Component
+module.exports = defineGetSize( require(&#39;get-style-property&#39;) );</pre>
+
+<p>} else {</p>
+
+<pre>// browser global
+window.getSize = defineGetSize( window.getStyleProperty );</pre>
+
+<p>}</p>
+
+<p>})( window );</p>
+
+<p>/*!</p>
+
+<pre> Draggabilly v1.1.0
+ Make that shiz draggable
+ http://draggabilly.desandro.com
+ MIT license
+/</pre>
+
+<p>( function( window ) {</p>
+
+<p>// vars var document = window.document;</p>
+
+<p>// ————————– helpers ————————– //</p>
+
+<p>// extend objects function extend( a, b ) {</p>
+
+<pre>for ( var prop in b ) {
+  a[ prop ] = b[ prop ];
+}
+return a;</pre>
+
+<p>}</p>
+
+<p>function noop() {}</p>
+
+<p>// —– get style —– //</p>
+
+<p>var defView = document.defaultView;</p>
+
+<p>var getStyle = defView &amp;&amp; defView.getComputedStyle ?</p>
+
+<pre>function( elem ) {
+  return defView.getComputedStyle( elem, null );
+} :
+function( elem ) {
+  return elem.currentStyle;
+};</pre>
+
+<p>// <a
+href="http://stackoverflow.com/a/384380/182183">stackoverflow.com/a/384380/182183</a>
+var isElement = ( typeof HTMLElement === &#39;object&#39; ) ?</p>
+
+<pre>function isElementDOM2( obj ) {
+  return obj instanceof HTMLElement;
+} :
+function isElementQuirky( obj ) {
+  return obj &amp;&amp; typeof obj === &#39;object&#39; &amp;&amp;
+    obj.nodeType === 1 &amp;&amp; typeof obj.nodeName === &#39;string&#39;;
+};</pre>
+
+<p>// ————————– requestAnimationFrame ————————– //</p>
+
+<p>// <a href="https://gist.github.com/1866474">gist.github.com/1866474</a></p>
+
+<p>var lastTime = 0; var prefixes = &#39;webkit moz ms o&#39;.split(&#39;
+&#39;); // get unprefixed rAF and cAF, if present var requestAnimationFrame
+= window.requestAnimationFrame; var cancelAnimationFrame =
+window.cancelAnimationFrame; // loop through vendor prefixes and get
+prefixed rAF and cAF var prefix; for( var i = 0; i &lt; prefixes.length;
+i++ ) {</p>
+
+<pre>if ( requestAnimationFrame &amp;&amp; cancelAnimationFrame ) {
+  break;
+}
+prefix = prefixes[i];
+requestAnimationFrame = requestAnimationFrame || window[ prefix + &#39;RequestAnimationFrame&#39; ];
+cancelAnimationFrame  = cancelAnimationFrame  || window[ prefix + &#39;CancelAnimationFrame&#39; ] ||
+                          window[ prefix + &#39;CancelRequestAnimationFrame&#39; ];</pre>
+
+<p>}</p>
+
+<p>// fallback to setTimeout and clearTimeout if either request/cancel is not
+supported if ( !requestAnimationFrame || !cancelAnimationFrame )  {</p>
+
+<pre>requestAnimationFrame = function( callback ) {
+  var currTime = new Date().getTime();
+  var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
+  var id = window.setTimeout( function() {
+    callback( currTime + timeToCall );
+  }, timeToCall );
+  lastTime = currTime + timeToCall;
+  return id;
+};
+
+cancelAnimationFrame = function( id ) {
+  window.clearTimeout( id );
+};</pre>
+
+<p>}</p>
+
+<p>// ————————– definition ————————– //</p>
+
+<p>function draggabillyDefinition( classie, EventEmitter, eventie,
+getStyleProperty, getSize ) {</p>
+
+<p>// ————————– support ————————– //</p>
+
+<p>var transformProperty = getStyleProperty(&#39;transform&#39;); // TODO fix
+quick &amp; dirty check for 3D support var is3d =
+!!getStyleProperty(&#39;perspective&#39;);</p>
+
+<p>// ————————–  ————————– //</p>
+
+<p>function Draggabilly( element, options ) {</p>
+
+<pre>// querySelector if string
+this.element = typeof element === &#39;string&#39; ?
+  document.querySelector( element ) : element;
+
+this.options = extend( {}, this.options );
+extend( this.options, options );
+
+this._create();</pre>
+
+<p>}</p>
+
+<p>// inherit EventEmitter methods extend( Draggabilly.prototype,
+EventEmitter.prototype );</p>
+
+<p>Draggabilly.prototype.options = { };</p>
+
+<p>Draggabilly.prototype._create = function() {</p>
+
+<pre>// properties
+this.position = {};
+this._getPosition();
+
+this.startPoint = { x: 0, y: 0 };
+this.dragPoint = { x: 0, y: 0 };
+
+this.startPosition = extend( {}, this.position );
+
+// set relative positioning
+var style = getStyle( this.element );
+if ( style.position !== &#39;relative&#39; &amp;&amp; style.position !== &#39;absolute&#39; ) {
+  this.element.style.position = &#39;relative&#39;;
+}
+
+this.enable();
+this.setHandles();</pre>
+
+<p>};</p>
+
+<p>/**</p>
+
+<pre> set this.handles and bind start events to &#39;em
+/</pre>
+
+<p>Draggabilly.prototype.setHandles = function() {</p>
+
+<pre>this.handles = this.options.handle ?
+  this.element.querySelectorAll( this.options.handle ) : [ this.element ];
+
+for ( var i=0, len = this.handles.length; i &lt; len; i++ ) {
+  var handle = this.handles[i];
+  // bind pointer start event
+  if ( window.navigator.pointerEnabled ) {
+    // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
+    eventie.bind( handle, &#39;pointerdown&#39;, this );
+    // disable scrolling on the element
+    handle.style.touchAction = &#39;none&#39;;
+  } else if ( window.navigator.msPointerEnabled ) {
+    // IE10 Pointer Events
+    eventie.bind( handle, &#39;MSPointerDown&#39;, this );
+    // disable scrolling on the element
+    handle.style.msTouchAction = &#39;none&#39;;
+  } else {
+    // listen for both, for devices like Chrome Pixel
+    //   which has touch and mouse events
+    eventie.bind( handle, &#39;mousedown&#39;, this );
+    eventie.bind( handle, &#39;touchstart&#39;, this );
+    disableImgOndragstart( handle );
+  }
+}</pre>
+
+<p>};</p>
+
+<p>// remove default dragging interaction on all images in IE8 // IE8 does its
+own drag thing on images, which messes stuff up</p>
+
+<p>function noDragStart() {</p>
+
+<pre>return false;</pre>
+
+<p>}</p>
+
+<p>// TODO replace this with a IE8 test var isIE8 = &#39;attachEvent&#39; in
+document.documentElement;</p>
+
+<p>// IE8 only var disableImgOndragstart = !isIE8 ? noop : function( handle )
+{</p>
+
+<pre>if ( handle.nodeName === &#39;IMG&#39; ) {
+  handle.ondragstart = noDragStart;
+}
+
+var images = handle.querySelectorAll(&#39;img&#39;);
+for ( var i=0, len = images.length; i &lt; len; i++ ) {
+  var img = images[i];
+  img.ondragstart = noDragStart;
+}</pre>
+
+<p>};</p>
+
+<p>// get left/top position from style Draggabilly.prototype._getPosition =
+function() {</p>
+
+<pre>// properties
+var style = getStyle( this.element );
+
+var x = parseInt( style.left, 10 );
+var y = parseInt( style.top, 10 );
+
+// clean up &#39;auto&#39; or other non-integer values
+this.position.x = isNaN( x ) ? 0 : x;
+this.position.y = isNaN( y ) ? 0 : y;
+
+this._addTransformPosition( style );</pre>
+
+<p>};</p>
+
+<p>// add transform: translate( x, y ) to position
+Draggabilly.prototype._addTransformPosition = function( style ) {</p>
+
+<pre>if ( !transformProperty ) {
+  return;
+}
+var transform = style[ transformProperty ];
+// bail out if value is &#39;none&#39;
+if ( transform.indexOf(&#39;matrix&#39;) !== 0 ) {
+  return;
+}
+// split matrix(1, 0, 0, 1, x, y)
+var matrixValues = transform.split(&#39;,&#39;);
+// translate X value is in 12th or 4th position
+var xIndex = transform.indexOf(&#39;matrix3d&#39;) === 0 ? 12 : 4;
+var translateX = parseInt( matrixValues[ xIndex ], 10 );
+// translate Y value is in 13th or 5th position
+var translateY = parseInt( matrixValues[ xIndex + 1 ], 10 );
+this.position.x += translateX;
+this.position.y += translateY;</pre>
+
+<p>};</p>
+
+<p>// ————————– events ————————– //</p>
+
+<p>// trigger handler methods for events Draggabilly.prototype.handleEvent =
+function( event ) {</p>
+
+<pre>var method = &#39;on&#39; + event.type;
+if ( this[ method ] ) {
+  this[ method ]( event );
+}</pre>
+
+<p>};</p>
+
+<p>// returns the touch that we&#39;re keeping track of
+Draggabilly.prototype.getTouch = function( touches ) {</p>
+
+<pre>for ( var i=0, len = touches.length; i &lt; len; i++ ) {
+  var touch = touches[i];
+  if ( touch.identifier === this.pointerIdentifier ) {
+    return touch;
+  }
+}</pre>
+
+<p>};</p>
+
+<p>// —– start event —– //</p>
+
+<p>Draggabilly.prototype.onmousedown = function( event ) {</p>
+
+<pre>// dismiss clicks from right or middle buttons
+var button = event.button;
+if ( button &amp;&amp; ( button !== 0 &amp;&amp; button !== 1 ) ) {
+  return;
+}
+this.dragStart( event, event );</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.ontouchstart = function( event ) {</p>
+
+<pre>// disregard additional touches
+if ( this.isDragging ) {
+  return;
+}
+
+this.dragStart( event, event.changedTouches[0] );</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.onMSPointerDown = Draggabilly.prototype.onpointerdown
+= function( event ) {</p>
+
+<pre>// disregard additional touches
+if ( this.isDragging ) {
+  return;
+}
+
+this.dragStart( event, event );</pre>
+
+<p>};</p>
+
+<p>function setPointerPoint( point, pointer ) {</p>
+
+<pre>point.x = pointer.pageX !== undefined ? pointer.pageX : pointer.clientX;
+point.y = pointer.pageY !== undefined ? pointer.pageY : pointer.clientY;</pre>
+
+<p>}</p>
+
+<p>// hash of events to be bound after start event var postStartEvents = {</p>
+
+<pre>mousedown: [ &#39;mousemove&#39;, &#39;mouseup&#39; ],
+touchstart: [ &#39;touchmove&#39;, &#39;touchend&#39;, &#39;touchcancel&#39; ],
+pointerdown: [ &#39;pointermove&#39;, &#39;pointerup&#39;, &#39;pointercancel&#39; ],
+MSPointerDown: [ &#39;MSPointerMove&#39;, &#39;MSPointerUp&#39;, &#39;MSPointerCancel&#39; ]</pre>
+
+<p>};</p>
+
+<p>/**</p>
+
+<pre> drag start
+ @param {Event} event
+ @param {Event or Touch} pointer
+/</pre>
+
+<p>Draggabilly.prototype.dragStart = function( event, pointer ) {</p>
+
+<pre>if ( !this.isEnabled ) {
+  return;
+}
+
+if ( event.preventDefault ) {
+  event.preventDefault();
+} else {
+  event.returnValue = false;
+}
+
+// save pointer identifier to match up touch events
+this.pointerIdentifier = pointer.pointerId !== undefined ?
+  // pointerId for pointer events, touch.indentifier for touch events
+  pointer.pointerId : pointer.identifier;
+
+this._getPosition();
+
+this.measureContainment();
+
+// point where drag began
+setPointerPoint( this.startPoint, pointer );
+// position _when_ drag began
+this.startPosition.x = this.position.x;
+this.startPosition.y = this.position.y;
+
+// reset left/top style
+this.setLeftTop();
+
+this.dragPoint.x = 0;
+this.dragPoint.y = 0;
+
+// bind move and end events
+this._bindEvents({
+  // get proper events to match start event
+  events: postStartEvents[ event.type ],
+  // IE8 needs to be bound to document
+  node: event.preventDefault ? window : document
+});
+
+classie.add( this.element, &#39;is-dragging&#39; );
+
+// reset isDragging flag
+this.isDragging = true;
+
+this.emitEvent( &#39;dragStart&#39;, [ this, event, pointer ] );
+
+// start animation
+this.animate();</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype._bindEvents = function( args ) {</p>
+
+<pre>for ( var i=0, len = args.events.length; i &lt; len; i++ ) {
+  var event = args.events[i];
+  eventie.bind( args.node, event, this );
+}
+// save these arguments
+this._boundEvents = args;</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype._unbindEvents = function() {</p>
+
+<pre>var args = this._boundEvents;
+// IE8 can trigger dragEnd twice, check for _boundEvents
+if ( !args || !args.events ) {
+  return;
+}
+
+for ( var i=0, len = args.events.length; i &lt; len; i++ ) {
+  var event = args.events[i];
+  eventie.unbind( args.node, event, this );
+}
+delete this._boundEvents;</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.measureContainment = function() {</p>
+
+<pre>var containment = this.options.containment;
+if ( !containment ) {
+  return;
+}
+
+this.size = getSize( this.element );
+var elemRect = this.element.getBoundingClientRect();
+
+// use element if element
+var container = isElement( containment ) ? containment :
+  // fallback to querySelector if string
+  typeof containment === &#39;string&#39; ? document.querySelector( containment ) :
+  // otherwise just `true`, use the parent
+  this.element.parentNode;
+
+this.containerSize = getSize( container );
+var containerRect = container.getBoundingClientRect();
+
+this.relativeStartPosition = {
+  x: elemRect.left - containerRect.left,
+  y: elemRect.top  - containerRect.top
+};</pre>
+
+<p>};</p>
+
+<p>// —– move event —– //</p>
+
+<p>Draggabilly.prototype.onmousemove = function( event ) {</p>
+
+<pre>this.dragMove( event, event );</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.onMSPointerMove = Draggabilly.prototype.onpointermove
+= function( event ) {</p>
+
+<pre>if ( event.pointerId === this.pointerIdentifier ) {
+  this.dragMove( event, event );
+}</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.ontouchmove = function( event ) {</p>
+
+<pre>var touch = this.getTouch( event.changedTouches );
+if ( touch ) {
+  this.dragMove( event, touch );
+}</pre>
+
+<p>};</p>
+
+<p>/**</p>
+
+<pre> drag move
+ @param {Event} event
+ @param {Event or Touch} pointer
+/</pre>
+
+<p>Draggabilly.prototype.dragMove = function( event, pointer ) {</p>
+
+<pre>setPointerPoint( this.dragPoint, pointer );
+var dragX = this.dragPoint.x - this.startPoint.x;
+var dragY = this.dragPoint.y - this.startPoint.y;
+
+var grid = this.options.grid;
+var gridX = grid &amp;&amp; grid[0];
+var gridY = grid &amp;&amp; grid[1];
+
+dragX = applyGrid( dragX, gridX );
+dragY = applyGrid( dragY, gridY );
+
+dragX = this.containDrag( &#39;x&#39;, dragX, gridX );
+dragY = this.containDrag( &#39;y&#39;, dragY, gridY );
+
+// constrain to axis
+dragX = this.options.axis === &#39;y&#39; ? 0 : dragX;
+dragY = this.options.axis === &#39;x&#39; ? 0 : dragY;
+
+this.position.x = this.startPosition.x + dragX;
+this.position.y = this.startPosition.y + dragY;
+// set dragPoint properties
+this.dragPoint.x = dragX;
+this.dragPoint.y = dragY;
+
+this.emitEvent( &#39;dragMove&#39;, [ this, event, pointer ] );</pre>
+
+<p>};</p>
+
+<p>function applyGrid( value, grid, method ) {</p>
+
+<pre>method = method || &#39;round&#39;;
+return grid ? Math[ method ]( value / grid ) * grid : value;</pre>
+
+<p>}</p>
+
+<p>Draggabilly.prototype.containDrag = function( axis, drag, grid ) {</p>
+
+<pre>if ( !this.options.containment ) {
+  return drag;
+}
+var measure = axis === &#39;x&#39; ? &#39;width&#39; : &#39;height&#39;;
+
+var rel = this.relativeStartPosition[ axis ];
+var min = applyGrid( -rel, grid, &#39;ceil&#39; );
+var max = this.containerSize[ measure ] - rel - this.size[ measure ];
+max = applyGrid( max, grid, &#39;floor&#39; );
+return  Math.min( max, Math.max( min, drag ) );</pre>
+
+<p>};</p>
+
+<p>// —– end event —– //</p>
+
+<p>Draggabilly.prototype.onmouseup = function( event ) {</p>
+
+<pre>this.dragEnd( event, event );</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.onMSPointerUp = Draggabilly.prototype.onpointerup =
+function( event ) {</p>
+
+<pre>if ( event.pointerId === this.pointerIdentifier ) {
+  this.dragEnd( event, event );
+}</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.ontouchend = function( event ) {</p>
+
+<pre>var touch = this.getTouch( event.changedTouches );
+if ( touch ) {
+  this.dragEnd( event, touch );
+}</pre>
+
+<p>};</p>
+
+<p>/**</p>
+
+<pre> drag end
+ @param {Event} event
+ @param {Event or Touch} pointer
+/</pre>
+
+<p>Draggabilly.prototype.dragEnd = function( event, pointer ) {</p>
+
+<pre>this.isDragging = false;
+
+delete this.pointerIdentifier;
+
+// use top left position when complete
+if ( transformProperty ) {
+  this.element.style[ transformProperty ] = &#39;&#39;;
+  this.setLeftTop();
+}
+
+// remove events
+this._unbindEvents();
+
+classie.remove( this.element, &#39;is-dragging&#39; );
+
+this.emitEvent( &#39;dragEnd&#39;, [ this, event, pointer ] );</pre>
+
+<p>};</p>
+
+<p>// —– cancel event —– //</p>
+
+<p>// coerce to end event</p>
+
+<p>Draggabilly.prototype.onMSPointerCancel =
+Draggabilly.prototype.onpointercancel = function( event ) {</p>
+
+<pre>if ( event.pointerId === this.pointerIdentifier ) {
+  this.dragEnd( event, event );
+}</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.ontouchcancel = function( event ) {</p>
+
+<pre>var touch = this.getTouch( event.changedTouches );
+this.dragEnd( event, touch );</pre>
+
+<p>};</p>
+
+<p>// ————————– animation ————————– //</p>
+
+<p>Draggabilly.prototype.animate = function() {</p>
+
+<pre>// only render and animate if dragging
+if ( !this.isDragging ) {
+  return;
+}
+
+this.positionDrag();
+
+var _this = this;
+requestAnimationFrame( function animateFrame() {
+  _this.animate();
+});</pre>
+
+<p>};</p>
+
+<p>// transform translate function var translate = is3d ?</p>
+
+<pre>function( x, y ) {
+  return &#39;translate3d( &#39; + x + &#39;px, &#39; + y + &#39;px, 0)&#39;;
+} :
+function( x, y ) {
+  return &#39;translate( &#39; + x + &#39;px, &#39; + y + &#39;px)&#39;;
+};</pre>
+
+<p>// left/top positioning Draggabilly.prototype.setLeftTop = function() {</p>
+
+<pre>this.element.style.left = this.position.x + &#39;px&#39;;
+this.element.style.top  = this.position.y + &#39;px&#39;;</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.positionDrag = transformProperty ?</p>
+
+<pre>function() {
+  // position with transform
+  this.element.style[ transformProperty ] = translate( this.dragPoint.x, this.dragPoint.y );
+} : Draggabilly.prototype.setLeftTop;</pre>
+
+<p>Draggabilly.prototype.enable = function() {</p>
+
+<pre>this.isEnabled = true;</pre>
+
+<p>};</p>
+
+<p>Draggabilly.prototype.disable = function() {</p>
+
+<pre>this.isEnabled = false;
+if ( this.isDragging ) {
+  this.dragEnd();
+}</pre>
+
+<p>};</p>
+
+<p>return Draggabilly;</p>
+
+<p>} // end definition</p>
+
+<p>// ————————– transport ————————– //</p>
+
+<p>if ( typeof define === &#39;function&#39; &amp;&amp; define.amd ) {</p>
+
+<pre>// AMD
+define( [
+    &#39;classie/classie&#39;,
+    &#39;eventEmitter/EventEmitter&#39;,
+    &#39;eventie/eventie&#39;,
+    &#39;get-style-property/get-style-property&#39;,
+    &#39;get-size/get-size&#39;
+  ],
+  draggabillyDefinition );</pre>
+
+<p>} else {</p>
+
+<pre>// browser global
+window.Draggabilly = draggabillyDefinition(
+  window.classie,
+  window.EventEmitter,
+  window.eventie,
+  window.getStyleProperty,
+  window.getSize
+);</pre>
+
+<p>}</p>
+
+<p>})( window );</p>
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

@@ -22,6 +22,10 @@
         drawLineChart(data);
       }
 
+      if (chart_type == 'pie') {
+        drawPieChart(data);
+      }
+
     });
 
   }
@@ -36,6 +40,13 @@
   function drawLineChart(data) {
 
     var chart = new google.visualization.LineChart(document.getElementById('visualization'));
+    chart.draw(new google.visualization.DataTable(data));
+
+  }
+
+  function drawPieChart(data) {
+
+    var chart = new google.visualization.PieChart(document.getElementById('visualization'));
     chart.draw(new google.visualization.DataTable(data));
 
   }
