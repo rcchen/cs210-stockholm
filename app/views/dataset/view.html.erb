@@ -80,6 +80,7 @@
 					<option value=">=">greater than or equal (>=)</option>
 					<option value=">">greater than (>)</option>
 					<option value="Contains">contains </option>
+					<option value="groupBy">Group By: (dates only!) </option>
 				</select>
 			</div>	
 			<div class="col-xs-3">
@@ -93,7 +94,6 @@
 </script>
 <script id="dataTemplate" type="text/template">
 	<tr>
-	<@ console.log(c); @>
 	<@ for (var ind = 0; ind < c.length; ind++) { @>
 		<td>
 			<@= c[ind]["v"] @>
