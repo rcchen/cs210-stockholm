@@ -27,6 +27,7 @@ class ApiController < ApplicationController
 
 	# Route for data aggregation
 	def aggregate_data(key, aggregate)
+		puts "STOP TRYING TO MAKE AGGREGATE_DATA HAPPEN. AGGRGATE_DATA IS NOT GOING TO HAPPEN"
 
 		# We're essentially doing a map/reduce operation
 		# We collect all the keys in the data hash and 
@@ -175,9 +176,9 @@ class ApiController < ApplicationController
 			# that is expected by the user.
 
 			# Pull the correct values out from the filter
-			filter_attribute = filter[1]["attribute"]
-			filter_sign = filter[1]["sign"]
-			filter_value = filter[1]["value"]
+			filter_attribute = filter["attribute"]
+			filter_sign = filter["sign"]
+			filter_value = filter["value"]
 
 			attributeIndex = attrNameToIndex(@dataset.attrs, filter_attribute)
 			# Cast for numerics
