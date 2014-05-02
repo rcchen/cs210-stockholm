@@ -6,6 +6,7 @@
   var dataset = '<%= @visualization.dataset %>';
   var chart_type = '<%= @visualization.chart_type %>';
   var chart_options = jQuery.parseJSON('<%= @visualization.chart_options.html_safe %>');
+  var filters = jQuery.parseJSON('<%= @visualization.filters.html_safe %>');
 
   var locations = {}
   var mapCenter = [0, 0]
@@ -15,7 +16,7 @@
 
   function drawChart() {
 
-    $.post('/api/' + dataset, { chart: chart_type, chart_options: chart_options }, function(data) {
+    $.post('/api/' + dataset, { chart: chart_type, chart_options: chart_options, filters: filters }, function(data) {
      
       if (chart_type == 'bar') {
         drawBarChart(data);
