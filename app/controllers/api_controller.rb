@@ -169,6 +169,8 @@ class ApiController < ApplicationController
 		# Iterate through the objects in the filter to build the query
 		params[:filters].each do |filter|
 
+			puts filter
+
 			# When we build the query, if we have multiple things fulfilling
 			# the same pattern (eg. two attributes that are both equals) the
 			# default is to apply an OR clause on the two statements. There
