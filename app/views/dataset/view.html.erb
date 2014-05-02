@@ -93,9 +93,12 @@
 </script>
 <script id="dataTemplate" type="text/template">
 	<tr>
-		<% @dataset.attrs.each do |attrHash| %>
-		<td><@= <%= attrHash["id"] %> @></td>
-		<% end %>
+	<@ console.log(c); @>
+	<@ for (var ind = 0; ind < c.length; ind++) { @>
+		<td>
+			<@= c[ind]["v"] @>
+		</td>
+	<@ } @>
 	</tr>
 </script>
 <script>
@@ -131,7 +134,6 @@
 		
  			// Loops through all of our models
 			_.each(this.model.models, function(data) {
-
 				// Render the data for each model in the template
 				var dataTemplate = this.template(data.toJSON());
 				$(this.el).append(dataTemplate);
@@ -234,7 +236,7 @@
 
 				// Call a reset on the data collection with our new data
 				// Will trigger a rerender of the view
-				_this.dataset.reset(data);
+				_this.dataset.reset(data["rows"]);
 
 			}); 
 
