@@ -6,6 +6,7 @@ class ApiController < ApplicationController
 		include Origin::Queryable
 	end
 
+
 	class Location
 		attr_accessor :latitude, :longitude
 		def initialize(latitude, longitude)
@@ -83,7 +84,6 @@ class ApiController < ApplicationController
 
 		# Return the aggregated data
 		return json_data.sort_by { |hash| hash["label"] }
-
 	end
 
 	def attrNameToIndex(attrs, filter_attribute) 
@@ -94,11 +94,11 @@ class ApiController < ApplicationController
 		end
 		return (0-1)
 	end
-	
+
 	def filter_documents(filters)
 		return
 			# Start construction our query here
-		query = @dataset.datadocs
+			query = @dataset.datadocs
 
 		# Construct a query with criteria
 		criteria = Criteria.new
@@ -138,7 +138,7 @@ class ApiController < ApplicationController
 				if not equals_filters.include?(filter_attribute)
 					equals_filters[filter_attribute] = Array.new()
 				end
-	 			equals_filters[filter_attribute].push(filter_value)
+				equals_filters[filter_attribute].push(filter_value)
 			elsif filter_sign == "<"
 				query = query.lt(:row["#{attributeIndex}"] =>  filter_value)
 			elsif filter_sign == "<="
@@ -162,7 +162,7 @@ class ApiController < ApplicationController
 		@results = query
 	end
 
-	def meetsCriteria(doc)
+	def meetsCriteria()
 		return true if params[:filters].nil?
 
 		# Iterate through the objects in the filter to build the query
@@ -183,28 +183,56 @@ class ApiController < ApplicationController
 			# Cast for numerics
 			if @dataset.attrs[attributeIndex]['type'] == 'number'
 				filter_value = filter_value.to_f
-				doc.row[attributeIndex] = doc.row[attributeIndex].to_f
+				@doc.row[attributeIndex] = @doc.row[attributeIndex].to_f
 			elsif @dataset.attrs[attributeIndex]['type'] == 'datetime'
-				filter_value = Chronic.parse(filter_value)
-				doc.row[attributeIndex] = Chronic.parse(doc.row[attributeIndex])
-
+				@doc.row[attributeIndex] = Chronic.parse(@doc.row[attributeIndex])
+				if filter_sign != "groupBy"
+					filter_value = Chronic.parse(filter_value)
+				end
 			end
 
 			# Start building our query filter
 			if filter_sign == "="
-				return false if not doc.row[attributeIndex] == filter_value
+				return false if not @doc.row[attributeIndex] == filter_value
 			elsif filter_sign == "<"
-				return false if not doc.row[attributeIndex] < filter_value
+				return false if not @doc.row[attributeIndex] < filter_value
 			elsif filter_sign == "<="
-				return false if not doc.row[attributeIndex] <= filter_value
+				return false if not @doc.row[attributeIndex] <= filter_value
 			elsif filter_sign == ">"
-				return false if not doc.row[attributeIndex] > filter_value
+				return false if not @doc.row[attributeIndex] > filter_value
 			elsif filter_sign == ">="
-				return false if not doc.row[attributeIndex] >= filter_value
+				return false if not @doc.row[attributeIndex] >= filter_value
 			elsif filter_sign == "!="
-				return false if not doc.row[attributeIndex] != filter_value
+				return false if not @doc.row[attributeIndex] != filter_value
 			elsif filter_sign == "Contains" 
-				return false if not Regexp.new(filter_value).match doc.row[attributeIndex]
+				return false if not Regexp.new(filter_value).match @doc.row[attributeIndex]
+			elsif filter_sign == "groupBy"
+				if @dataset.attrs[attributeIndex]['type'] != 'datetime'
+					puts "Trying to goupBy a non-datetime attr"
+				else
+					if filter_value == "dayOfWeek"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%A')
+					elsif filter_value == "month"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%B')
+					elsif filter_value == "year"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%Y')
+					elsif filter_value == "dayOfYear"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%j')
+					elsif filter_value == "week"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%V')
+					elsif filter_value == "dayOfMonth"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%-d')
+					elsif filter_value == "hour"
+						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%k')
+					else
+						puts "Unknown groupBy value: "
+					end
+
+				end
+
+			else
+				puts "UNRECOGNIZED conditional name:"
+				puts filter_sign
 			end
 
 		end
@@ -213,23 +241,25 @@ class ApiController < ApplicationController
 
 	def fullDatasetGoogleData()
 		dataTableHash = Hash.new
-	 	dataTableHash["cols"] = @dataset.attrs
-	 	dataTableHash["cols"].each_with_index do |colHash, index|
-	 		colHash["label"] = colHash["id"]
-	 	end
- 		dataTableHash["rows"] = Array.new
- 		@dataset.datadocs.each do |doc|
- 			next if not meetsCriteria(doc)
+		dataTableHash["cols"] = @dataset.attrs
+		dataTableHash["cols"].each_with_index do |colHash, index|
+			colHash["label"] = colHash["id"]
+		end
+		dataTableHash["rows"] = Array.new
+		@dataset.datadocs.each do |doc|
+			@doc = doc
+			next if not meetsCriteria()
+ 			# Uses @doc reference so it can alter data if needed
 
  			rowHash = Hash.new
  			rowHash["c"] = Array.new
- 			doc.row.each do |attrVal|
+ 			@doc.row.each do |attrVal|
  				attrHash = Hash.new
  				attrHash['v'] = attrVal
 
  				# Add this cell to the row
  				rowHash['c'] << attrHash
-			end
+ 			end
 
 			# Add this row to the overall object
 			dataTableHash['rows'] << rowHash
@@ -245,7 +275,7 @@ class ApiController < ApplicationController
 		@dataset = Dataset.where(:identifier => id).first
 
 		# POST requests are typically associated with some chart
- 		if request.post?
+		if request.post?
 
  			# Figure out what sort of chart it is
  			chart = params[:chart]
@@ -264,7 +294,7 @@ class ApiController < ApplicationController
 	 			render json: getGoogleData(key, aggregate)
 
 	 		# Handles bar chart data requests
-	 		elsif chart == 'bar'
+	 	elsif chart == 'bar'
 
 	 			# Get the key and aggregate
 	 			key_values = params[:chart_options]['key']
@@ -273,7 +303,7 @@ class ApiController < ApplicationController
 	 			render json: getGoogleData(key_values, aggregate_values)
 
 	 		# Handles line chart data requests
-	 		elsif chart == 'line'
+	 	elsif chart == 'line'
 
 	 			# Get the key and aggregate
 	 			key = params[:chart_options]['key']
@@ -283,26 +313,25 @@ class ApiController < ApplicationController
 
 
 	 		# Handles the geo chart data request
-	 		elsif chart == 'geo'
+	 	elsif chart == 'geo'
 
-	 			latitude = params[:chart_options]['latitude']
-	 			longitude = params[:chart_options]['longitude']
-	 			aggregate = params[:chart_options]['value']
+	 		latitude = params[:chart_options]['latitude']
+	 		longitude = params[:chart_options]['longitude']
+	 		aggregate = params[:chart_options]['value']
 
-	 			render json: getGeoData(latitude, longitude, aggregate)
+	 		render json: getGeoData(latitude, longitude, aggregate)
 
 	 		# If we don't receive a chart type, handle as a filtered data request
-	 		else
-	 			render json: fullDatasetGoogleData()
-	 		end
-
-	 	# If it is a GET request, return basic information
 	 	else
-
 	 		render json: fullDatasetGoogleData()
-
 	 	end
 
+	 	# If it is a GET request, return basic information
+	 else
+
+	 	render json: fullDatasetGoogleData()
+
+	 end
 	end
 
 	def getGoogleData(key_values, aggregate_values)
@@ -312,11 +341,11 @@ class ApiController < ApplicationController
 		# Both key_values and aggregate_values are represented as arrays
 		# This supports multi-series charts
 
- 		dataTableHash = Hash.new
+		dataTableHash = Hash.new
 
- 		dataTableKeyIndex = 0
+		dataTableKeyIndex = 0
 		dataTableValueIndices = Array.new	
- 		dataTableHash["cols"] = Array.new
+		dataTableHash["cols"] = Array.new
 
  		# Adds all the corresponding keys to cols
  		# For now, this only happens once because there is only one key value
@@ -342,19 +371,21 @@ class ApiController < ApplicationController
 
  		# Iterate over all datadocs
  		@dataset.datadocs.each do |datadoc|
- 			next if ! meetsCriteria(datadoc)
+ 			@doc = datadoc
+ 			next if not meetsCriteria()
+ 			#uses @doc to alter doc by reference if needed
 
- 			if !dataTableAggregateHash.has_key?(datadoc.row[dataTableKeyIndex])
+ 			if !dataTableAggregateHash.has_key?(@doc.row[dataTableKeyIndex])
 
- 				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]] = Array.new(dataTableValueIndices.length, 0)
+ 				dataTableAggregateHash[@doc.row[dataTableKeyIndex]] = Array.new(dataTableValueIndices.length, 0)
 
  			end
 
  			dataTableValueIndices.each_with_index do |rowIndex, index| 
 
- 				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]][index]
+ 				dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index]
 
- 				dataTableAggregateHash[datadoc.row[dataTableKeyIndex]][index] += datadoc.row[rowIndex].to_f
+ 				dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += @doc.row[rowIndex].to_f
 
  			end
 
@@ -376,16 +407,15 @@ class ApiController < ApplicationController
  		end
 
  		return dataTableHash
+ 	end
 
-	end
+ 	def getGeoData(latitude, longitude, aggregate_values)
 
-	def getGeoData(latitude, longitude, aggregate_values)
-
-		dataTableHash = Hash.new
+ 		dataTableHash = Hash.new
 
  		dataTableLatitudeIndex = attrNameToIndex(@dataset.attrs, latitude[0])
  		dataTableLongitudeIndex = attrNameToIndex(@dataset.attrs, longitude[0])
-		dataTableValueIndices = Array.new
+ 		dataTableValueIndices = Array.new
 
  		# Adds all the corresponding values to cols
  		aggregate_values.each do |aggregate_value|
@@ -394,9 +424,12 @@ class ApiController < ApplicationController
  		end
 
  		@dataset.datadocs.each do |datadoc|
- 			next if not meetsCriteria(datadoc)
- 			latitude = datadoc.row[dataTableLatitudeIndex]
- 			longitude = datadoc.row[dataTableLongitudeIndex]
+ 			@doc = datadoc
+ 			# Uses @doc for pass-by-reference semantics when changing row
+
+ 			next if not meetsCriteria()
+ 			latitude = @doc.row[dataTableLatitudeIndex]
+ 			longitude = @doc.row[dataTableLongitudeIndex]
 
  			location = Location.new(latitude, longitude)
 
@@ -404,23 +437,28 @@ class ApiController < ApplicationController
  				dataTableHash[location] = Array.new(dataTableValueIndices.length, 0)
  			end
 
-  			dataTableValueIndices.each_with_index do |rowIndex, index| 
+ 			dataTableValueIndices.each_with_index do |rowIndex, index| 
+ 				begin
+ 					dataTableHash[location][index] += @doc.row[rowIndex].to_f
+ 				rescue
+  					#If it isn't numeric, just count the number of occurences
+  					dataTableHash[location][index] = dataTableHash[location][index] + 1
+  				else
+  					puts "LOLWUT"
+  				end
 
-  				dataTableHash[location][index] += datadoc.row[rowIndex].to_f
+  			end
+  			returnArray = Array.new
+  			dataTableHash.each do |location, valArray|
+  				rowArr = Array.new
+  				rowArr << location.latitude
+  				rowArr << location.longitude
+  				returnArray << (rowArr + valArray)
+  			end
 
- 			end
+  			return returnArray
 
- 		end
- 		returnArray = Array.new
- 		dataTableHash.each do |location, valArray|
- 			rowArr = Array.new
- 			rowArr << location.latitude
- 			rowArr << location.longitude
- 			returnArray << (rowArr + valArray)
- 		end
-
- 		return returnArray
-
-	end
+  		end
+  	end
 
 end
