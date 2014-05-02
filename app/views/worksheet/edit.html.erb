@@ -493,6 +493,8 @@
 			console.log($('#time-options'));
 			$('#time-options').slideDown();
 
+			this.changeGroupBy();
+
 		},
 
 		events: {
@@ -503,9 +505,19 @@
 
 		changeGroupBy: function() {
 
-			// IMPLEMENT THE FORMAT YOU WANT TO RECEIVE THIS IN
+			// TODO ATTACH TO THE CURRENT MODEL
+			console.log(currentModel);
 
-			$('#groupBy').val(); // THIS IS THE VALUE YOU WILL GET
+			var options = currentModel.get('chart_options');
+
+			// Get the chart options
+			var filter = {
+				'key': options['key'][0],
+				'conditional': 'groupBy',
+				'value': $('#groupBy').val()
+			};
+
+			currentModel.set('filters', [filter]);
 
 		}
 
