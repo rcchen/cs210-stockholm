@@ -39,6 +39,8 @@
 
   function drawBarChart(data) {
 
+    console.log(data);
+
     var chart = new google.visualization.BarChart(document.getElementById('visualization'));
     chart.draw(new google.visualization.DataTable(data));
 
