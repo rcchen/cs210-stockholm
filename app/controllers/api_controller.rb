@@ -183,15 +183,18 @@ class ApiController < ApplicationController
 			# Cast for numerics
 			if @dataset.attrs[attributeIndex]['type'] == 'number'
 				filter_value = filter_value.to_f
+				doc.row[attributeIndex] = doc.row[attributeIndex].to_f
 			elsif @dataset.attrs[attributeIndex]['type'] == 'datetime'
 				filter_value = Chronic.parse(filter_value)
+				doc.row[attributeIndex] = Chronic.parse(doc.row[attributeIndex])
+
 			end
 
 			# Start building our query filter
 			if filter_sign == "="
-				return false if  not doc.row[attributeIndex] == filter_value
+				return false if not doc.row[attributeIndex] == filter_value
 			elsif filter_sign == "<"
-				return false if not doc.row[attributeIndex].to_f < filter_value
+				return false if not doc.row[attributeIndex] < filter_value
 			elsif filter_sign == "<="
 				return false if not doc.row[attributeIndex] <= filter_value
 			elsif filter_sign == ">"
