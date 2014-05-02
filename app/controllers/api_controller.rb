@@ -167,9 +167,7 @@ class ApiController < ApplicationController
 		return true if params[:filters].nil?
 
 		# Iterate through the objects in the filter to build the query
-		params[:filters].each do |filter|
-
-			puts filter
+		params[:filters].each do |key, filter|
 
 			# When we build the query, if we have multiple things fulfilling
 			# the same pattern (eg. two attributes that are both equals) the
@@ -177,9 +175,9 @@ class ApiController < ApplicationController
 			# is currently no override for this. This should be the behavior
 			# that is expected by the user.
 
-			# Pull the correct values out from the filter
-			filter_attribute = filter["attribute"]
-			filter_sign = filter["sign"]
+			# Pull the correct values out from the filte
+			filter_attribute = filter["key"]
+			filter_sign = filter["conditional"]
 			filter_value = filter["value"]
 
 			attributeIndex = attrNameToIndex(@dataset.attrs, filter_attribute)
@@ -212,21 +210,30 @@ class ApiController < ApplicationController
 			elsif filter_sign == "groupBy"
 				if @dataset.attrs[attributeIndex]['type'] != 'datetime'
 					puts "Trying to goupBy a non-datetime attr"
+					puts @dataset.attrs[attributeIndex]['type']
 				else
 					if filter_value == "dayOfWeek"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%A')
+						@adjustedAttrs[attributeIndex]['type'] = 'string'
+						# Effectively cast this column as a string, since it is the weekday now
 					elsif filter_value == "month"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%B')
+						@adjustedAttrs[attributeIndex]['type'] = 'string'
 					elsif filter_value == "year"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%Y')
+						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "dayOfYear"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%j')
+						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "week"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%V')
+						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "dayOfMonth"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%-d')
+						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "hour"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%k')
+						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					else
 						puts "Unknown groupBy value: "
 					end
@@ -350,23 +357,14 @@ class ApiController < ApplicationController
 		dataTableValueIndices = Array.new	
 		dataTableHash["cols"] = Array.new
 
- 		# Adds all the corresponding keys to cols
- 		# For now, this only happens once because there is only one key value
- 		key_values.each do |key_value|
- 			dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_value)
- 			keyAttrs = @dataset.attrs[dataTableKeyIndex]
- 			keyAttrs['label'] = keyAttrs['id']
- 			keyAttrs['type'] = 'string'
- 			dataTableHash["cols"] << keyAttrs
- 		end
+		# This will have to be looped if we end up supporting generalized multi-key charts
+ 		dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_values[0])
+ 		@adjustedAttrs = @dataset.attrs.deep_dup
 
  		# Adds all the corresponding values to cols
  		aggregate_values.each do |aggregate_value|
  			index = attrNameToIndex(@dataset.attrs, aggregate_value)
  			dataTableValueIndices << index
- 			colAttrs = @dataset.attrs[index]
- 			colAttrs['label'] = colAttrs['id']
- 			dataTableHash["cols"] << colAttrs
  		end
 
  		# Complete aggregate hashing
@@ -386,19 +384,41 @@ class ApiController < ApplicationController
 
  			dataTableValueIndices.each_with_index do |rowIndex, index| 
 
- 				dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index]
-
- 				dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += @doc.row[rowIndex].to_f
+ 				begin
+ 					dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += @doc.row[rowIndex].to_f
+ 				rescue
+ 					dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += 1
+ 					#If the value is non-numeric, jsut count the number of instances
+ 				end
 
  			end
 
+ 		end
+
+
+ 		# Adds all the corresponding keys to cols
+ 		# For now, this only happens once because there is only one key value
+ 		# Has to happen down here, in case filters change the data type
+ 		key_values.each do |key_value|
+ 			keyAttrs = @adjustedAttrs[dataTableKeyIndex]
+ 			keyAttrs['label'] = keyAttrs['id']
+ 			dataTableHash["cols"] << keyAttrs
+ 		end
+
+ 		# Adds all the corresponding values to cols
+ 		aggregate_values.each do |aggregate_value|
+ 			index = attrNameToIndex(@dataset.attrs, aggregate_value)
+ 			dataTableValueIndices << index
+ 			colAttrs = @adjustedAttrs[index]
+ 			colAttrs['label'] = colAttrs['id']
+ 			dataTableHash["cols"] << colAttrs
  		end
 
  		# Add our aggregated values as rows into the table hash
  		dataTableHash["rows"] = Array.new
 
  		# Access the hash by order of sorted keys
- 		dataTableAggregateHash.keys.sort.each do |key|
+ 		dataTableAggregateHash.keys.each do |key|
  			values = dataTableAggregateHash[key]
  			rowHash = Hash.new
  			rowHash["c"] = Array.new
