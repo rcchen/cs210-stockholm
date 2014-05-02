@@ -393,14 +393,10 @@ class ApiController < ApplicationController
  			dataTableValueIndices << index
  		end
 
-		puts dataTableLatitudeIndex, dataTableLongitudeIndex, dataTableValueIndices
-
  		@dataset.datadocs.each do |datadoc|
  			next if not meetsCriteria(datadoc)
  			latitude = datadoc.row[dataTableLatitudeIndex]
  			longitude = datadoc.row[dataTableLongitudeIndex]
-
- 			# puts datadoc.row
 
  			location = Location.new(latitude, longitude)
 

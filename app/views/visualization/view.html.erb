@@ -9,7 +9,6 @@
 
   var locations = {}
   var mapCenter = [0, 0]
-  var locationCircle;
 
   google.load("visualization", "1", {packages:["corechart"]});
   google.setOnLoadCallback(drawChart);
@@ -80,26 +79,23 @@
     var mapOptions = {
       zoom: 4, 
       center: new google.maps.LatLng(mapCenter[0] / Object.keys(locations).length, mapCenter[1] / Object.keys(locations).length),
-      mapTypeId: google.maps.MapTypeId.TERRAIN
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
     var map = new google.maps.Map(document.getElementById('visualization'), mapOptions);
 
-    console.log(map);
-
     for (var location in locations) {
       var valueOptions = {
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.5,
+        strokeColor: '#e74c3c',
+        strokeOpacity: 0.6,
         strokeWeight: 2,
-        fillColor: '#FF0000',
+        fillColor: '#e74c3c',
         fillOpacity: 0.2,
         map: map,
         center: locations[location].center,
-        radius: locations[location].value * 20
+        radius: locations[location].value * 5000
       };
-      locationCircle = new google.maps.Circle(valueOptions);
-      console.log(locationCircle);
+      var locationCircle = new google.maps.Circle(valueOptions);
     }
 
     google.maps.event.trigger(map, "resize");
