@@ -61,7 +61,7 @@ class UsersController < ApplicationController
 
 			# Validate the user
 			if user.valid?
-				olympians = Dataset.find_by_identifier("535eebef73796e1711010000")
+				olympians = Dataset.find("535eebef73796e1711010000")
 				user.datasets << olympians if not olympians.nil?
 
 				# Save if everything is ok
