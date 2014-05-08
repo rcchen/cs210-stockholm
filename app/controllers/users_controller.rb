@@ -57,8 +57,12 @@ class UsersController < ApplicationController
 			user.email = params[:email]
 			user.password = params[:password]
 
+			#hardcoded id of the olympians dataset so new users have something to play with
+
 			# Validate the user
 			if user.valid?
+				olympians = Datasets.find_by_identifier("535eebef73796e1711010000")
+				user.datasets << olympians if not olympians.nil?
 
 				# Save if everything is ok
 				user.save
