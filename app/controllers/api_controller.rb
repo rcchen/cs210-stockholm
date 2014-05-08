@@ -175,9 +175,23 @@ class ApiController < ApplicationController
 			# is currently no override for this. This should be the behavior
 			# that is expected by the user.
 
-			# Pull the correct values out from the filte
-			filter_attribute = filter["key"]
-			filter_sign = filter["conditional"]
+			# Pull the correct values out from the filter
+			filter_attribute = nil
+			if filter.has_key? "key"
+				filter_attribute = filter["key"]
+			else
+				filter_attribute = filter["attribute"]
+			end
+
+			filter_sign = nil
+			if filter.has_key? "conditional"
+				filter_sign = filter["conditional"]
+			else
+				filter_sign = filter["sign"]
+			end
+			# TODO: Make this consistent between vis::Create/ dataset::view
+
+
 			filter_value = filter["value"]
 
 			attributeIndex = attrNameToIndex(@dataset.attrs, filter_attribute)
