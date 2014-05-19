@@ -25,68 +25,6 @@ class ApiController < ApplicationController
 		end
 	end
 
-	# Route for data aggregation
-	def aggregate_data(key, aggregate)
-		puts "STOP TRYING TO MAKE AGGREGATE_DATA HAPPEN. AGGRGATE_DATA IS NOT GOING TO HAPPEN"
-
-		# We're essentially doing a map/reduce operation
-		# We collect all the keys in the data hash and 
-		# aggregate values for the keys
-		data = Hash.new
-
-		key_index = 0
-		aggregate_index = 0
-
-		@results.attrs.each_with_index do |object, index|
-
-			if object['id'] == key
-
-				key_index = index
-
-			end
-
-			if object['id'] == aggregate
-
-				aggregate_index = index
-
-			end
-
-		end
-
-		@results.datadocs.each do |datadoc|
-			
-			# Get the key
-			key_value = datadoc["row"][key_index]
-
-			# By default, we count the aggregate
-			aggregate_value = 1
-			if key != aggregate
-				aggregate_value = datadoc["row"][aggregate_index].to_i
-			end
-
-			# If the key does not exist yet, set it to zero
-			if not data.key?(key_value)
-				data[key_value] = 0
-			end
-
-			# Add in the value that we observed for the aggregate
-			data[key_value] = data[key_value] + aggregate_value
-
-		end
-
-		# Compile data into format expected of pie charts
-		json_data = Array.new
-		data.each do |key, value|
-			json_data_object = Hash.new
-			json_data_object["label"] = key
-			json_data_object["value"] = value
-			json_data << json_data_object
-		end
-
-		# Return the aggregated data
-		return json_data.sort_by { |hash| hash["label"] }
-	end
-
 	def attrNameToIndex(attrs, filter_attribute) 
 		attrs.each_with_index do |attrHash, index|
 			if (attrHash["id"] == filter_attribute)
