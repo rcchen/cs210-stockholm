@@ -250,6 +250,36 @@ class ApiController < ApplicationController
 		end
 		return colList
 	end
+
+	def findGroupByFilter(attrsList, keyIndex)
+		# If the key column is a datetime, grouping dates requires returning a
+		# different data type. So find the key/datetime/groupBy filter to check
+		params[:filters].each do |key, filter|
+
+			filter_attribute = nil
+			if filter.has_key? "key"
+				filter_attribute = filter["key"]
+			else
+				filter_attribute = filter["attribute"]
+			end
+
+			filter_sign = nil
+			if filter.has_key? "conditional"
+				filter_sign = filter["conditional"]
+			else
+				filter_sign = filter["sign"]
+			end
+			# TODO: Make this consistent between vis::Create/ dataset::view
+
+			if filter_attribute = attrsList[keyIndex]["id"] and filter_sign = "groupBy"
+				return filter
+			end
+		end
+		return nil
+	end
+
+
+
 	def getGoogleData(key_values, aggregate_values)
 		# This method also performs a projection, stripping any columns
 		# not explicitly required by key or aggregates
