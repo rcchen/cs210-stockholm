@@ -99,26 +99,18 @@ class ApiController < ApplicationController
 				else
 					if filter_value == "dayOfWeek"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%A')
-						@adjustedAttrs[attributeIndex]['type'] = 'string'
-						# Effectively cast this column as a string, since it is the weekday now
 					elsif filter_value == "month"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%B')
-						@adjustedAttrs[attributeIndex]['type'] = 'string'
 					elsif filter_value == "year"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%Y')
-						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "dayOfYear"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%j')
-						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "week"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%V')
-						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "dayOfMonth"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%-d')
-						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					elsif filter_value == "hour"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%k')
-						@adjustedAttrs[attributeIndex]['type'] = 'number'
 					else
 						puts "Unknown groupBy value: "
 					end
@@ -229,6 +221,35 @@ class ApiController < ApplicationController
 	 end
 	end
 
+	def modifyValueTypes(attrsList, keyIndex, valueIndices)
+		# attr hash is an array of {"id": "name of this attr", "type" : "string or number or date"} hashes
+		returnTypeList = Array.new
+
+		colList << attrsList[keyIndex]
+		colList[0]["label"] = colList[0]["id"]
+		if colList[0]["type"] == "datetime"
+			# If the key of the vis is a date, see if it should be adjusted for groupBy
+			groupByFilter = findGroupByFilter(attrsList, keyIndex)
+			if not groupByFilter.nil?
+				if groupByFilter["value"] == "dayOfWeek" or groupByFilter["value"] == "month"
+					colList["type"] = "string"
+				elsif groupByFilter["value"] == "week" or groupByFilter["value"] == "year" or groupByFilter["value"] == "dayOfYear" or groupByFilter["value"] == "dayOfMonth" or groupByFilter["value"] == "hour"
+				   # WHY THE FUCKING FUCK IS RUBY WHITESPACE DEPENDENT?!?!
+				   # Using a 200 column line cause Ruby is too cool for line breaks. 
+				   colList["type"] = "number"
+				end
+			end
+		end
+
+		valueIndices.each do |valIndex|
+			currCol = attrsList[valIndex]
+			currCol["type"] = "number"
+			# Non-key columns will *always* be numeric...    I hope.
+			currCol["label"] = currCol["id"]
+			colList << currCol
+		end
+		return colList
+	end
 	def getGoogleData(key_values, aggregate_values)
 		# This method also performs a projection, stripping any columns
 		# not explicitly required by key or aggregates
@@ -244,13 +265,13 @@ class ApiController < ApplicationController
 
 		# This will have to be looped if we end up supporting generalized multi-key charts
  		dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_values[0])
- 		@adjustedAttrs = @dataset.attrs.deep_dup
 
  		# Adds all the corresponding values to cols
  		aggregate_values.each do |aggregate_value|
  			index = attrNameToIndex(@dataset.attrs, aggregate_value)
  			dataTableValueIndices << index
  		end
+ 		@adjustedAttrs = modifyValueTypes(@dataset.attrs, dataTableKeyIndex, dataTableValueIndices)
 
  		# Complete aggregate hashing
  		dataTableAggregateHash = Hash.new
@@ -269,9 +290,9 @@ class ApiController < ApplicationController
 
  			dataTableValueIndices.each_with_index do |rowIndex, index| 
 
- 				begin
+ 				if @dataset.attrs[index]["type"] == "number"
  					dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += @doc.row[rowIndex].to_f
- 				rescue
+ 				else
  					dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += 1
  					#If the value is non-numeric, jsut count the number of instances
  				end
@@ -281,23 +302,9 @@ class ApiController < ApplicationController
  		end
 
 
- 		# Adds all the corresponding keys to cols
- 		# For now, this only happens once because there is only one key value
- 		# Has to happen down here, in case filters change the data type
- 		key_values.each do |key_value|
- 			keyAttrs = @adjustedAttrs[dataTableKeyIndex]
- 			keyAttrs['label'] = keyAttrs['id']
- 			dataTableHash["cols"] << keyAttrs
- 		end
 
- 		# Adds all the corresponding values to cols
- 		aggregate_values.each do |aggregate_value|
- 			index = attrNameToIndex(@dataset.attrs, aggregate_value)
- 			dataTableValueIndices << index
- 			colAttrs = @adjustedAttrs[index]
- 			colAttrs['label'] = colAttrs['id']
- 			dataTableHash["cols"] << colAttrs
- 		end
+ 		dataTableHash["cols"] = @adjustedAttrs
+
 
  		# Add our aggregated values as rows into the table hash
  		dataTableHash["rows"] = Array.new
