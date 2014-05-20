@@ -33,14 +33,11 @@
 					</tr>
 				</table>
 			</div>
-			<div class="col-xs-6">
-				<pre id="attributes"><%= JSON.pretty_generate(@dataset.attrs) %></pre>
-			</div>
 		</div>
 	</div>
 	<div id="filters" style="margin-top: 40px;">
 		<h3>Data</h3>
-		<form id="filters-form">
+		<form id="filters-form" onSubmit="Javascript:App.updateData()">
 			<div id="filter-attributes">
 			</div>
 			<div id="filter-actions" style="margin: 20px 0px;">
@@ -171,6 +168,7 @@
 
 			// Clicking on the submit filter will update data
 			'click #submit-filter': 'updateData'
+
 
 		},
 
