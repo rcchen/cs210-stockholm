@@ -95,7 +95,7 @@ class ApiController < ApplicationController
 			elsif filter_sign == "groupBy"
 				if @dataset.attrs[attributeIndex]['type'] != 'datetime'
 					puts "Trying to goupBy a non-datetime attr"
-					puts @dataset.attrs[attributeIndex]['type']
+					puts @dataset.attrs[attributeIndex]
 				else
 					if filter_value == "dayOfWeek"
 						@doc.row[attributeIndex] = @doc.row[attributeIndex].strftime('%A')
@@ -223,26 +223,25 @@ class ApiController < ApplicationController
 
 	def modifyValueTypes(attrsList, keyIndex, valueIndices)
 		# attr hash is an array of {"id": "name of this attr", "type" : "string or number or date"} hashes
-		returnTypeList = Array.new
-
-		colList << attrsList[keyIndex]
+		colList = Array.new
+		colList << attrsList[keyIndex].deep_dup
 		colList[0]["label"] = colList[0]["id"]
 		if colList[0]["type"] == "datetime"
 			# If the key of the vis is a date, see if it should be adjusted for groupBy
 			groupByFilter = findGroupByFilter(attrsList, keyIndex)
 			if not groupByFilter.nil?
 				if groupByFilter["value"] == "dayOfWeek" or groupByFilter["value"] == "month"
-					colList["type"] = "string"
+					colList[0]["type"] = "string"
 				elsif groupByFilter["value"] == "week" or groupByFilter["value"] == "year" or groupByFilter["value"] == "dayOfYear" or groupByFilter["value"] == "dayOfMonth" or groupByFilter["value"] == "hour"
 				   # WHY THE FUCKING FUCK IS RUBY WHITESPACE DEPENDENT?!?!
 				   # Using a 200 column line cause Ruby is too cool for line breaks. 
-				   colList["type"] = "number"
+				   colList[0]["type"] = "number"
 				end
 			end
 		end
 
 		valueIndices.each do |valIndex|
-			currCol = attrsList[valIndex]
+			currCol = attrsList[valIndex].deep_dup
 			currCol["type"] = "number"
 			# Non-key columns will *always* be numeric...    I hope.
 			currCol["label"] = currCol["id"]
