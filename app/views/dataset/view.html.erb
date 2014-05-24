@@ -33,14 +33,11 @@
 					</tr>
 				</table>
 			</div>
-			<div class="col-xs-6">
-				<pre id="attributes"><%= JSON.pretty_generate(@dataset.attrs) %></pre>
-			</div>
 		</div>
 	</div>
 	<div id="filters" style="margin-top: 40px;">
 		<h3>Data</h3>
-		<form id="filters-form">
+		<form id="filters-form" onSubmit="Javascript:App.updateData()">
 			<div id="filter-attributes">
 			</div>
 			<div id="filter-actions" style="margin: 20px 0px;">
@@ -73,13 +70,14 @@
 				</select>
 			</div>
 			<div class="col-xs-3">
-				<select class="form-control" name="sign">
+				<select class="form-control" name="conditional">
 					<option value="<">less than (<)</option>
 					<option value="<=">less than or equal (<=)</option>
 					<option value="=">equals (=)</option>
 					<option value=">=">greater than or equal (>=)</option>
 					<option value=">">greater than (>)</option>
 					<option value="Contains">contains </option>
+					<option value="groupBy">Group By: (dates only!) </option>
 				</select>
 			</div>	
 			<div class="col-xs-3">
@@ -93,7 +91,6 @@
 </script>
 <script id="dataTemplate" type="text/template">
 	<tr>
-	<@ console.log(c); @>
 	<@ for (var ind = 0; ind < c.length; ind++) { @>
 		<td>
 			<@= c[ind]["v"] @>
@@ -171,6 +168,7 @@
 
 			// Clicking on the submit filter will update data
 			'click #submit-filter': 'updateData'
+
 
 		},
 

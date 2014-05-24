@@ -127,8 +127,18 @@ class DatasetController < ApplicationController
 
 	def destroy
 
+		user = User.find(session[:id])
 		@dataset = Dataset.find_by_identifier(params[:id])
-		@dataset.destroy
+		@dataset.users.delete(user)
+		user.datasets.delete(@dataset)
+
+		if @dataset.users.empty?
+			@dataset.destroy
+		else
+			@dataset.save
+			#If another user is using this ds, don't destroy it.
+		end
+		user.save
 
 		redirect_to '/users/profile'
 

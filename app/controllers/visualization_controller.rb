@@ -44,6 +44,7 @@ class VisualizationController < ApplicationController
 
 		# Now set the chart options
 		visualization.chart_options = params[:chart_options].to_json
+		visualization.filters = params[:filters].to_json
 
 		# Save the visualization
 		visualization.save

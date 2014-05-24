@@ -65,6 +65,9 @@ gem 'chronic'
 # Our attempts at background processing
 gem "resque", "~> 1.25.2", :require => "resque/server"
 
+# Use to manage resque workers
+gem 'resque-pool'
+
 # Use unicorn as the app server
 # gem 'unicorn'
 
