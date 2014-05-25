@@ -1,40 +1,40 @@
 <html>
-	<head>
-		<%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
-	    <!-- <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=true"></script> -->
-		<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-		<%= csrf_meta_tags %>
-	</head>
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <%= link_to 'Home', root_path, class: 'navbar-brand' %>
+<head>
+	<%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+	<%= csrf_meta_tags %>
+</head>
+
+<header>
+  <div id="storylytics-menu" class="container">
+    <div class="icon-group">
+      <i class="fa fa-minus"></i>
+      <span id="font-size">12</span>
+      <i class="fa fa-plus"></i>
     </div>
-    <ul class="nav nav-justified navbar-nav">
-      <li><a href="/">Home</a></li>
-      <li><a href="group.html">Group</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="positions.html">Positions</a></li>
-    </ul>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
-        <% if session[:id] %>
-          <li><%= link_to 'Profile', {controller: 'users', action: 'profile'} %></li>
-          <li><%= link_to 'Logout', {controller: 'users', action: 'logout'} %></li>
-        <% else %>
-          <li><%= link_to 'Login', {controller: 'users', action: 'login'} %></li>
-        <% end %>
-      </ul>
-    </div><!--/.nav-collapse -->
+    <div class="icon-group">
+      <i id="bold" class="fa fa-bold"></i>
+      <i id="italic" class="fa fa-italic"></i>
+      <i id="underline" class="fa fa-underline"></i>
+    </div>
+    <div class="icon-group">
+      <i id="align-left" class="fa fa-align-left"></i>
+      <i id="align-center" class="fa fa-align-center"></i>
+      <i id="align-right" class="fa fa-align-right"></i>
+    </div>
+    <div class="icon-group">
+      <i class="fa fa-bar-chart-o"></i>
+      <i class="fa fa-picture-o"></i>
+    </div>
   </div>
-</div>
+</header>
+
 <body>
-   <%= yield %>
+
+  <div id="storylytics-editor" class="container" contenteditable="true">
+
+  </div>
+
 	<script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
