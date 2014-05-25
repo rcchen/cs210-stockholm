@@ -40,7 +40,7 @@ class WorksheetController < ApplicationController
 		@datasets = User.find(session[:id]).datasets
 
 		# Render with the sparse layout
-		render layout: "sparse"
+		render layout: "sparse_worksheet"
 
 	end
 
