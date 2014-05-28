@@ -49,6 +49,12 @@ function StorylyticsMenu() {
 
 // When the DOM is ready, instantiate an editor instance on the main window
 domready(function() {
+
+	// Initialize new instances of the editor and menu
 	storylyticsEditor = new StorylyticsEditor();
 	storylyticsMenu = new StorylyticsMenu();
+
+	// Change the default contentEditable element to the p tag
+	document.execCommand('defaultParagraphSeparator', false, 'p');
+
 });
