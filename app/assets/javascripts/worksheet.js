@@ -54,6 +54,12 @@ domready(function() {
 	storylyticsEditor = new StorylyticsEditor();
 	storylyticsMenu = new StorylyticsMenu();
 
+	// Set up all keyboard listeners
+	Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {
+		e.preventDefault();
+		console.log('saved!');
+	});
+
 	// Change the default contentEditable element to the p tag
 	document.execCommand('defaultParagraphSeparator', false, 'p');
 
