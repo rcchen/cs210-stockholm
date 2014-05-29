@@ -7,6 +7,9 @@ $header-color: #DADFE1;
 $header-hover: #FFFFFF;
 $element-border: #ABB7B7;
 $element-border-selected: #19B5FE;
+$visualization-toolbar: #F2F1EF;
+$visualization-toolbar-text: #336E7B;
+$visualization-toolbar-text-selected: #19B5FE;
 
 header {
 
@@ -67,7 +70,13 @@ body {
 		background-color: $editor-background;
 		height: auto;
 		min-height: 100%;
-		padding: 100px 100px;
+		padding: 100px 150px;
+
+		p {
+			font-family: 'Source Sans Pro', sans-serif;
+			font-size: 20px;
+			line-height: 28px;
+		}
 
 		// Removes default focus in browsers
 		&:focus {
@@ -96,6 +105,45 @@ body {
 
 				width: 100%;
 				height: 100%;
+
+			}
+
+		}
+
+		// These styles correspond to a visualization
+		.storylytics-visualization {
+
+			.visualization-toolbar {
+
+				background-color: $visualization-toolbar;
+				padding: 5px;
+				color: $visualization-toolbar-text;
+				
+				input[type="text"] {
+					background-color: transparent;
+					border: none;
+					border-bottom: 1px solid $visualization-toolbar-text;
+					&:focus {
+						box-sizing:border-box;
+						outline: none;
+						border-bottom: 1px solid $visualization-toolbar-text-selected;
+					}
+				}
+
+				.toolbar-panel {
+
+					display: inline-block;
+					vertical-align: top;
+
+					.title {
+						font-weight: bold;
+					}
+
+					div {
+						margin-bottom: 5px;
+					}
+
+				}
 
 			}
 

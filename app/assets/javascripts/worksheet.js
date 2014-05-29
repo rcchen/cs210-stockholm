@@ -4,7 +4,7 @@ var storylyticsMenu;
 function StorylyticsEditor () {
 
 	// Get the editor object
-	var editor = document.getElementById('storylytics-editor');
+	this.editor = document.getElementById('storylytics-editor');
 
 	// This function responds to click events within the editor
 	this.clickEvent = function() {
@@ -13,18 +13,29 @@ function StorylyticsEditor () {
 
 	}
 
-	// Replace the selected text
-	// See http://stackoverflow.com/questions/3997659/replace-selected-text-in-contenteditable-div
-	this.replaceSelected = function(replacement) {
-	   	
-		var sel = window.getSelection();
+	// Insert at the current caret position
+	this.insertElement = function() {
 
-		console.log(sel);
+		document.execCommand('insertHTML', false, '<p>POOPY</p>');
+
+	}
+
+	// Insert visualization object
+	this.insertVisualization = function() {
+
+		// Construct a visualization object from the DOM
+		var elem = document.createElement('div');
+		elem.className = 'storylytics-element storylytics-visualization';
+
+		// Construct a toolbar for the visualization
+
+		// Insert visualization into the current position
+		document.execCommand('insertHTML', false, elem.outerHTML);
 
 	}
 
 	// Register event listeners
-	editor.addEventListener("click", this.clickEvent, false);
+	this.editor.addEventListener("click", this.clickEvent, false);
 
 }
 
@@ -35,12 +46,14 @@ function StorylyticsMenu() {
 
 	// Register add visualization event
 	var addVisualization = document.getElementById('addVisualization');
-	
-	addVisualization.addEventListener("click", function() {
 
-		console.log('creating visualization');
+	this.createVisualization = function(event) {
+
+		event.preventDefault();
+
+	}
 	
-	}, false);
+	addVisualization.addEventListener("click", this.createVisualization, false);
 
 }
 
@@ -55,6 +68,11 @@ domready(function() {
 	Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {
 		e.preventDefault();
 		console.log('saved!');
+	});
+
+	Mousetrap.bind(['command+1'], function(e) {
+		e.preventDefault();
+		storylyticsEditor.insertVisualization();
 	});
 
 	// Change the default contentEditable element to the p tag
