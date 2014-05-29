@@ -4,7 +4,7 @@
 	  <li class="active"><%= @dataset.name %></li>
 	</ol>
 	<h3><%= @dataset.name %></h3>
-	<% if @dataset.expected_count.nil? or @dataset.datadocs.count < @dataset.expected_count %>
+	<% if false %>
 	<div class="alert alert-info">This dataset is still currently processing. Please check back later to see if it is done before processing any visualizations.</div>
 	<% end %>
 	<div id="information" style="margin: 30px 0px;">
