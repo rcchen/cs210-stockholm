@@ -9,6 +9,8 @@ function StorylyticsEditor () {
 	// This function responds to click events within the editor
 	this.clickEvent = function() {
 
+		console.log('clickity');
+
 	}
 
 	// Replace the selected text
@@ -28,22 +30,17 @@ function StorylyticsEditor () {
 
 function StorylyticsMenu() {
 
-	// This function responds to the bold icon
-	this.toggleBold = function() {
-
-		// Get the selected text
-		storylyticsEditor.replaceSelected('foobar');
-	
-	}
-
 	// Get the menu object
 	var menu = document.getElementById('storylytics-menu');
 
-	// Get each of the buttons
-	var bold = document.getElementById('bold');
+	// Register add visualization event
+	var addVisualization = document.getElementById('addVisualization');
+	
+	addVisualization.addEventListener("click", function() {
 
-	// Register event listeners
-	bold.addEventListener("click", this.toggleBold, false);
+		console.log('creating visualization');
+	
+	}, false);
 
 }
 
