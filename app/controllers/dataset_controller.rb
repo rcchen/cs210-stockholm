@@ -4,7 +4,45 @@ require 'mongo'
 require 'uri'
 require 'chronic'
 
+
+
+
 class DatasetController < ApplicationController
+
+	SaveRowsJob = Struct.new(:datasetID) do
+		def perform
+			puts "I'M IN THE BACKGROUND =D"
+			dataset = Dataset.find(datasetID)
+			directory = "public/data"
+    		# create the file path
+    		path = File.join(directory, dataset.identifier)
+    		# write the file
+ 			# Create an array to store CSV rows
+	 			
+			firstline = true
+			CSV.foreach(path) do  |row|
+				if firstline 
+					firstline = false
+					next
+				end
+				#First line is the header row
+
+				row.each_with_index do |attribute, index|
+					if row[index] != nil
+						row[index] = row[index].force_encoding("utf-8")
+					end
+				end
+				newDoc = Datadoc.new
+				newDoc.row = row	
+
+				# Put it into our dataset
+				dataset.datadocs.push(newDoc)
+
+			end
+
+			dataset.save
+		end
+	end
 
 	# Adopted from http://rosettacode.org/wiki/Determine_if_a_string_is_numeric#Ruby
 	def is_numeric?(s)
@@ -19,6 +57,13 @@ class DatasetController < ApplicationController
 
 	def create
 
+		@dataset = Dataset.new
+		@dataset.identifier = SecureRandom.hex(10)
+		# If base_url collides, find a new random hex values
+		while Dataset.where(:identifier => @dataset.identifier).exists? do
+			@dataset.identifier = SecureRandom.hex(10)
+		end
+
 		if request.post?
 
 			# Uploaded data is located in the POST param :csv
@@ -27,8 +72,15 @@ class DatasetController < ApplicationController
 	 		# Check that we are able to read the data
 	 		if @file_data.respond_to?(:read)
 
+	 			directory = "public/data"
+    			# create the file path
+    			path = File.join(directory, @dataset.identifier)
+    			# write the file
+    			File.open(path, "w") { |f| f.write(@file_data.read) }
 	 			# Create an array to store CSV rows
 	 			
+	 			@file_data.rewind
+
 	 			parsed_attributes = nil
 	 			firstValRow = nil
 	 			# Parse apart our CSV file and read the rows into our array
@@ -43,9 +95,8 @@ class DatasetController < ApplicationController
 	 					parsed_attributes = csv_obj
 	 				elsif (firstValRow.nil?)
 	 					firstValRow = csv_obj
-	 					rows << csv_obj
 	 				else
-	 					rows << csv_obj
+	 					break
 	 				end
 
 	 			end
@@ -74,15 +125,9 @@ class DatasetController < ApplicationController
 
 
 				# Now create a representation of the model we want
-				@dataset = Dataset.new
 				@dataset.name = params[:name]
 				@dataset.attrs = colsArray
 				@dataset.datadocs = Array.new
-				@dataset.identifier = SecureRandom.hex(10)
-				# If base_url collides, find a new random hex values
-				while Dataset.where(:identifier => @dataset.identifier).exists? do
-					@dataset.identifier = SecureRandom.hex(10)
-				end
 
 
 
@@ -90,8 +135,6 @@ class DatasetController < ApplicationController
 				@dataset.expected_count = rows.count
 				@dataset.save
 				session[:dataset] = @dataset.id
-
-				Rails.cache.write("rows", rows);
 
 	 			# Redirect to the verification stage
 	 			redirect_to action: 'verify'
@@ -104,14 +147,20 @@ class DatasetController < ApplicationController
 	 def verify
 
 	 	@dataset = Dataset.find(session[:dataset])
-	 	rows = Rails.cache.read("rows")
 	 	if request.post?
-	 		Resque.enqueue(DatasetProcessor, @dataset, rows)
+	 		#Resque.enqueue(DatasetProcessor, @dataset, rows)
 
  			# Save dataset to the current user
  			user = User.find(session[:id])
  			user.datasets << @dataset
  			user.save
+
+ 			@dataset.save
+
+ 			
+ 			Delayed::Job.enqueue SaveRowsJob.new(@dataset.id)
+
+
 
 			# Render the view
 			redirect_to '/dataset/' + @dataset.identifier + "/view"

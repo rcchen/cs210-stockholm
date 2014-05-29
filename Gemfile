@@ -62,11 +62,12 @@ gem 'bcrypt-ruby'
 # Use Chronic for parsing different time/date encodings
 gem 'chronic'
 
-# Our attempts at background processing
-gem "resque", "~> 1.25.2", :require => "resque/server"
+# New background processing tool
+gem 'delayed_job_mongoid'
 
-# Use to manage resque workers
-gem 'resque-pool'
+# Delayed job workers daemon
+gem 'daemons'
+
 
 # Use unicorn as the app server
 # gem 'unicorn'

@@ -28,6 +28,3 @@ fi
 echo "Checking for new gems"
 bundle install
 
-redis-server &
-
-VERBOSE=1 QUEUE=* rake environment resque:work &

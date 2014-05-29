@@ -270,7 +270,7 @@ class ApiController < ApplicationController
 			end
 			# TODO: Make this consistent between vis::Create/ dataset::view
 
-			if filter_attribute = attrsList[keyIndex]["id"] and filter_sign = "groupBy"
+			if filter_attribute == attrsList[keyIndex]["id"] and filter_sign == "groupBy"
 				return filter
 			end
 		end
