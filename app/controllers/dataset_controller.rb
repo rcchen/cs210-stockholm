@@ -39,7 +39,7 @@ class DatasetController < ApplicationController
 				dataset.datadocs.push(newDoc)
 
 			end
-
+			dataset.expected_count = dataset.datadoc.size
 			dataset.save
 		end
 	end
@@ -76,7 +76,7 @@ class DatasetController < ApplicationController
     			# create the file path
     			path = File.join(directory, @dataset.identifier)
     			# write the file
-    			File.open(path, "w") { |f| f.write(@file_data.read) }
+    			File.open(path, "wb") { |f| f.write(@file_data.read) }
 	 			# Create an array to store CSV rows
 	 			
 	 			@file_data.rewind
