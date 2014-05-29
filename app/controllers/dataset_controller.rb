@@ -39,7 +39,7 @@ class DatasetController < ApplicationController
 				dataset.datadocs.push(newDoc)
 
 			end
-			dataset.expected_count = dataset.datadoc.size
+			dataset.expected_count = dataset.datadocs.size
 			dataset.save
 		end
 	end
