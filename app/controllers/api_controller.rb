@@ -35,7 +35,11 @@ class ApiController < ApplicationController
 	end
 
 	def meetsCriteria()
+		# XXX demo day kludge, removed borken filters.
+		return true
+
 		return true if params[:filters].nil?
+
 
 		# Iterate through the objects in the filter to build the query
 		params[:filters].each do |key, filter|
@@ -251,6 +255,8 @@ class ApiController < ApplicationController
 	end
 
 	def findGroupByFilter(attrsList, keyIndex)
+		# XXX Demo day kludge: filters removed for demo day, add back later!
+		return nil
 		# If the key column is a datetime, grouping dates requires returning a
 		# different data type. So find the key/datetime/groupBy filter to check
 		params[:filters].each do |key, filter|
