@@ -951,7 +951,7 @@
 		container.appendChild(elem);
 
 		// Add to Packery
-		packery.appended(elem);
+		// packery.appended(elem);
 
 		// Create a new Visualization object
 		var visualization = new Visualization();
@@ -981,7 +981,7 @@
 		});
 		draggable.on('dragStart', startEvent);
 		draggable.on('dragEnd', evaluateEvent);
-		packery.bindDraggabillyEvents(draggable);
+		// packery.bindDraggabillyEvents(draggable);
 
 	});
 
@@ -1016,8 +1016,8 @@
 	$('#delete').click(function() {
 
 		// Remove from Packery
-		packery.remove(document.getElementById(currentModel.get('identifier')));
-		packery.layout();
+		//packery.remove(document.getElementById(currentModel.get('identifier')));
+		//packery.layout();
 
 		// Destroy the current model
 		currentModel.destroy({
@@ -1161,7 +1161,7 @@
 	}
 
 	$(document).ready(function() {
-		packery = new Packery(container, {
+		/*packery = new Packery(container, {
 			gutter: 20,
 			columnWidth: 220
 		});
@@ -1173,7 +1173,7 @@
 			});
 			draggable.on('dragEnd', evaluateEvent);
 			packery.bindDraggabillyEvents(draggable);
-		}
+		}*/
 	});
 
 </script>
