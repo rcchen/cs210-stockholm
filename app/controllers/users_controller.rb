@@ -61,8 +61,15 @@ class UsersController < ApplicationController
 
 			# Validate the user
 			if user.valid?
-				olympians = Dataset.find("535eebef73796e1711010000")
-				user.datasets << olympians if not olympians.nil?
+				adminUser = nil
+				begin
+					adminUser = User.find_by(email: "admin")
+				rescue
+					adminUser = nil
+				end
+				if not adminUser.nil? and not adminUser.datasets.first.nil?
+					user.datasets << adminUser.datasets.first
+				end
 
 				# Save if everything is ok
 				user.save
