@@ -37,9 +37,7 @@ class DatasetController < ApplicationController
 
 				# Put it into our dataset
 				dataset.datadocs.push(newDoc)
-
 			end
-			dataset.expected_count = dataset.datadocs.size
 			dataset.save
 		end
 	end
@@ -67,30 +65,24 @@ class DatasetController < ApplicationController
 		if request.post?
 
 			# Uploaded data is located in the POST param :csv
-			@file_data = params[:csv]
+			file_data = params[:csv]
 
 	 		# Check that we are able to read the data
-	 		if @file_data.respond_to?(:read)
+	 		if file_data.respond_to?(:read)
 
 	 			directory = "public/data"
     			# create the file path
     			path = File.join(directory, @dataset.identifier)
     			# write the file
-    			File.open(path, "wb") { |f| f.write(@file_data.read) }
+    			File.open(path, "wb") { |f| f.write(file_data.read)}
 	 			# Create an array to store CSV rows
-	 			
-	 			@file_data.rewind
+	 			file_data.rewind
 
 	 			parsed_attributes = nil
 	 			firstValRow = nil
 	 			# Parse apart our CSV file and read the rows into our array
-	 			rows = Array.new
-	 			CSV.parse(@file_data.read) do |csv_obj|
-	 				csv_obj.each_with_index do |val, index|
-	 					if not csv_obj[index].nil?
-	 						csv_obj[index] = csv_obj[index].force_encoding("utf-8")
-	 					end
-	 				end
+	 			CSV.parse(file_data.read) do |csv_obj|
+
 	 				if (parsed_attributes.nil?)
 	 					parsed_attributes = csv_obj
 	 				elsif (firstValRow.nil?)
@@ -132,7 +124,6 @@ class DatasetController < ApplicationController
 
 
 				@dataset.attrs = colsArray
-				@dataset.expected_count = rows.count
 				@dataset.save
 				session[:dataset] = @dataset.id
 
@@ -154,7 +145,6 @@ class DatasetController < ApplicationController
  			user = User.find(session[:id])
  			user.datasets << @dataset
  			user.save
-
  			@dataset.save
 
  			
