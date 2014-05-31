@@ -1,5 +1,49 @@
+var Worksheet = Backbone.Model.extend({
+
+	urlRoot: '/worksheet/',
+
+	initialize: function() {
+		this.on('change', this.updateOptions);
+	},
+
+	updateOptions: function() {
+
+	}
+
+});
+
+var Visualization = Backbone.Model.extend({
+
+});
+
+var WorksheetToolbarView = Backbone.View.extend({
+
+});
+
+var WorksheetView = Backbone.View.extend({
+
+	el: '#storylytics-editor',
+
+	initialize: function() {
+		this.render();
+	},
+
+	render: function() {
+
+	}
+
+});
+
+
+/*
+
 var storylyticsEditor;
 var storylyticsMenu;
+
+var Worksheet = Backbone.Model.extend({
+
+});
+
 
 var VisualizationToolbar = Backbone.View.extend({
 
@@ -92,3 +136,4 @@ domready(function() {
 	document.execCommand('defaultParagraphSeparator', false, 'p');
 
 });
+*/

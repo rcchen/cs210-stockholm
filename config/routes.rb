@@ -23,13 +23,15 @@ Cs210Stockholm::Application.routes.draw do
   post "dataset/:id/edit", to: "dataset#edit"
   get "dataset/:id/destroy", to: "dataset#destroy"
 
+  resources :worksheets
+
   # These routes are associated with the worksheet
-  get "worksheet/create"
-  post "worksheet/create"
-  get "worksheet/:id", to: "worksheet#view"
-  get "worksheet/:id/edit", to: "worksheet#edit"
-  post "worksheet/:id/edit", to: "worksheet#edit"
-  get "worksheet/:id/destroy", to: "worksheet#destroy"
+  #get "worksheet/create"
+  #post "worksheet/create"
+  #get "worksheet/:id", to: "worksheet#view"
+  #get "worksheet/:id/edit", to: "worksheet#edit"
+  #post "worksheet/:id/edit", to: "worksheet#edit"
+  #get "worksheet/:id/destroy", to: "worksheet#destroy"
   
   # These routes are associated with visualizations
   post "visualization", to: "visualization#create"

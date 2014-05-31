@@ -1,4 +1,15 @@
-class WorksheetController < ApplicationController
+class WorksheetsController < ApplicationController
+
+	# GET /worksheets
+	def index
+		@worksheets = Worksheet.all
+	end
+
+	def show
+	end
+
+	def edit
+	end
 
 	def create
 
