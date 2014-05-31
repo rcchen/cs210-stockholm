@@ -1,3 +1,7 @@
+var worksheetView;
+var worksheet;
+var worksheetToolbarView;
+
 var Worksheet = Backbone.Model.extend({
 
 	urlRoot: '/worksheets/',
@@ -32,8 +36,7 @@ var WorksheetView = Backbone.View.extend({
 
 	render: function() {
 
-		console.log(this.model.get('data'));
-
+		// Only render data if it is not undefined
 		if (this.model.get('data') != undefined) {
 			this.el.innerHTML = this.model.get('data');
 		} else {
@@ -56,6 +59,27 @@ var WorksheetView = Backbone.View.extend({
 		// Send over changed data
 		this.model.save();
 
+	},
+
+	// Insert an image into the document
+	insertImage: function(imageURL) {
+		this.el.focus();
+		document.execCommand('insertHTML', false, '<img src="' + imageURL + '" />');
+	}
+
+});
+
+var WorksheetToolbarView = Backbone.View.extend({
+
+	el: '#storylytics-menu',
+
+	events: {
+		'click #addImage': 'addImage',
+	},
+
+	addImage: function() {
+		var imageURL = prompt("Image URL?");
+		worksheetView.insertImage(imageURL);
 	}
 
 });

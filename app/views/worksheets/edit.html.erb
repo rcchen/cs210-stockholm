@@ -28,9 +28,6 @@
 
 <script>
 
-var worksheetView;
-var worksheet;
-
 domready(function() {
 
 	// Initialize the new worksheet
@@ -42,6 +39,9 @@ domready(function() {
 	worksheetView = new WorksheetView({
 		model: worksheet
 	});
+
+	// Initialize the worksheet toolbar
+	worksheetToolbarView = new WorksheetToolbarView();
 
 });
 
