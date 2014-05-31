@@ -73,14 +73,14 @@ body.storylytics-edit {
 		height: auto;
 		min-height: 100%;
 		padding: 100px 200px;
+		font-family: 'Lora', serif;
+		font-size: 22px;
+		line-height: 44px;
 
-		p {
-			font-family: 'Lora', serif;
-			font-size: 22px;
-			line-height: 40px;
-			padding: 10px 0px;
+		div {
+			padding-bottom: 30px;
 		}
-
+	
 		// Removes default focus in browsers
 		&:focus {
 			outline: none;

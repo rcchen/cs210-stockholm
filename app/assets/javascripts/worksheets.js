@@ -26,22 +26,22 @@ var WorksheetView = Backbone.View.extend({
 
 	keyboardEvents: {
 		'command+s': 		'save',
-		'ctrl+s': 			'save'
+		'ctrl+s': 			'save',
+		'command+e': 		'justifyCenter',
+		'ctrl+e': 			'justifyCenter' 
 	},
 
 	initialize: function() {
+		var _this = this;
 		this.listenTo(this.model, 'change', this.render);
-		this.model.fetch();
+		this.model.fetch({
+			success: function() {
+				_this.el.innerHTML = _this.model.get('data');
+			}
+		});
 	},
 
 	render: function() {
-
-		// Only render data if it is not undefined
-		if (this.model.get('data') != undefined) {
-			this.el.innerHTML = this.model.get('data');
-		} else {
-			this.el.innerHTML = 'Start creating your story here';
-		}
 
 	},
 
@@ -61,10 +61,34 @@ var WorksheetView = Backbone.View.extend({
 
 	},
 
+	// Center justify text
+	justifyCenter: function(e) {
+
+		// Override the browser default
+		e.preventDefault();
+
+		// Execute justifyCenter
+		document.execCommand('justifyCenter', false, null);
+
+	},
+
 	// Insert an image into the document
+	// Currently inserts the image at the top of the document.
 	insertImage: function(imageURL) {
+
+		// Grab focus for the editor window
 		this.el.focus();
+		
+		// Insert the image tag
 		document.execCommand('insertHTML', false, '<img src="' + imageURL + '" />');
+
+	},
+
+	// Insert a visualization into the document
+	insertVisualization: function() {
+
+
+
 	}
 
 });
@@ -78,8 +102,15 @@ var WorksheetToolbarView = Backbone.View.extend({
 	},
 
 	addImage: function() {
+
+		// Prompt for an image URL
 		var imageURL = prompt("Image URL?");
-		worksheetView.insertImage(imageURL);
+
+		// If we get a URL, insert
+		if (imageURL) {
+			worksheetView.insertImage(imageURL);
+		}
+
 	}
 
 });
