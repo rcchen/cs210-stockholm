@@ -16,24 +16,49 @@ var Visualization = Backbone.Model.extend({
 
 });
 
-var WorksheetToolbarView = Backbone.View.extend({
-
-});
-
 var WorksheetView = Backbone.View.extend({
 
 	el: '#storylytics-editor',
 
+	keyboardEvents: {
+		'command+s': 		'save',
+		'ctrl+s': 			'save'
+	},
+
 	initialize: function() {
-		this.render();
+		this.listenTo(this.model, 'change', this.render);
+		this.model.fetch();
 	},
 
 	render: function() {
 
+		console.log(this.model.get('data'));
+
+		if (this.model.get('data') != undefined) {
+			this.el.innerHTML = this.model.get('data');
+		} else {
+			this.el.innerHTML = 'Start creating your story here';
+		}
+
+	},
+
+	// Save the document
+	save: function(e) {
+
+		// Override the browser default
+		e.preventDefault();
+		
+		// Synchronize the data model with the server
+		this.model.set({
+			'data': this.el.innerHTML
+		});
+
+		// Send over changed data
+		this.model.save();
+
 	}
 
 });
-
 
 /*
 

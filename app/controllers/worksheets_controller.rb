@@ -13,6 +13,7 @@ class WorksheetsController < ApplicationController
 	# GET /worksheets/:id
 	def show
 		@worksheet = Worksheet.find_by_identifier(params[:id])
+		render json: @worksheet
 	end
 
 	# GET /worksheets/:id/edit
@@ -60,6 +61,18 @@ class WorksheetsController < ApplicationController
 	# PATCH /worksheets/:id
 	# PUT /worksheets/:id
 	def update
+
+		# Get the current worksheet
+		worksheet = Worksheet.find_by_identifier(params[:id])
+
+		# Update the data
+		# TODO: Actually sanitize the HTML data
+		worksheet.data = params[:data]
+
+		# Save the worksheet
+		worksheet.save
+
+		render :text => ""
 
 	end
 
