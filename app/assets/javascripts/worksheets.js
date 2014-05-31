@@ -1,6 +1,6 @@
 var Worksheet = Backbone.Model.extend({
 
-	urlRoot: '/worksheet/',
+	urlRoot: '/worksheets/',
 
 	initialize: function() {
 		this.on('change', this.updateOptions);

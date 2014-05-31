@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="profile-panel">
 		<h3>Worksheets</h3>
-		<%= link_to 'New Worksheet', {controller: 'worksheet', action: 'create'}, class: 'btn btn-success btn-or' %>
+		<%= link_to 'New Worksheet', {controller: 'worksheets', action: 'new'}, class: 'btn btn-success btn-or' %>
 		<table class="table">
 			<thead>
 				<tr>
@@ -19,9 +19,9 @@
 					<td><%= worksheet.title %></td>
 					<td><%= worksheet.created_at %></td>
 					<td><%= worksheet.updated_at %></td>
-					<td><a href="/worksheet/<%= worksheet.identifier %>">View</a></td>
-					<td><a href="/worksheet/<%= worksheet.identifier %>/edit">Edit</a></td>
-					<td><a href="/worksheet/<%= worksheet.identifier %>/destroy">Destroy</a></td>
+					<td><a href="/worksheets/<%= worksheet.identifier %>">View</a></td>
+					<td><a href="/worksheets/<%= worksheet.identifier %>/edit">Edit</a></td>
+					<td><a href="/worksheets/<%= worksheet.identifier %>/destroy">Destroy</a></td>
 				</tr>
 				<% end %>
 			</tbody>
