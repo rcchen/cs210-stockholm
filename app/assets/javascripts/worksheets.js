@@ -40,11 +40,6 @@ var WorksheetView = Backbone.View.extend({
 var storylyticsEditor;
 var storylyticsMenu;
 
-var Worksheet = Backbone.Model.extend({
-
-});
-
-
 var VisualizationToolbar = Backbone.View.extend({
 
 	el: '#storylytics-editor',
