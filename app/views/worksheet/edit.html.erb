@@ -1,35 +1,66 @@
 <div id="storylytics-editor" class="container mousetrap" contenteditable="true">
 
-	<p>This is some sample content that is included.</p>
-
-	<p><img src="http://cdnvideo.dolimg.com/cdn_assets/68c84ff353823787c3315c43bdefdde94f5b3783.jpg" />
-
+	<p>This is some sample content that is included. We are choosing to use serif fonts to give a feeling of sophistication to this goddamn web application.</p>
+	<p>In addition, we are treating this thing as a sophisticated thing. We actually have no fucking clue what we're doing so if this turns out great, that's going to be a small miracle.</p>
+	<p>
+		<div class="storylytics-element storylytics-image">
+			<img src="http://cdnvideo.dolimg.com/cdn_assets/68c84ff353823787c3315c43bdefdde94f5b3783.jpg" />
+		</div>
 	</p>
 
-	<div class="storylytics-element storylytics-visualization" contenteditable="false">
-		<div class="visualization-preview">
-
-		</div>
-		<div class="visualization-toolbar">
-			<div class="toolbar-panel">
-				<div class="title">DATA</div>
-				<div class="key">X Axis: <input type="text" /></div>
-				<div class="value">Y Axis: <input type="text" /></div>
+	<p>
+		<div class="storylytics-element storylytics-visualization" contenteditable="false">
+			<div class="visualization-preview">
+				<img src="http://technetcrew.com/wp-content/uploads/2012/09/pacman-2.jpg" />
 			</div>
-			<div class="toolbar-panel">
-				<div class="title">FILTERS</div>
-				<div class="filters">
-
+			<div class="visualization-toolbar">
+				<div class="toolbar-panel">
+					<div class="title">DATA</div>
+					<div class="data">Dataset: <input type="text" /></div>
+					<div class="key">X Axis: <input type="text" /></div>
+					<div class="value">Y Axis: <input type="text" /></div>
+				</div>
+				<div class="toolbar-panel">
+					<div class="title">FILTERS</div>
+					<div class="filters">
+						<div class="filter">country = United States</div>
+						<div class="filter filter-selected">age &lt; 27</div>
+						<div class="add-filter">+</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</p>
 
 	<p>More shit here</p>
 
 	<br class="clear" />
 
 </div>
+
+<script id="visualization-toolbar" type="text/template">
+	<div class="storylytics-element storylytics-visualization" contenteditable="false">
+		<div class="visualization-preview">
+			<img src="http://technetcrew.com/wp-content/uploads/2012/09/pacman-2.jpg" />
+		</div>
+		<div class="visualization-toolbar">
+			<div class="toolbar-panel">
+				<div class="title">DATA</div>
+				<div class="data">Dataset: <input type="text" /></div>
+				<div class="key">X Axis: <input type="text" /></div>
+				<div class="value">Y Axis: <input type="text" /></div>
+			</div>
+			<div class="toolbar-panel">
+				<div class="title">FILTERS</div>
+				<div class="filters">
+					<div class="filter">country = United States</div>
+					<div class="filter filter-selected">age &lt; 27</div>
+					<div class="add-filter">+</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
 
 <!--<div id="workspace">
 	<div id="sidebar">

@@ -10,8 +10,10 @@ $element-border-selected: #19B5FE;
 $visualization-toolbar: #F2F1EF;
 $visualization-toolbar-text: #336E7B;
 $visualization-toolbar-text-selected: #19B5FE;
+$filter-background: #C8F7C5;
+$filter-selected-border: #2ECC71;
 
-header {
+header.storylytics-edit {
 
 	height: 40px;
 	width: 100%;
@@ -63,19 +65,20 @@ header {
 
 $editor-background: #FFFFFF;
 
-body {
+body.storylytics-edit {
 
 	#storylytics-editor {
 
 		background-color: $editor-background;
 		height: auto;
 		min-height: 100%;
-		padding: 100px 150px;
+		padding: 100px 200px;
 
 		p {
-			font-family: 'Source Sans Pro', sans-serif;
-			font-size: 20px;
-			line-height: 28px;
+			font-family: 'Lora', serif;
+			font-size: 22px;
+			line-height: 40px;
+			padding: 10px 0px;
 		}
 
 		// Removes default focus in browsers
@@ -93,7 +96,7 @@ body {
 		.storylytics-element {
 
 			width: 100%;
-			height: 400px;
+			height: 500px;
 			border: 1px solid $element-border;
 
 		}
@@ -113,10 +116,20 @@ body {
 		// These styles correspond to a visualization
 		.storylytics-visualization {
 
+			position: relative;
+
+			img {
+				height: 100%;
+			}
+
 			.visualization-toolbar {
 
+				position: absolute;
+				bottom: 0px;
+				width: 100%;
 				background-color: $visualization-toolbar;
 				padding: 5px;
+				opacity: 0.85;
 				color: $visualization-toolbar-text;
 				
 				input[type="text"] {
@@ -134,9 +147,11 @@ body {
 
 					display: inline-block;
 					vertical-align: top;
+					padding: 10px 10px 15px 10px;
 
 					.title {
 						font-weight: bold;
+						margin-bottom: 10px;
 					}
 
 					div {
@@ -145,8 +160,87 @@ body {
 
 				}
 
+				.filters {
+
+					max-width: 350px;
+
+					div {
+
+						display: inline-block;
+						background-color: $filter-background;
+						padding: 3px 10px;
+						user-select: none;
+
+						.x {
+							margin-left: 5px;
+						}
+
+					}
+
+					.filter-selected {
+						border: 1px solid $filter-selected-border;
+					}
+
+				}
+
 			}
 
+		}
+
+	}
+
+}
+
+
+
+/* THESE CSS LISTINGS REFER TO
+   THE WORKSHEET VIEW, NOT THE 
+   EDITOR. HAVE NOT FIGURED OUT
+   HOW TO DECOMPOSE YET. */
+
+body.worksheet-view {
+
+	main {
+		background-color: white;		
+	}
+
+	.story-cover {
+
+		min-height: 100%;
+		width: 100%;
+		background-image: url('http://4.bp.blogspot.com/-2z-WoZSqihs/T_N5mA1-hFI/AAAAAAAAFO0/B_j4c-0boLA/s1600/Dark-Beats-Headphones.jpg');
+		background-position: center;
+		position: relative;
+		font-family: 'Open Sans', sans-serif;
+		
+		.transparent {
+			position: absolute;
+			top: 0; left: 0; bottom: 0;	right: 0;
+			min-height: 100%;
+			min-width: 100%;
+			background: rgba(0, 0, 0, 0.5);
+		}
+
+		.story-metadata {
+			position: absolute;
+			margin: auto;
+			top: 120px; left: 0; bottom: 0;	right: 0;
+			height: 0px;
+			text-align: center;
+			color: white;
+		}
+
+		.story-title {
+			font-size: 42px;
+			padding: 20px 0px;
+			font-weight: 600;
+		}
+
+		.story-subtitle {
+			margin: 20px 0px;
+			font-weight: 300;
+			font-size: 20px;
+			letter-spacing: 1px;
 		}
 
 	}

@@ -1,6 +1,22 @@
 var storylyticsEditor;
 var storylyticsMenu;
 
+var VisualizationToolbar = Backbone.View.extend({
+
+	el: '#storylytics-editor',
+
+	initialize: function() {
+		this.render();
+	},
+
+	render: function() {
+		var template = _.template($('#visualization-toolbar').html(), {});
+		document.execCommand('innerHTML', false, template);
+		console.log('rendered');
+	}
+
+});
+
 function StorylyticsEditor () {
 
 	// Get the editor object
@@ -23,14 +39,10 @@ function StorylyticsEditor () {
 	// Insert visualization object
 	this.insertVisualization = function() {
 
-		// Construct a visualization object from the DOM
-		var elem = document.createElement('div');
-		elem.className = 'storylytics-element storylytics-visualization';
-
-		// Construct a toolbar for the visualization
+		var visualizationToolbar = new VisualizationToolbar();
 
 		// Insert visualization into the current position
-		document.execCommand('insertHTML', false, elem.outerHTML);
+		//document.execCommand('insertHTML', false, elem.outerHTML);
 
 	}
 
@@ -50,6 +62,7 @@ function StorylyticsMenu() {
 	this.createVisualization = function(event) {
 
 		event.preventDefault();
+		storylyticsEditor.insertVisualization();
 
 	}
 	
