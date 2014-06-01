@@ -44,4 +44,23 @@
 
 	</script>
 </body>
+
+<footer class="storylytics-edit">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-2">
+      Dataset: 
+      <select id="visualization-dataset">
+        <% @datasets.each do |dataset| %>
+        <option value="<%= dataset.identifier %>"><%= dataset.name %></option>
+        <% end %>
+      </select>
+      </div>
+      <div class="col-xs-3">
+        <input type="text" />
+        <input type="text" />
+      </div>
+    </div>
+  </div>
+</footer>
 </html>

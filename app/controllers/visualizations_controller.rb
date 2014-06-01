@@ -1,4 +1,7 @@
-class VisualizationController < ApplicationController
+class VisualizationsController < ApplicationController
+
+	def index
+	end
 
 	def create
 
@@ -10,6 +13,9 @@ class VisualizationController < ApplicationController
 		while Visualization.find_by_identifier(visualization.identifier)
 			visualization.identifier = SecureRandom.uuid
 		end
+
+		# Assign the current worksheet to it
+		
 
 		# Save the visualization
 		visualization.save

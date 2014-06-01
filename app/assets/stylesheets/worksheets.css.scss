@@ -101,6 +101,10 @@ body.storylytics-edit {
 
 		}
 
+		img {
+			width: 100%;
+		}
+
 		// These styles correspond to a picture
 		.storylytics-image {
 
@@ -116,77 +120,27 @@ body.storylytics-edit {
 		// These styles correspond to a visualization
 		.storylytics-visualization {
 
-			position: relative;
-
-			img {
-				height: 100%;
-			}
-
-			.visualization-toolbar {
-
-				position: absolute;
-				bottom: 0px;
-				width: 100%;
-				background-color: $visualization-toolbar;
-				padding: 5px;
-				opacity: 0.85;
-				color: $visualization-toolbar-text;
-				
-				input[type="text"] {
-					background-color: transparent;
-					border: none;
-					border-bottom: 1px solid $visualization-toolbar-text;
-					&:focus {
-						box-sizing:border-box;
-						outline: none;
-						border-bottom: 1px solid $visualization-toolbar-text-selected;
-					}
-				}
-
-				.toolbar-panel {
-
-					display: inline-block;
-					vertical-align: top;
-					padding: 10px 10px 15px 10px;
-
-					.title {
-						font-weight: bold;
-						margin-bottom: 10px;
-					}
-
-					div {
-						margin-bottom: 5px;
-					}
-
-				}
-
-				.filters {
-
-					max-width: 350px;
-
-					div {
-
-						display: inline-block;
-						background-color: $filter-background;
-						padding: 3px 10px;
-						user-select: none;
-
-						.x {
-							margin-left: 5px;
-						}
-
-					}
-
-					.filter-selected {
-						border: 1px solid $filter-selected-border;
-					}
-
-				}
-
-			}
+			padding-bottom: 0px;
+			background-color: $element-border-selected;
 
 		}
 
+	}
+
+}
+
+footer.storylytics-edit {
+	
+	display: none;
+	position: fixed;
+	bottom: 0px;
+	height: 80px;
+	background-color: $header-bg;
+	color: $header-color;
+	width: 100%;
+
+	input {
+		margin-bottom: 5px;
 	}
 
 }

@@ -1,6 +1,7 @@
 var worksheetView;
 var worksheet;
 var worksheetToolbarView;
+var footerView;
 
 var Worksheet = Backbone.Model.extend({
 
@@ -18,6 +19,96 @@ var Worksheet = Backbone.Model.extend({
 
 var Visualization = Backbone.Model.extend({
 
+	urlRoot: '/visualizations/'
+
+});
+
+var Dataset = Backbone.Model.extend({
+
+	urlRoot: '/dataset/'
+
+});
+
+var FooterView = Backbone.View.extend({
+
+	el: 'footer',
+
+	events: {
+		'change #visualization-dataset': 		'changeDataset',
+	},
+
+	changeDataset: function() {
+
+		// Get the identifier
+		var e = document.getElementById('visualization-dataset');
+		var datasetIdentifier = e.options[e.selectedIndex].value;
+
+		// Retrieve the corresponding dataset
+		var dataset = new Dataset({
+			'id': datasetIdentifier
+		});
+
+		// Load it
+		dataset.fetch({
+			success: function() {
+				console.log(dataset.get('attrs'));
+			}
+		});
+
+	}
+
+});
+
+var VisualizationView = Backbone.View.extend({
+
+	initialize: function() {
+		var _this = this;
+		if (this.model.isNew()) {
+			this.model.save(null, {
+				success: function() {
+					_this.render();
+				}
+			});			
+		}
+	},
+
+	render: function() {
+
+		var _this = this;
+
+		// Load the template
+		var template = _.template(document.getElementById('visualization-template').innerHTML, {
+			'identifier': _this.model.get('identifier')
+		});
+
+		// Append the template into the editor window
+		document.execCommand('insertHTML', null, template);
+
+		// Manually add the contenteditable attribute
+		var obj = document.getElementById(this.model.get('identifier'));
+		obj.setAttribute('contenteditable', 'false');
+
+		// Set the el to this object
+		this.setElement(obj);
+
+	},
+
+	events: {
+		'click': 			'focusVisualization', 
+	},
+
+	// Give focus to the visualization
+	focusVisualization: function() {
+
+		console.log('focusing');
+		if (!$('footer').is(':visible')) {
+			$('footer').slideToggle('slow');
+		}
+
+		footerView.changeDataset();
+		
+	}	
+
 });
 
 var WorksheetView = Backbone.View.extend({
@@ -28,7 +119,15 @@ var WorksheetView = Backbone.View.extend({
 		'command+s': 		'save',
 		'ctrl+s': 			'save',
 		'command+e': 		'justifyCenter',
-		'ctrl+e': 			'justifyCenter' 
+		'ctrl+e': 			'justifyCenter',
+		'command+1': 		'insertVisualization', 
+		'ctrl+1': 			'insertVisualization',
+		'command+2': 		'insertImage', 
+		'ctrl+2':  			'insertImage'
+	},
+
+	events: {
+		'click': 			'disableEditBar'
 	},
 
 	initialize: function() {
@@ -76,18 +175,36 @@ var WorksheetView = Backbone.View.extend({
 	// Currently inserts the image at the top of the document.
 	insertImage: function(imageURL) {
 
-		// Grab focus for the editor window
-		this.el.focus();
+		// Prompt for an image URL
+		var imageURL = prompt("Image URL?");
+
+		// If we get a URL, insert
+		if (imageURL) {
 		
-		// Insert the image tag
-		document.execCommand('insertHTML', false, '<img src="' + imageURL + '" />');
+			// Insert the image tag
+			document.execCommand('insertImage', false, imageURL);
+
+		}
 
 	},
 
 	// Insert a visualization into the document
 	insertVisualization: function() {
 
+		// Access the worksheet from here
+		var _worksheet = worksheet;
 
+		// Create a new instance of the visualization model
+		var visualization = new Visualization();
+
+		// Create a view backed by this visualization
+		var visualizationView = new VisualizationView({
+			model: visualization
+		});
+
+	},
+
+	disableEditBar: function() {
 
 	}
 
@@ -103,13 +220,7 @@ var WorksheetToolbarView = Backbone.View.extend({
 
 	addImage: function() {
 
-		// Prompt for an image URL
-		var imageURL = prompt("Image URL?");
-
-		// If we get a URL, insert
-		if (imageURL) {
-			worksheetView.insertImage(imageURL);
-		}
+		worksheetView.insertImage();
 
 	}
 

@@ -1,26 +1,10 @@
 <div id="storylytics-editor" class="container mousetrap" contenteditable="true">
-	
 </div>
 
-<script id="visualization-toolbar" type="text/template">
-	<div class="storylytics-element storylytics-visualization" contenteditable="false">
-		<div class="visualization-preview">
-			<img src="http://technetcrew.com/wp-content/uploads/2012/09/pacman-2.jpg" />
-		</div>
-		<div class="visualization-toolbar">
-			<div class="toolbar-panel">
-				<div class="title">DATA</div>
-				<div class="data">Dataset: <input type="text" /></div>
-				<div class="key">X Axis: <input type="text" /></div>
-				<div class="value">Y Axis: <input type="text" /></div>
-			</div>
-			<div class="toolbar-panel">
-				<div class="title">FILTERS</div>
-				<div class="filters">
-					<div class="filter">country = United States</div>
-					<div class="filter filter-selected">age &lt; 27</div>
-					<div class="add-filter">+</div>
-				</div>
+<script id="visualization-template" type="text/template">
+	<div>
+		<div class="storylytics-element storylytics-visualization" contenteditable="true" id="<%%= identifier %>">
+			<div class="visualization-preview">
 			</div>
 		</div>
 	</div>
@@ -42,6 +26,9 @@ domready(function() {
 
 	// Initialize the worksheet toolbar
 	worksheetToolbarView = new WorksheetToolbarView();
+
+	// Initialize the footer view
+	footerView = new FooterView();
 
 });
 

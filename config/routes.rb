@@ -24,6 +24,7 @@ Cs210Stockholm::Application.routes.draw do
   get "dataset/:id/destroy", to: "dataset#destroy"
 
   resources :worksheets
+  resources :visualizations
 
   # These routes are associated with the worksheet
   #get "worksheet/create"
@@ -34,12 +35,12 @@ Cs210Stockholm::Application.routes.draw do
   #get "worksheet/:id/destroy", to: "worksheet#destroy"
   
   # These routes are associated with visualizations
-  post "visualization", to: "visualization#create"
+  #post "visualization", to: "visualization#create"
   
-  get "visualization/:id", to: "visualization#get"
-  put "visualization/:id", to: "visualization#put"
-  delete "visualization/:id", to: "visualization#delete"
-  get "visualization/:id/view", to: "visualization#view"
+  #get "visualization/:id", to: "visualization#get"
+  #put "visualization/:id", to: "visualization#put"
+  #delete "visualization/:id", to: "visualization#delete"
+  #get "visualization/:id/view", to: "visualization#view"
 
   #get "visualization/create"
   #post "visualization/create"
