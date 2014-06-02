@@ -2,186 +2,153 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+$header-bg: #1E8BC3;
+$header-color: #DADFE1;
+$header-hover: #FFFFFF;
+$element-border: #ABB7B7;
+$element-border-selected: #19B5FE;
+$visualization-toolbar: #F2F1EF;
+$visualization-toolbar-text: #336E7B;
+$visualization-toolbar-text-selected: #19B5FE;
 
-#create {
-	margin: 30px auto;
-}
+header {
 
-#edit {
-	margin: 30px 0px;
-}
-
-#create-visualization {
-	width: 200px;
-	height: 150px;
-}
-
-iframe {
-	margin-bottom: 30px;
-}
-
-/* THESE STYLES ARE ASSOCIATED WITH THE EDITOR */
-
-body {
-	height: 100%;
-}
-
-#workspace {
+	height: 40px;
 	width: 100%;
-	height: 100%;
-}
-
-#sidebar {
+	background-color: $header-bg;
+	font-size: 20px;
 	position: fixed;
-	top: 0px;
-	left: 0px;
-	vertical-align: top;
-	width: 90px;
-	background-color: #2C3E50;
-	text-align: center;
-	height: 100%;
-	float: left;
-}
 
-#worksheet {
-	
-	position: relative;
-	background-color: white;
-	padding: 40px 10px;
-	margin-left: 90px;
-	margin-right: 280px;
-	overflow: auto;
-	height: 100%;
+	.icon-group {
 
-}
-
-#page-container {
-	width: 960px;
-	background-color: white;
-	margin: 40px auto;
-	height: 100%;
-
-}
-
-#insert {
-}
-
-.visualization {
-	border: 1px solid #CCC;
-	margin: 0 auto;
-	iframe {
-		width: 100%;
-		height: 100%;
-	}
-}
-
-.visualization-handle {
-
-	position: absolute;
-	min-width: 30px;
-	min-height: 30px;
-	top: 35px;
-	right: 15px;
-	z-index: 999;
-	text-align: center;
-	color: #ecf0f1;
-	font-size: 30px;
-	text-shadow: -1px 0 #7f8c8d, 0 1px #7f8c8d, 1px 0 #7f8c8d, 0 -1px #7f8c8d;
-
-}
-
-.selected {
-	border: 1px solid #69927F;
-}
-
-#rightbar {
-
-	float: right;
-	position: fixed;
-	top: 0px;
-	right: 0px;
-	vertical-align: top;
-	width: 280px;
-	background-color: #FFF;
-	z-index: 999;
-
-	.options-header {
-		background-color: #2C3E50;
-		color: #ecf0f1;
-		font-weight: 300;
-		padding: 8px 10px;
-	}
-
-	.options-panel {
-		background-color: #F5F2FC;
-		color: #000;
-		padding-bottom: 10px;
-		display: none;
-	}
-
-	.option {
-		padding: 8px 0px;
-	}
-
-	.option-label {
 		display: inline-block;
-		width: 60px;
-		text-align: right;
-		vertical-align: top;
-		margin-left: 10px;
+		border-left: 1px solid $header-color;
+		color: $header-color;
+		margin-top: 10px;
+		margin-bottom: 5px;
+		padding: 0px 10px;
+		height: 20px;
+
+		&:first-child {
+			border-left: none;
+		}
+
 	}
 
-	.option-value {
+	span#font-size {
+		font-size: 22px;
+	}
+
+	// These styles are for the editor icons
+	i {
+
+		margin-top: -5px;
 		display: inline-block;
-		margin-left: 10px;
-		width: 180px;
-	}
+		padding: 4px;
+		vertical-align: middle;
+		font-weight: 200;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
 
-	#options-buttons {
+		&:hover {
 
-		.option {
-			padding: 10px;
+			color: $header-hover;
+
 		}
 
 	}
 
 }
 
+$editor-background: #FFFFFF;
 
+body {
 
-input {
-	&[type="text"] {
-		border: 1px solid #CCC;
-		padding: 2px 5px;
-		width: 100%;
-		box-sizing: border-box;
+	#storylytics-editor {
+
+		background-color: $editor-background;
+		height: auto;
+		min-height: 100%;
+		padding: 100px 150px;
+
+		p {
+			font-family: 'Source Sans Pro', sans-serif;
+			font-size: 20px;
+			line-height: 28px;
+		}
+
+		// Removes default focus in browsers
+		&:focus {
+			outline: none;
+		}
+
+		&:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+
+		// These styles correspond to an element
+		.storylytics-element {
+
+			width: 100%;
+			height: 400px;
+			border: 1px solid $element-border;
+
+		}
+
+		// These styles correspond to a picture
+		.storylytics-image {
+
+			img {
+
+				width: 100%;
+				height: 100%;
+
+			}
+
+		}
+
+		// These styles correspond to a visualization
+		.storylytics-visualization {
+
+			.visualization-toolbar {
+
+				background-color: $visualization-toolbar;
+				padding: 5px;
+				color: $visualization-toolbar-text;
+				
+				input[type="text"] {
+					background-color: transparent;
+					border: none;
+					border-bottom: 1px solid $visualization-toolbar-text;
+					&:focus {
+						box-sizing:border-box;
+						outline: none;
+						border-bottom: 1px solid $visualization-toolbar-text-selected;
+					}
+				}
+
+				.toolbar-panel {
+
+					display: inline-block;
+					vertical-align: top;
+
+					.title {
+						font-weight: bold;
+					}
+
+					div {
+						margin-bottom: 5px;
+					}
+
+				}
+
+			}
+
+		}
+
 	}
-}
 
-select {
-	width: 100%;
-}
-
-textarea {
-	width: 100%;
-}
-
-.tagit-autocomplete {
-	z-index: 999;
-}
-
-.tagit-choice {
-	font-size: 12px;
-	line-height: 12px;
-	height: 23px;
-	padding: 2px 5px;
-}
-
-.tagit-new {
-	input {
-		font-size: 12px;
-		line-height: 12px;
-		height: 12px;
-		padding: 2px 5px;
-	}
 }
