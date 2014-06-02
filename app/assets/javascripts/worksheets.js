@@ -29,7 +29,7 @@ var Dataset = Backbone.Model.extend({
 
 });
 
-var FooterView = Backbone.View.extend({
+/*var FooterView = Backbone.View.extend({
 
 	el: 'footer',
 
@@ -38,6 +38,9 @@ var FooterView = Backbone.View.extend({
 	},
 
 	changeDataset: function() {
+
+		// Access the main object
+		var _this = this;
 
 		// Get the identifier
 		var e = document.getElementById('visualization-dataset');
@@ -51,8 +54,127 @@ var FooterView = Backbone.View.extend({
 		// Load it
 		dataset.fetch({
 			success: function() {
-				console.log(dataset.get('attrs'));
+				var attrs = [];
+				dataset.get('attrs').forEach(function(element, index, array) {
+					attrs.push(element.id);
+				});
+				console.log(attrs);
+				$('#visualization-keys').tagit({
+					availableTags: attrs
+				});
+				$('#visualization-values').tagit({
+					availableTags: attrs
+				});
 			}
+		});
+
+	},
+
+});*/
+
+var VisualizationFilterView = Backbone.View.extend({
+
+	initialize: function(options) {
+
+		this.options = options || {};
+		this.render();
+
+	},
+
+	render: function() {
+
+		var _this = this;
+
+		console.log(this);
+
+		var template = _.template(document.getElementById('visualization-filter-template').innerHTML, {
+			'attribute': _this.options.attribute,
+			'condition': _this.options.conditiion,
+			'value': _this.options.value
+		});
+
+		$('#filters').append(template);
+
+	}
+
+});
+
+var VisualizationSettingsView = Backbone.View.extend({
+
+	el: '#storylytics-modals',
+
+	events: {
+		'change #visualization-dataset': 		'setDatasetAttributes',
+		'click #add-filter': 					'addFilter', 
+	},
+
+	initialize: function() {
+
+		this.render();
+		this.bind("shown", this.setDatasetAttributes);
+
+	},
+
+	render: function() {
+
+		var _this  = this;
+
+		// Load the template
+		var template = _.template(document.getElementById('visualization-settings-template').innerHTML, {
+			'identifier': _this.model.get('identifier')
+		});
+		
+		this.$el.html(template);
+
+		return this;
+
+	},
+
+	// Set all the dataset attributes
+	setDatasetAttributes: function() {
+
+		// Get the dataset identifier
+		var datasetIdentifier = $('#visualization-dataset').val();
+
+		// Retrieve the corresponding dataset
+		var dataset = new Dataset({
+			'id': datasetIdentifier
+		});
+
+		// Load it
+		dataset.fetch({
+			success: function() {
+				var $filters = $('#filter-attribute');
+				$filters.empty();
+				var attrs = [];
+				dataset.get('attrs').forEach(function(element, index, array) {
+					attrs.push(element.id);
+					$filters.append($('<option></option>')
+						.attr('value', element.id).text(element.id));
+				});
+				console.log(attrs);
+				$('#visualization-keys').tagit({
+					availableTags: attrs
+				});
+				$('#visualization-values').tagit({
+					availableTags: attrs
+				});
+			}
+		});
+
+	},
+
+	// Add a filter
+	addFilter: function() {
+
+		var attribute = $('#filter-attribute').val();
+		var condition = $('#filter-condition').val();
+		var value = $('#filter-value').val();
+
+		var filterView = new VisualizationFilterView({
+			'attribute': attribute,
+			'condition': condition,
+			'value': value
 		});
 
 	}
@@ -97,16 +219,23 @@ var VisualizationView = Backbone.View.extend({
 		'click': 			'focusVisualization', 
 	},
 
-	// Give focus to the visualization
+	// Handle focus to the visualization
 	focusVisualization: function() {
 
-		console.log('focusing');
-		if (!$('footer').is(':visible')) {
-			$('footer').slideToggle('slow');
-		}
+		var _this = this;
 
-		footerView.changeDataset();
-		
+		var visualizationSettings = new VisualizationSettingsView({
+			model: _this.model
+		});
+
+		var visualizationSettingsTitle = 'Settings for ' + visualizationSettings.model.get('identifier');
+
+		var modal = new Backbone.BootstrapModal({
+			animate: true,
+			title: visualizationSettingsTitle,
+			content: visualizationSettings
+		}).open();
+
 	}	
 
 });

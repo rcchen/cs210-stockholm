@@ -1,5 +1,6 @@
 <div id="storylytics-editor" class="container mousetrap" contenteditable="true">
 </div>
+<div id="storylytics-modals"></div>
 
 <script id="visualization-template" type="text/template">
 	<div>
@@ -10,8 +11,92 @@
 	</div>
 </script>
 
-<script>
+<script id="visualization-filter-template" type="text/template">
+<div class="filter">
+	<div class="filter-attribute filter-readonly"><%%= attribute %></div>
+	<div class="filter-condition filter-readonly"><%%= condition %></div>
+	<div class="filter-value filter-readonly"><%%= value %></div>
+	<div class="filter-action">
+		<button class="btn btn-danger">X</button>
+	</div>
+</div>
+</script>
 
+<script id="visualization-settings-template" type="text/template">
+<div class="settings-content">
+	<form class="form-horizontal" role="form">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Dataset</label>
+			<div class="col-sm-10">
+				<select class="form-control" id="visualization-dataset">
+				<% @datasets.each do |dataset| %>
+					<option value="<%= dataset.identifier %>"><%= dataset.name %></option>
+				<% end %>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Type</label>
+			<div class="col-sm-10">
+				<select class="form-control" id="visualization-type">
+					<option value="bar">Bar Chart</option>
+					<option value="pie">Pie Chart</option>
+					<option value="line">Line Chart</option>
+					<option value="geo">Geospatial Chart</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Keys</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="visualization-keys" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Values</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="visualization-values" />
+			</div>
+		</div>
+	</form>
+	<div id="filters" class="settings-section">
+		<div class="settings-title">Filters</div>
+		<div id="new-filter">
+			<div class="filter-attribute">
+				<select id="filter-attribute" class="form-control"></select>
+			</div>
+			<div class="filter-condition">
+				<select id="filter-condition" class="form-control">
+                    <option value="<">less than (<)</option>
+                    <option value="<=">less than or equal (<=)</option>
+                    <option value="=">equals (=)</option>
+                    <option value=">=">greater than or equal (>=)</option>
+                    <option value=">">greater than (>)</option>
+                    <option value="!=">not equal (!=)</option>
+                    <option value="Contains">contains </option>
+				</select>
+			</div>
+			<div class="filter-value">
+				<input class="form-control" id="filter-value" />
+			</div>
+			<div class="filter-action">
+				<button id="add-filter" class="btn btn-success">+</button>
+			</div>
+		</div>
+		<div class="filter">
+			<div class="filter-attribute filter-readonly">Athlete</div>
+			<div class="filter-condition filter-readonly">equals (=)</div>
+			<div class="filter-value filter-readonly">Michael Phelps</div>
+			<div class="filter-action">
+				<button class="btn btn-danger">X</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+</script>
+
+<script>
 domready(function() {
 
 	// Initialize the new worksheet
@@ -28,7 +113,7 @@ domready(function() {
 	worksheetToolbarView = new WorksheetToolbarView();
 
 	// Initialize the footer view
-	footerView = new FooterView();
+	// footerView = new FooterView();
 
 });
 

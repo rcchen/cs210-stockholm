@@ -129,22 +129,62 @@ body.storylytics-edit {
 
 }
 
-footer.storylytics-edit {
-	
-	display: none;
-	position: fixed;
-	bottom: 0px;
-	height: 80px;
-	background-color: $header-bg;
-	color: $header-color;
-	width: 100%;
+// This could appear anywhere in the DOM
+div.settings-content {
 
-	input {
-		margin-bottom: 5px;
+	padding-bottom: 40px;
+
+	form {
+		padding: 5px;
+	}
+
+	.settings-section {
+		
+		margin-top: 10px;
+		padding: 20px 5px;
+		border-top: 1px solid #CCC;
+
+		.settings-title {
+			font-weight: bold;
+			font-size: 14px;
+			margin-bottom: 10px;
+		}
+
+	}
+
+	#filters {
+
+		.filter-attribute {
+			display: inline-block;
+			width: 152px;
+		}
+
+		.filter-condition {
+			display: inline-block;
+			width: 160px;
+		}
+
+		.filter-value {
+			display: inline-block;
+			width: 194px;
+		}
+
+		.filter-action {
+			display: inline-block;
+		}
+
+		.filter {
+			padding: 5px 0px;
+		}
+
+		.filter-readonly {
+			padding-left: 5px;
+			overflow: auto;
+		}
+
 	}
 
 }
-
 
 
 /* THESE CSS LISTINGS REFER TO
