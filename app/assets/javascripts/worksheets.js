@@ -129,6 +129,8 @@ var VisualizationSettingsView = Backbone.View.extend({
 	// Set all the dataset attributes
 	setDatasetAttributes: function() {
 
+		var _this = this;
+
 		// Get the dataset identifier
 		var datasetIdentifier = $('#visualization-dataset').val();
 
@@ -157,6 +159,19 @@ var VisualizationSettingsView = Backbone.View.extend({
 					availableTags: attrs,
 					showAutocompleteOnFocus:true
 				});
+				// Add in any existing tags
+				// TODO: Check to see if they are in the data set
+
+				var chart_options = jQuery.parseJSON(_this.model.get('chart_options'));
+
+				$('#visualization-keys').tagit('createTag', chart_options['key']);
+
+				console.log(chart_options['value']);
+
+				$.each(chart_options['value'], function(i, val) {
+					$('#visualization-values').tagit('createTag', val)
+				});
+
 			}
 		});
 
@@ -167,11 +182,28 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 		console.log('pulling down things');
 
+		var dataset = $('#visualization-dataset').val();
+		var chart = $('#visualization-type').val();
 		var keys = $('#visualization-keys').tagit('assignedTags');
 		var values = $('#visualization-values').tagit('assignedTags');
 
-		console.log(keys);
-		console.log(values);
+		var obj = {};
+
+		if (chart == 'bar' || chart == 'line' || chart == 'pie') {
+
+			obj = {
+				'key': keys[0],
+				'value': values
+			};
+
+		}
+
+		// Set and save
+		this.model.set('dataset', dataset);
+		this.model.set('chart_type', chart);
+		this.model.set('chart_options', obj);
+		this.model.save();
+
 
 	},
 
@@ -196,16 +228,13 @@ var VisualizationView = Backbone.View.extend({
 
 	initialize: function() {
 		var _this = this;
-		console.log(this.model);
 		if (this.model.get('id') == undefined) {
-			console.log('this is a new model');
 			this.model.save(null, {
 				success: function() {
 					_this.render();
 				}
 			});			
 		} else {
-			console.log('this is not a new model');
 			this.model.fetch({
 				success: function() {
 					_this.render();
@@ -241,8 +270,6 @@ var VisualizationView = Backbone.View.extend({
 
 	// Handle focus to the visualization
 	focusVisualization: function() {
-
-		console.log(this.el);
 
 		var _this = this;
 
