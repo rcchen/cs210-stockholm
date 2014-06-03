@@ -8,6 +8,7 @@ class Worksheet
 	field :title,			:type => String
 	field :description, 	:type => String
 	field :identifier,		:type => String
+	field :data,			:type => String
 
 	# Many to many relationship with users
 	has_and_belongs_to_many :users
