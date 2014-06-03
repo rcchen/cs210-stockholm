@@ -1,12 +1,31 @@
 <html>
 <head>
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 	<%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+  <script type="text/template" id="modal-template">
+    <div class="bbm-modal__topbar">
+      <h3 class="bbm-modal__title">Backbone.Modal</h3>
+    </div>
+    <div class="bbm-modal__section">
+      <p>With Backbone.Modal you can create a modal in a few lines of code.</p>
+      <p>Some features are:</p>
+      <ul>
+        <li>Really flexible and easy to set up.</li>
+        <li>Default behaviors like ESC or clicking outside a modal.</li>
+        <li>Some awesome animations that make them feel robust.</li>
+        <li>Responsive and usable on mobile devices.</li>
+      </ul>
+    </div>
+    <div class="bbm-modal__bottombar">
+      <a href="#" class="bbm-button">Close</a>
+    </div>
+  </script>
 	<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 	<%= csrf_meta_tags %>
 </head>
 
-<header>
+<header class="storylytics-edit">
   <div id="storylytics-menu" class="container">
     <!--<div class="icon-group">
       <i class="fa fa-minus"></i>
@@ -30,7 +49,7 @@
   </div>
 </header>
 
-<body>
+<body class="storylytics-edit">
   <%= yield %>
 	<script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -43,4 +62,5 @@
 
 	</script>
 </body>
+
 </html>

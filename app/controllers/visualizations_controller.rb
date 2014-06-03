@@ -1,4 +1,7 @@
-class VisualizationController < ApplicationController
+class VisualizationsController < ApplicationController
+
+	def index
+	end
 
 	def create
 
@@ -10,6 +13,9 @@ class VisualizationController < ApplicationController
 		while Visualization.find_by_identifier(visualization.identifier)
 			visualization.identifier = SecureRandom.uuid
 		end
+
+		# Assign the current worksheet to it
+		
 
 		# Save the visualization
 		visualization.save
@@ -31,7 +37,19 @@ class VisualizationController < ApplicationController
 
 	end
 
-	def put
+	def show
+
+		# Retrieve the correct visualization
+		visualization = Visualization.find_by_identifier(params[:id])
+
+		visualization.chart_options = visualization.chart_options.to_s.html_safe
+
+		# Return the JSON data
+		render json: visualization
+
+	end
+
+	def update
 
 		# Retrieve the correct visualization
 		visualization = Visualization.find_by_identifier(params[:id])
@@ -51,8 +69,8 @@ class VisualizationController < ApplicationController
 
 		# Add it to the worksheet
 		worksheet = Worksheet.find_by_identifier(params[:worksheet_id])
-		worksheet.visualizations << visualization
-		worksheet.save
+		# worksheet.visualizations << visualization
+		# worksheet.save
 
 		# Return success
 		render json: ''

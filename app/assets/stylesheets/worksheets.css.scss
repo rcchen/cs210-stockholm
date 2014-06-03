@@ -1,0 +1,246 @@
+// Place all the styles related to the worksheet controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+$header-bg: #1E8BC3;
+$header-color: #DADFE1;
+$header-hover: #FFFFFF;
+$element-border: #ABB7B7;
+$element-border-selected: #19B5FE;
+$visualization-toolbar: #F2F1EF;
+$visualization-toolbar-text: #336E7B;
+$visualization-toolbar-text-selected: #19B5FE;
+$filter-background: #C8F7C5;
+$filter-selected-border: #2ECC71;
+
+header.storylytics-edit {
+
+	height: 40px;
+	width: 100%;
+	background-color: $header-bg;
+	font-size: 20px;
+	position: fixed;
+
+	.icon-group {
+
+		display: inline-block;
+		border-left: 1px solid $header-color;
+		color: $header-color;
+		margin-top: 10px;
+		margin-bottom: 5px;
+		padding: 0px 10px;
+		height: 20px;
+
+		&:first-child {
+			border-left: none;
+		}
+
+	}
+
+	span#font-size {
+		font-size: 22px;
+	}
+
+	// These styles are for the editor icons
+	i {
+
+		margin-top: -5px;
+		display: inline-block;
+		padding: 4px;
+		vertical-align: middle;
+		font-weight: 200;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+
+		&:hover {
+
+			color: $header-hover;
+
+		}
+
+	}
+
+}
+
+$editor-background: #FFFFFF;
+
+body.storylytics-edit {
+
+	#storylytics-editor {
+
+		background-color: $editor-background;
+		height: auto;
+		min-height: 100%;
+		padding: 100px 200px;
+		font-family: 'Lora', serif;
+		font-size: 22px;
+		line-height: 44px;
+
+		div {
+			padding-bottom: 30px;
+		}
+	
+		// Removes default focus in browsers
+		&:focus {
+			outline: none;
+		}
+
+		&:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+
+		// These styles correspond to an element
+		.storylytics-element {
+
+			width: 100%;
+			height: 500px;
+			border: 1px solid $element-border;
+
+		}
+
+		img {
+			width: 100%;
+		}
+
+		// These styles correspond to a picture
+		.storylytics-image {
+
+			img {
+
+				width: 100%;
+				height: 100%;
+
+			}
+
+		}
+
+		// These styles correspond to a visualization
+		.storylytics-visualization {
+
+			padding-bottom: 0px;
+			background-color: $element-border-selected;
+
+		}
+
+	}
+
+}
+
+// This could appear anywhere in the DOM
+div.settings-content {
+
+	padding-bottom: 40px;
+
+	form {
+		padding: 5px;
+	}
+
+	.settings-section {
+		
+		margin-top: 10px;
+		padding: 20px 5px;
+		border-top: 1px solid #CCC;
+
+		.settings-title {
+			font-weight: bold;
+			font-size: 14px;
+			margin-bottom: 10px;
+		}
+
+	}
+
+	#filters {
+
+		.filter-attribute {
+			display: inline-block;
+			width: 152px;
+		}
+
+		.filter-condition {
+			display: inline-block;
+			width: 160px;
+		}
+
+		.filter-value {
+			display: inline-block;
+			width: 194px;
+		}
+
+		.filter-action {
+			display: inline-block;
+		}
+
+		.filter {
+			padding: 5px 0px;
+		}
+
+		.filter-readonly {
+			padding-left: 5px;
+			overflow: auto;
+		}
+
+	}
+
+}
+
+.ui-autocomplete {
+	z-index: 9999;
+}
+
+
+/* THESE CSS LISTINGS REFER TO
+   THE WORKSHEET VIEW, NOT THE 
+   EDITOR. HAVE NOT FIGURED OUT
+   HOW TO DECOMPOSE YET. */
+
+body.worksheet-view {
+
+	main {
+		background-color: white;		
+	}
+
+	.story-cover {
+
+		min-height: 100%;
+		width: 100%;
+		background-image: url('http://4.bp.blogspot.com/-2z-WoZSqihs/T_N5mA1-hFI/AAAAAAAAFO0/B_j4c-0boLA/s1600/Dark-Beats-Headphones.jpg');
+		background-position: center;
+		position: relative;
+		font-family: 'Open Sans', sans-serif;
+		
+		.transparent {
+			position: absolute;
+			top: 0; left: 0; bottom: 0;	right: 0;
+			min-height: 100%;
+			min-width: 100%;
+			background: rgba(0, 0, 0, 0.5);
+		}
+
+		.story-metadata {
+			position: absolute;
+			margin: auto;
+			top: 120px; left: 0; bottom: 0;	right: 0;
+			height: 0px;
+			text-align: center;
+			color: white;
+		}
+
+		.story-title {
+			font-size: 42px;
+			padding: 20px 0px;
+			font-weight: 600;
+		}
+
+		.story-subtitle {
+			margin: 20px 0px;
+			font-weight: 300;
+			font-size: 20px;
+			letter-spacing: 1px;
+		}
+
+	}
+
+}
