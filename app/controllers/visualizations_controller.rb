@@ -49,7 +49,7 @@ class VisualizationsController < ApplicationController
 
 	end
 
-	def put
+	def update
 
 		# Retrieve the correct visualization
 		visualization = Visualization.find_by_identifier(params[:id])
@@ -69,8 +69,8 @@ class VisualizationsController < ApplicationController
 
 		# Add it to the worksheet
 		worksheet = Worksheet.find_by_identifier(params[:worksheet_id])
-		worksheet.visualizations << visualization
-		worksheet.save
+		# worksheet.visualizations << visualization
+		# worksheet.save
 
 		# Return success
 		render json: ''
