@@ -47,66 +47,25 @@ var Dataset = Backbone.Model.extend({
 
 });
 
-/*var FooterView = Backbone.View.extend({
-
-	el: 'footer',
-
-	events: {
-		'change #visualization-dataset': 		'changeDataset',
-	},
-
-	changeDataset: function() {
-
-		// Access the main object
-		var _this = this;
-
-		// Get the identifier
-		var e = document.getElementById('visualization-dataset');
-		var datasetIdentifier = e.options[e.selectedIndex].value;
-
-		// Retrieve the corresponding dataset
-		var dataset = new Dataset({
-			'id': datasetIdentifier
-		});
-
-		// Load it
-		dataset.fetch({
-			success: function() {
-				var attrs = [];
-				dataset.get('attrs').forEach(function(element, index, array) {
-					attrs.push(element.id);
-				});
-				console.log(attrs);
-				$('#visualization-keys').tagit({
-					availableTags: attrs
-				});
-				$('#visualization-values').tagit({
-					availableTags: attrs
-				});
-			}
-		});
-
-	},
-
-});*/
-
 var VisualizationFilterView = Backbone.View.extend({
 
-	initialize: function(options) {
-
-		this.options = options || {};
-		this.render();
-
-	},
+	el: '#storylytics-modals',
 
 	events: {
 		'click .filter-remove': 		'removeFilter', 
 	},
 
+	initialize: function(options) {
+
+		this.options = options || {};
+		console.log(this);
+		this.render();
+
+	},
+
 	render: function() {
 
 		var _this = this;
-
 
 		var template = _.template(document.getElementById('visualization-filter-template').innerHTML, {
 			'attribute': _this.options.attribute,
@@ -114,17 +73,15 @@ var VisualizationFilterView = Backbone.View.extend({
 			'value': _this.options.value
 		});
 
-		this.setElement(template);
-
-		console.log(this.el);
+		//this.setElement(template);
 
 		$('#filters').append(template);
+
+		return this;
 
 	},
 
 	removeFilter: function(ev) {
-
-		console.log('asdf');
 
  		// Find the parent view
         var parentView = $(ev.target).closest('.filter');
@@ -149,6 +106,7 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 		this.render();
 		this.bind("shown", this.setDatasetAttributes);
+		console.log(this);
 
 	},
 
