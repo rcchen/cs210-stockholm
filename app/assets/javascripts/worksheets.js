@@ -149,10 +149,12 @@ var VisualizationSettingsView = Backbone.View.extend({
 				});
 				console.log(attrs);
 				$('#visualization-keys').tagit({
-					availableTags: attrs
+					availableTags: attrs,
+					showAutocompleteOnFocus:true
 				});
 				$('#visualization-values').tagit({
-					availableTags: attrs
+					availableTags: attrs,
+					showAutocompleteOnFocus:true
 				});
 			}
 		});
