@@ -106,6 +106,7 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 		this.render();
 		this.bind("shown", this.setDatasetAttributes);
+		this.bind("ok", this.saveAttributes);
 		console.log(this);
 
 	},
@@ -161,6 +162,19 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	},
 
+	// Save attributes
+	saveAttributes: function() {
+
+		console.log('pulling down things');
+
+		var keys = $('#visualization-keys').tagit('assignedTags');
+		var values = $('#visualization-values').tagit('assignedTags');
+
+		console.log(keys);
+		console.log(values);
+
+	},
+
 	// Add a filter
 	addFilter: function() {
 
@@ -182,12 +196,21 @@ var VisualizationView = Backbone.View.extend({
 
 	initialize: function() {
 		var _this = this;
-		if (this.model.isNew()) {
+		console.log(this.model);
+		if (this.model.get('id') == undefined) {
+			console.log('this is a new model');
 			this.model.save(null, {
 				success: function() {
 					_this.render();
 				}
 			});			
+		} else {
+			console.log('this is not a new model');
+			this.model.fetch({
+				success: function() {
+					_this.render();
+				}
+			});
 		}
 	},
 
@@ -231,6 +254,7 @@ var VisualizationView = Backbone.View.extend({
 
 		var modal = new Backbone.BootstrapModal({
 			animate: true,
+			escape: false,
 			title: visualizationSettingsTitle,
 			content: visualizationSettings
 		}).open();
@@ -254,16 +278,13 @@ var WorksheetView = Backbone.View.extend({
 		'ctrl+2':  			'insertImage'
 	},
 
-	events: {
-		'click': 			'disableEditBar'
-	},
-
 	initialize: function() {
 		var _this = this;
 		this.listenTo(this.model, 'change', this.render);
 		this.model.fetch({
 			success: function() {
 				_this.el.innerHTML = _this.model.get('data');
+				_this.activateVisualization();
 			}
 		});
 	},
@@ -332,7 +353,26 @@ var WorksheetView = Backbone.View.extend({
 
 	},
 
-	disableEditBar: function() {
+	// Activate all existing visualizations
+	activateVisualization: function() {
+
+		// Get all instances of the Storylytics visualization
+		$('.storylytics-visualization').each(function() {
+
+			// Get the ID attribute
+			var identifier = $(this).attr('id');
+
+			// Generate the new object
+			var visualization = new Visualization({
+				'id': identifier
+			});
+
+			// Create a view backed by that model
+			var visualizationView = new VisualizationView({
+				model: visualization
+			});
+
+		});
 
 	}
 

@@ -37,6 +37,18 @@ class VisualizationsController < ApplicationController
 
 	end
 
+	def show
+
+		# Retrieve the correct visualization
+		visualization = Visualization.find_by_identifier(params[:id])
+
+		visualization.chart_options = visualization.chart_options.to_s.html_safe
+
+		# Return the JSON data
+		render json: visualization
+
+	end
+
 	def put
 
 		# Retrieve the correct visualization
