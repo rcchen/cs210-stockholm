@@ -3,6 +3,24 @@ var worksheet;
 var worksheetToolbarView;
 var footerView;
 
+function convertSymbolToText(symbol) {
+	if (symbol == '<') {
+		return 'less than (<)';
+	} else if (symbol == '<=') {
+		return 'less than or equal (<=)';
+	} else if (symbol == '=') {
+		return 'equals (=)';
+	} else if (symbol == '>=') {
+		return 'greater than or equal (>=)';
+	} else if (symbol == '>') {
+		return 'greater than (>)';
+	} else if (symbol == '!=') {
+		return 'not equal (!=)';
+	} else if (symbol == 'Contains') {
+		return 'contains';
+	}
+}
+
 var Worksheet = Backbone.Model.extend({
 
 	urlRoot: '/worksheets/',
@@ -81,19 +99,38 @@ var VisualizationFilterView = Backbone.View.extend({
 
 	},
 
+	events: {
+		'click .filter-remove': 		'removeFilter', 
+	},
+
 	render: function() {
 
 		var _this = this;
 
-		console.log(this);
 
 		var template = _.template(document.getElementById('visualization-filter-template').innerHTML, {
 			'attribute': _this.options.attribute,
-			'condition': _this.options.conditiion,
+			'condition': convertSymbolToText(_this.options.condition),
 			'value': _this.options.value
 		});
 
+		this.setElement(template);
+
+		console.log(this.el);
+
 		$('#filters').append(template);
+
+	},
+
+	removeFilter: function(ev) {
+
+		console.log('asdf');
+
+ 		// Find the parent view
+        var parentView = $(ev.target).closest('.filter');
+
+	    // Remove it
+        parentView.remove();
 
 	}
 
@@ -221,6 +258,8 @@ var VisualizationView = Backbone.View.extend({
 
 	// Handle focus to the visualization
 	focusVisualization: function() {
+
+		console.log(this.el);
 
 		var _this = this;
 
