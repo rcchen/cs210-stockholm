@@ -39,6 +39,7 @@ class DatasetController < ApplicationController
 				dataset.datadocs.push(newDoc)
 			end
 			dataset.save
+			File.delete(path)
 		end
 	end
 
