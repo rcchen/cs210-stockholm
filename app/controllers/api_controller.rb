@@ -243,9 +243,7 @@ class ApiController < ApplicationController
 			end
 		end
 
-		if params[:chart] == "pie"
-			colList[0]["type"] = "string"
-		end
+		colList[0]["type"] = "string"
 
 
 		valueIndices.each do |valIndex|
@@ -303,7 +301,8 @@ class ApiController < ApplicationController
 		dataTableHash["cols"] = Array.new
 
 		# This will have to be looped if we end up supporting generalized multi-key charts
- 		dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_values[0])
+ 		dataTableKeyIndex = attrNameToIndex(@dataset.attrs, key_values)
+
 
  		# Adds all the corresponding values to cols
  		aggregate_values.each do |aggregate_value|
@@ -350,8 +349,7 @@ class ApiController < ApplicationController
  		dataTableHash["rows"] = Array.new
 
  		# Access the hash by order of sorted keys
- 		dataTableAggregateHash.keys.each do |key|
- 			values = dataTableAggregateHash[key]
+ 		dataTableAggregateHash.sort.map do |key, values|
  			rowHash = Hash.new
  			rowHash["c"] = Array.new
  			rowHash["c"] << { 'v' => key }
