@@ -19,12 +19,8 @@ else
 	echo "Mongodb is already installed"
 fi
 
-if ! which redis-server; then
-	echo "Installing redis server for background processes"
-	sudo apt-get install redis-server
-else
-	echo "Redis-server is already installed"
-fi
+mkdir public/data
+
 echo "Checking for new gems"
 bundle install
 
