@@ -36,6 +36,7 @@ class ApiController < ApplicationController
 
 	def meetsCriteria()
 
+
 		return true if params[:filters].nil? or params[:filters] == ""
 
 
@@ -242,6 +243,11 @@ class ApiController < ApplicationController
 			end
 		end
 
+		if params[:chart] == "pie"
+			colList[0]["type"] = "string"
+		end
+
+
 		valueIndices.each do |valIndex|
 			currCol = attrsList[valIndex].deep_dup
 			currCol["type"] = "number"
@@ -317,7 +323,7 @@ class ApiController < ApplicationController
 
  			if !dataTableAggregateHash.has_key?(@doc.row[dataTableKeyIndex])
 
- 				dataTableAggregateHash[@doc.row[dataTableKeyIndex]] = Array.new(dataTableValueIndices.length, 0)
+ 				dataTableAggregateHash[@doc.row[dataTableKeyIndex].to_s] = Array.new(dataTableValueIndices.length, 0)
 
  			end
 
@@ -331,6 +337,7 @@ class ApiController < ApplicationController
  				end
 
  			end
+
 
  		end
 
