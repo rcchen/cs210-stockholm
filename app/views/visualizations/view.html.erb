@@ -6,7 +6,10 @@
   var dataset = '<%= @visualization.dataset %>';
   var chart_type = '<%= @visualization.chart_type %>';
   var chart_options = jQuery.parseJSON('<%= @visualization.chart_options.html_safe %>');
-  var filters = jQuery.parseJSON('<%= @visualization.filters.html_safe %>');
+  var filters = [];
+  <% if @visualization.filters != nil %>
+  filters = jQuery.parseJSON('<%= @visualization.filters.html_safe %>');
+  <% end %>
 
   var locations = {}
   var mapCenter = [0, 0]
