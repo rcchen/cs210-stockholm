@@ -104,10 +104,21 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	initialize: function() {
 
-		this.render();
 		this.bind("shown", this.setDatasetAttributes);
 		this.bind("ok", this.saveAttributes);
-		console.log(this);
+		this.bind("hidden", this.teardown);
+
+		_.bindAll(this, 'beforeRender', 'render', 'afterRender');
+		var _this = this;
+		this.render = _.wrap(this.render, function(render) {
+			_this.beforeRender();
+			render();
+			_this.afterRender();
+			return _this;
+		});
+	},
+
+	beforeRender: function() {
 
 	},
 
@@ -126,13 +137,21 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	},
 
+	afterRender: function() {
+
+	},
+
 	// Set all the dataset attributes
 	setDatasetAttributes: function() {
 
 		var _this = this;
 
-		// Get the dataset identifier
-		var datasetIdentifier = $('#visualization-dataset').val();
+		var datasetIdentifier;
+		if (_this.model.get('dataset') == null) {
+			datasetIdentifier = $('#visualization-dataset').val();
+		} else {
+			datasetIdentifier = _this.model.get('dataset');
+		}
 
 		// Retrieve the corresponding dataset
 		var dataset = new Dataset({
@@ -142,6 +161,7 @@ var VisualizationSettingsView = Backbone.View.extend({
 		// Load it
 		dataset.fetch({
 			success: function() {
+				console.log(dataset);
 				var $filters = $('#filter-attribute');
 				$filters.empty();
 				var attrs = [];
@@ -150,7 +170,6 @@ var VisualizationSettingsView = Backbone.View.extend({
 					$filters.append($('<option></option>')
 						.attr('value', element.id).text(element.id));
 				});
-				console.log(attrs);
 				$('#visualization-keys').tagit({
 					availableTags: attrs,
 					showAutocompleteOnFocus:true
@@ -163,24 +182,26 @@ var VisualizationSettingsView = Backbone.View.extend({
 				// TODO: Check to see if they are in the data set
 
 				var chart_options = jQuery.parseJSON(_this.model.get('chart_options'));
+				if (chart_options['key'] != null) {
+					$('#visualization-keys').tagit('createTag', chart_options['key']);
 
-				$('#visualization-keys').tagit('createTag', chart_options['key']);
+					console.log(chart_options['value']);
 
-				console.log(chart_options['value']);
-
-				$.each(chart_options['value'], function(i, val) {
-					$('#visualization-values').tagit('createTag', val)
-				});
-
+					$.each(chart_options['value'], function(i, val) {
+						$('#visualization-values').tagit('createTag', val)
+					});
+				}
+			},
+			error: function(collection, response, options) {
+				console.log('failure');
+				console.log(response);
 			}
 		});
 
 	},
 
 	// Save attributes
-	saveAttributes: function() {
-
-		console.log('pulling down things');
+	saveAttributes: function(modal) {
 
 		var dataset = $('#visualization-dataset').val();
 		var chart = $('#visualization-type').val();
@@ -204,6 +225,10 @@ var VisualizationSettingsView = Backbone.View.extend({
 		this.model.set('chart_options', obj);
 		this.model.save();
 
+		console.log(this.model);
+
+		// Remove the modal
+		modal.close();
 
 	},
 
@@ -220,6 +245,10 @@ var VisualizationSettingsView = Backbone.View.extend({
 			'value': value
 		});
 
+	},
+
+	teardown: function() {
+		$('#storylytics-editor').after('<div id="storylytics-modals"></div>');
 	}
 
 });
@@ -272,19 +301,26 @@ var VisualizationView = Backbone.View.extend({
 	focusVisualization: function() {
 
 		var _this = this;
+		_this.model.fetch({
+			success: function() {
 
-		var visualizationSettings = new VisualizationSettingsView({
-			model: _this.model
+				var visualizationSettings = new VisualizationSettingsView({
+					model: _this.model
+				});
+
+				console.log(visualizationSettings);
+
+				var visualizationSettingsTitle = 'Settings for ' + visualizationSettings.model.get('identifier');
+
+				var modal = new Backbone.BootstrapModal({
+					animate: true,
+					escape: false,
+					title: visualizationSettingsTitle,
+					content: visualizationSettings
+				}).open();
+
+			}
 		});
-
-		var visualizationSettingsTitle = 'Settings for ' + visualizationSettings.model.get('identifier');
-
-		var modal = new Backbone.BootstrapModal({
-			animate: true,
-			escape: false,
-			title: visualizationSettingsTitle,
-			content: visualizationSettings
-		}).open();
 
 	}	
 
