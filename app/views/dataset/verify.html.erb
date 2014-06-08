@@ -1,7 +1,10 @@
 <div class="container" style="margin: 40px auto;">
 	<div class="row">
 		<div class="col-xs-6">
-			<strong>Parsed attributes</strong>
+			<strong>Column Title</strong>
+			<div class="col-xs-6">
+				<strong>Column Type</strong>
+			</div>
 			<%= form_tag({:action => 'verify'}, {}) do %>
 			<div id="json-attributes" style="margin: 10px 0px;">
 			<input type="hidden" value="<%= @file_data %>" />
@@ -24,11 +27,11 @@
 			<button type="submit" class="btn btn-primary">Submit</button>
 			<% end %>
 		</div>
-		<div class="col-xs-6">
-			<strong>Sample JSON Preview</strong>
+<!-- 		<div class="col-xs-6">
+			<strong>Uploaded Preview</strong>
 			<pre id="json-preview" style="margin: 10px 0px;"><%= JSON.pretty_generate(@dataset.attrs) %>
 			</pre>
-		</div>
+		</div> -->
 	</div>
 </div>
 <script>
