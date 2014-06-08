@@ -139,6 +139,10 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	afterRender: function() {
 
+		// Set the other fields
+		$('#visualization-dataset').val(this.model.get('dataset'));
+		$('#visualization-type').val(this.model.get('chart_type'));
+
 	},
 
 	// Set all the dataset attributes
@@ -161,7 +165,6 @@ var VisualizationSettingsView = Backbone.View.extend({
 		// Load it
 		dataset.fetch({
 			success: function() {
-				console.log(dataset);
 				var $filters = $('#filter-attribute');
 				$filters.empty();
 				var attrs = [];
@@ -182,20 +185,15 @@ var VisualizationSettingsView = Backbone.View.extend({
 				// TODO: Check to see if they are in the data set
 
 				var chart_options = jQuery.parseJSON(_this.model.get('chart_options'));
-				if (chart_options['key'] != null) {
+				if (chart_options != null && chart_options['key'] != null) {
 					$('#visualization-keys').tagit('createTag', chart_options['key']);
-
-					console.log(chart_options['value']);
-
 					$.each(chart_options['value'], function(i, val) {
 						$('#visualization-values').tagit('createTag', val)
 					});
 				}
-			},
-			error: function(collection, response, options) {
-				console.log('failure');
-				console.log(response);
+
 			}
+			
 		});
 
 	},
@@ -301,6 +299,7 @@ var VisualizationView = Backbone.View.extend({
 	focusVisualization: function() {
 
 		var _this = this;
+		console.log(_this.model);
 		_this.model.fetch({
 			success: function() {
 
