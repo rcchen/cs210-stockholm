@@ -173,6 +173,17 @@ var VisualizationSettingsView = Backbone.View.extend({
 					$filters.append($('<option></option>')
 						.attr('value', element.id).text(element.id));
 				});
+
+				var chart_options = jQuery.parseJSON(_this.model.get('chart_options'));
+				if (chart_options != null) {
+					if (chart_options['key'] != null) {
+						$('#visualization-keys').val(chart_options['key']);
+					}
+					if (chart_options['value'] != null) {
+						$('#visualization-values').val(chart_options['value'].join(','));
+					}
+				}
+
 				$('#visualization-keys').tagit({
 					availableTags: attrs,
 					showAutocompleteOnFocus:true
@@ -181,19 +192,9 @@ var VisualizationSettingsView = Backbone.View.extend({
 					availableTags: attrs,
 					showAutocompleteOnFocus:true
 				});
-				// Add in any existing tags
-				// TODO: Check to see if they are in the data set
-
-				var chart_options = jQuery.parseJSON(_this.model.get('chart_options'));
-				if (chart_options != null && chart_options['key'] != null) {
-					$('#visualization-keys').tagit('createTag', chart_options['key']);
-					$.each(chart_options['value'], function(i, val) {
-						$('#visualization-values').tagit('createTag', val)
-					});
-				}
 
 			}
-			
+
 		});
 
 	},
