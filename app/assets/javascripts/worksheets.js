@@ -70,7 +70,8 @@ var VisualizationFilterView = Backbone.View.extend({
 		var template = _.template(document.getElementById('visualization-filter-template').innerHTML, {
 			'attribute': _this.options.attribute,
 			'condition': convertSymbolToText(_this.options.condition),
-			'value': _this.options.value
+			'value': _this.options.value,
+			'conditionValue': _this.options.condition
 		});
 
 		//this.setElement(template);
@@ -139,9 +140,24 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	afterRender: function() {
 
+		var _this = this;
+
 		// Set the other fields
 		$('#visualization-dataset').val(this.model.get('dataset'));
 		$('#visualization-type').val(this.model.get('chart_type'));
+
+		// Open the Filters field
+		var filters = this.model.get('filters');
+
+		$.each(JSON.parse(filters), function(key, value) {
+
+			var filterView = new VisualizationFilterView({
+				'attribute': value['attribute'],
+				'condition': value['conditional'],
+				'value': value['value'],
+			});
+
+		});
 
 	},
 
@@ -164,6 +180,7 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 		// Load it
 		dataset.fetch({
+
 			success: function() {
 				var $filters = $('#filter-attribute');
 				$filters.empty();
@@ -218,13 +235,28 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 		}
 
+		// Get all the filters
+		var filters = [];
+		$('.filter').each(function() {
+			var filter_attribute = $(this).find('.filter-attribute').text();
+			var filter_condition = $(this).find('.filter-condition-value').text();
+			var filter_value = $(this).find('.filter-value').text();
+			var filter = {
+				'attribute': filter_attribute,
+				'conditional': filter_condition,
+				'value': filter_value
+			};
+			filters.push(filter);
+		});
+
+		console.log(filters);
+
 		// Set and save
 		this.model.set('dataset', dataset);
 		this.model.set('chart_type', chart);
 		this.model.set('chart_options', obj);
+		this.model.set('filters', filters);
 		this.model.save();
-
-		console.log(this.model);
 
 		// Remove the modal
 		modal.close();
