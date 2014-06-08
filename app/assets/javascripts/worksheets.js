@@ -285,7 +285,7 @@ var VisualizationSettingsView = Backbone.View.extend({
 	teardown: function() {
 		$('#storylytics-editor').after('<div id="storylytics-modals"></div>');
 		var frame = $('#' + this.model.id).find('iframe');
-		console.log(frame[0].src);
+		frame[0].src = frame[0].src;
 	}
 
 });
