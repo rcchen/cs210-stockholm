@@ -149,15 +149,19 @@ var VisualizationSettingsView = Backbone.View.extend({
 		// Open the Filters field
 		var filters = this.model.get('filters');
 
-		$.each(JSON.parse(filters), function(key, value) {
+		if (filters != null) {
 
-			var filterView = new VisualizationFilterView({
-				'attribute': value['attribute'],
-				'condition': value['conditional'],
-				'value': value['value'],
+			$.each(JSON.parse(filters), function(key, value) {
+
+				var filterView = new VisualizationFilterView({
+					'attribute': value['attribute'],
+					'condition': value['conditional'],
+					'value': value['value'],
+				});
+
 			});
 
-		});
+		}
 
 	},
 
@@ -280,6 +284,8 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	teardown: function() {
 		$('#storylytics-editor').after('<div id="storylytics-modals"></div>');
+		var frame = $('#' + this.model.id).find('iframe');
+		console.log(frame[0].src);
 	}
 
 });
@@ -325,7 +331,7 @@ var VisualizationView = Backbone.View.extend({
 	},
 
 	events: {
-		'click': 			'focusVisualization', 
+		'click #visualization-edit': 			'focusVisualization', 
 	},
 
 	// Handle focus to the visualization
