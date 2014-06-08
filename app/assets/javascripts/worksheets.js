@@ -296,7 +296,12 @@ var VisualizationView = Backbone.View.extend({
 		var _this = this;
 		if (this.model.get('id') == undefined) {
 			this.model.save(null, {
-				success: function() {
+				success: function(model, response, options) {
+					console.log('successbear');
+					console.log(model);
+					console.log(response);
+					console.log(options);
+					_this.model.id = model.get('identifier');
 					_this.render();
 				}
 			});			
