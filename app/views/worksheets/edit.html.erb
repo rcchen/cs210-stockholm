@@ -3,12 +3,18 @@
 <div id="storylytics-modals"></div>
 
 <script id="visualization-template" type="text/template">
+	<div></div>
 	<div>
 		<div class="storylytics-element storylytics-visualization" contenteditable="true" id="<%%= identifier %>">
 			<div class="visualization-preview">
+				<div class="visualization-controls">
+					<button id="visualization-edit" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></btn>
+				</div>
+				<iframe src="/visualizations/<%%= identifier %>/view" width="100%" height="100%" frameBorder="0" />
 			</div>
 		</div>
 	</div>
+	<div></div>
 </script>
 
 <script id="visualization-filter-template" type="text/template">
@@ -16,6 +22,7 @@
 	<div class="filter-attribute filter-readonly"><%%= attribute %></div>
 	<div class="filter-condition filter-readonly"><%%= condition %></div>
 	<div class="filter-value filter-readonly"><%%= value %></div>
+	<div class="filter-condition-value"><%%= conditionValue %></div>
 	<div class="filter-action">
 		<button class="btn btn-danger filter-remove">X</button>
 	</div>

@@ -26,6 +26,8 @@ Cs210Stockholm::Application.routes.draw do
   resources :worksheets
   resources :visualizations
 
+  get "visualizations/:id/view", to: "visualizations#view"
+
   # These routes are associated with the worksheet
   #get "worksheet/create"
   #post "worksheet/create"
