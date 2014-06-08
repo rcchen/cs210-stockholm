@@ -16,6 +16,8 @@ class VisualizationsController < ApplicationController
 
 		# Assign the current worksheet to it
 		
+		visualization.chart_options = Hash.new	
+		visualization.filters = Hash.new	
 
 		# Save the visualization
 		visualization.save
@@ -29,6 +31,7 @@ class VisualizationsController < ApplicationController
 
 		# Retrieve the correct visualization
 		visualization = Visualization.find_by_identifier(params[:id])
+
 
 		visualization.chart_options = visualization.chart_options.to_s.html_safe
 
@@ -153,6 +156,7 @@ class VisualizationsController < ApplicationController
 
 		# Retrieve the correct visualization
 		@visualization = Visualization.find_by_identifier(params[:id])
+		
 
 		puts @visualization.chart_options
 
