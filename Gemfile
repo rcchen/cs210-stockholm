@@ -68,6 +68,9 @@ gem 'delayed_job_mongoid'
 # Delayed job workers daemon
 gem 'daemons'
 
+# Dolla Dolla bill Y'all
+gem 'money'
+gem 'monetize'
 
 # Use unicorn as the app server
 # gem 'unicorn'
