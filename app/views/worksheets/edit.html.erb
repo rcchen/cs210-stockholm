@@ -1,6 +1,12 @@
 <div id="storylytics-editor" class="container mousetrap" contenteditable="true">
 </div>
 <div id="storylytics-modals"></div>
+<div id="storylytics-rightclick" class="contextMenu">
+	<ul>
+		<li id="rightclick-visualization">Add Visualization</li>
+		<li id="rightclick-image">Add Image</li>
+	</ul>
+</div>
 
 <script id="visualization-template" type="text/template">
 	<div>Miss something? Add it here</div>
@@ -32,7 +38,7 @@
 
 <script id="visualization-settings-template" type="text/template">
 <div class="settings-content">
-	<form class="form-horizontal" role="form">
+	<form id="main-form" class="form-horizontal" role="form">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">Dataset</label>
 			<div class="col-sm-10">
@@ -112,6 +118,20 @@ $(document).ready(function() {
 
 	// Initialize the worksheet toolbar
 	worksheetToolbarView = new WorksheetToolbarView();
+
+	// Enable the context menu
+	$('#storylytics-editor').contextMenu('storylytics-rightclick', {
+
+      bindings: {
+      	'rightclick-visualization': function(t) {
+      		worksheetView.insertVisualization();
+      	},
+      	'rightclick-image': function(t) {
+      		worksheetView.insertImage();
+      	}
+      }
+
+    });
 
 	// Initialize the footer view
 	// footerView = new FooterView();

@@ -21,6 +21,76 @@ function convertSymbolToText(symbol) {
 	}
 }
 
+var saveSelection, restoreSelection;
+
+if (window.getSelection && document.createRange) {
+    saveSelection = function(containerEl) {
+        var range = window.getSelection().getRangeAt(0);
+        var preSelectionRange = range.cloneRange();
+        preSelectionRange.selectNodeContents(containerEl);
+        preSelectionRange.setEnd(range.startContainer, range.startOffset);
+        var start = preSelectionRange.toString().length;
+
+        return {
+            start: start,
+            end: start + range.toString().length
+        }
+    };
+
+    restoreSelection = function(containerEl, savedSel) {
+        var charIndex = 0, range = document.createRange();
+        range.setStart(containerEl, 0);
+        range.collapse(true);
+        var nodeStack = [containerEl], node, foundStart = false, stop = false;
+        
+        while (!stop && (node = nodeStack.pop())) {
+            if (node.nodeType == 3) {
+                var nextCharIndex = charIndex + node.length;
+                if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
+                    range.setStart(node, savedSel.start - charIndex);
+                    foundStart = true;
+                }
+                if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
+                    range.setEnd(node, savedSel.end - charIndex);
+                    stop = true;
+                }
+                charIndex = nextCharIndex;
+            } else {
+                var i = node.childNodes.length;
+                while (i--) {
+                    nodeStack.push(node.childNodes[i]);
+                }
+            }
+        }
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+} else if (document.selection && document.body.createTextRange) {
+    saveSelection = function(containerEl) {
+        var selectedTextRange = document.selection.createRange();
+        var preSelectionTextRange = document.body.createTextRange();
+        preSelectionTextRange.moveToElementText(containerEl);
+        preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
+        var start = preSelectionTextRange.text.length;
+
+        return {
+            start: start,
+            end: start + selectedTextRange.text.length
+        }
+    };
+
+    restoreSelection = function(containerEl, savedSel) {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(containerEl);
+        textRange.collapse(true);
+        textRange.moveEnd("character", savedSel.end);
+        textRange.moveStart("character", savedSel.start);
+        textRange.select();
+    };
+}
+
 var Worksheet = Backbone.Model.extend({
 
 	urlRoot: '/worksheets/',
@@ -101,11 +171,12 @@ var VisualizationSettingsView = Backbone.View.extend({
 	events: {
 		'change #visualization-dataset': 		'setDatasetAttributes',
 		'click #add-filter': 					'addFilter', 
+		'change #visualization-type': 			'setTypeAttributes',
 	},
 
 	initialize: function() {
 
-		this.bind("shown", this.setDatasetAttributes);
+		this.bind("shown", this.handleShow);
 		this.bind("ok", this.saveAttributes);
 		this.bind("hidden", this.teardown);
 
@@ -117,6 +188,13 @@ var VisualizationSettingsView = Backbone.View.extend({
 			_this.afterRender();
 			return _this;
 		});
+	},
+
+	handleShow: function() {
+
+		this.setDatasetAttributes();
+		this.setTypeAttributes();
+
 	},
 
 	beforeRender: function() {
@@ -165,6 +243,32 @@ var VisualizationSettingsView = Backbone.View.extend({
 
 	},
 
+	// Set type attributes where necessary
+	setTypeAttributes: function() {
+
+		var _this = this;
+
+		var chartType = $('#visualization-type').val();
+
+		if (chartType == 'geo') {
+
+			$('#visualization-keys').parent().parent().find('.control-label').text('Latitude');
+			$('#visualization-values').parent().parent().find('.control-label').text('Longitude');
+			$('#main-form').append('<div class="form-group"><label class="col-sm-2 control-label">Values</label><div class="col-sm-10"><input class="form-control" id="visualization-aggregate" /></div></div>');
+			_this.setDatasetAttributes();
+
+		} 
+
+		else {
+
+			$('#visualization-keys').parent().parent().find('.control-label').text('Keys');
+			$('#visualization-values').parent().parent().find('.control-label').text('Values');
+			$('#visualization-aggregate').parent().parent().remove();
+
+		}
+
+	},
+
 	// Set all the dataset attributes
 	setDatasetAttributes: function() {
 
@@ -203,6 +307,9 @@ var VisualizationSettingsView = Backbone.View.extend({
 					if (chart_options['value'] != null) {
 						$('#visualization-values').val(chart_options['value'].join(','));
 					}
+					if (chart_options['aggregate'] != null) {
+						$('#visualization-aggregate').val(chart_options['aggregate']);
+					}
 				}
 
 				$('#visualization-keys').tagit({
@@ -213,6 +320,13 @@ var VisualizationSettingsView = Backbone.View.extend({
 					availableTags: attrs,
 					showAutocompleteOnFocus:true
 				});
+
+				if ($('#visualization-aggregate') != undefined) {
+					$('#visualization-aggregate').tagit({
+						availableTags: attrs,
+						showAutocompleteOnFocus: true
+					});
+				}
 
 			}
 
@@ -227,14 +341,19 @@ var VisualizationSettingsView = Backbone.View.extend({
 		var chart = $('#visualization-type').val();
 		var keys = $('#visualization-keys').tagit('assignedTags');
 		var values = $('#visualization-values').tagit('assignedTags');
+		var aggregate = [];
+		if ($('#visualization-aggregate')) {
+			aggregate = $('#visualization-aggregate').tagit('assignedTags');
+		}
 
 		var obj = {};
 
-		if (chart == 'bar' || chart == 'line' || chart == 'pie') {
+		if (chart == 'bar' || chart == 'line' || chart == 'pie' || chart == 'geo') {
 
 			obj = {
 				'key': keys[0],
-				'value': values
+				'value': values,
+				'aggregate': aggregate
 			};
 
 		}
@@ -253,14 +372,14 @@ var VisualizationSettingsView = Backbone.View.extend({
 			filters.push(filter);
 		});
 
-		console.log(filters);
-
 		// Set and save
 		this.model.set('dataset', dataset);
 		this.model.set('chart_type', chart);
 		this.model.set('chart_options', obj);
 		this.model.set('filters', filters);
 		this.model.save();
+
+		console.log(this.model);
 
 		// Remove the modal
 		modal.close();
@@ -386,10 +505,10 @@ var WorksheetView = Backbone.View.extend({
 		'ctrl+s': 			'save',
 		'command+e': 		'justifyCenter',
 		'ctrl+e': 			'justifyCenter',
-		'command+1': 		'insertVisualization', 
-		'ctrl+1': 			'insertVisualization',
-		'command+2': 		'insertImage', 
-		'ctrl+2':  			'insertImage'
+		'ctrl+shift+1': 	'insertVisualization', 
+		'cmd+shift+1': 		'insertVisualization',
+		'ctrl+shift+2': 	'insertImage',
+		'cmd+shift+2': 		'insertImage'
 	},
 
 	initialize: function() {
@@ -436,7 +555,7 @@ var WorksheetView = Backbone.View.extend({
 
 	// Insert an image into the document
 	// Currently inserts the image at the top of the document.
-	insertImage: function(imageURL) {
+	insertImage: function() {
 
 		// Prompt for an image URL
 		var imageURL = prompt("Image URL?");
@@ -502,7 +621,10 @@ var WorksheetToolbarView = Backbone.View.extend({
 
 	addImage: function() {
 
-		worksheetView.insertImage();
+		saveSelection(document.getElementById('storylytics-editor'));
+
+		restoreSelection(document.getElementById('storylytics-editor'), 'asssss');
+		//worksheetView.insertImage();
 
 	}
 
