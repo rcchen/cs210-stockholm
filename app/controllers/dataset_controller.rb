@@ -11,7 +11,20 @@ require 'monetize'
 
 class DatasetController < ApplicationController
 
+	# Adopted from http://rosettacode.org/wiki/Determine_if_a_string_is_numeric#Ruby
+	def is_numeric?(s)
+		begin
+			Float(s)
+		rescue
+			false #not numeric
+		else
+			true #numeric
+		end
+	end
+
+
 	SaveRowsJob = Struct.new(:datasetID) do
+
 		def perform
 			puts "I'M IN THE BACKGROUND =D"
 			dataset = Dataset.find(datasetID)
@@ -36,11 +49,10 @@ class DatasetController < ApplicationController
 
 					puts dataset.attrs
 					if dataset.attrs[index]["type"] == "number"
-						puts "IS NUMERIC"
-						if not is_numeric(row[index])
-							puts "IS DATE"
-							row[index] = Monetize.parse(row[index]).to_f
+						if row[index].nil? or row[index].empty?
+							row[index] = 0
 						end
+						row[index] = row[index].to_f
 					end
 				end
 				newDoc = Datadoc.new
@@ -54,17 +66,7 @@ class DatasetController < ApplicationController
 		end
 	end
 
-	# Adopted from http://rosettacode.org/wiki/Determine_if_a_string_is_numeric#Ruby
-	def is_numeric?(s)
-		begin
-			Float(s)
-		rescue
-			false #not numeric
-		else
-			true #numeric
-		end
-	end
-
+	
 	def create
 
 		@dataset = Dataset.new
@@ -116,9 +118,7 @@ class DatasetController < ApplicationController
 	 				attrHash[:id] = attribute_underscore
 
 	 				if is_numeric?(firstValRow[index])
-	 					attrHash[:type] = 'number'
-	 				elsif Monetize.parse(firstValRow[index]) != Money.empty
-	 					attrHash[:type] = 'number'	 					
+	 					attrHash[:type] = 'number'					
 	 				elsif not Chronic.parse(firstValRow[index]).nil?
 	 					attrHash[:type] = 'datetime'
 	 				else 
