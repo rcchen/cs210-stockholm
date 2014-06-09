@@ -320,7 +320,7 @@ class ApiController < ApplicationController
  			next if not meetsCriteria()
  			#uses @doc to alter doc by reference if needed
 
- 			if !dataTableAggregateHash.has_key?(@doc.row[dataTableKeyIndex])
+ 			if !dataTableAggregateHash.has_key?(@doc.row[dataTableKeyIndex].to_s)
 
  				dataTableAggregateHash[@doc.row[dataTableKeyIndex].to_s] = Array.new(dataTableValueIndices.length, 0)
 
@@ -328,10 +328,12 @@ class ApiController < ApplicationController
 
  			dataTableValueIndices.each_with_index do |rowIndex, index| 
 
- 				if @dataset.attrs[index]["type"] == "number"
- 					dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += @doc.row[rowIndex].to_f
+ 				if @dataset.attrs[rowIndex]["type"] == "number"
+ 					puts @doc.row[rowIndex].to_f
+ 					dataTableAggregateHash[@doc.row[dataTableKeyIndex].to_s][index] += @doc.row[rowIndex].to_f
  				else
- 					dataTableAggregateHash[@doc.row[dataTableKeyIndex]][index] += 1
+ 					puts "SHOULD BE NUMERIC DAMNIT"
+ 					dataTableAggregateHash[@doc.row[dataTableKeyIndex].to_s][index] += 1
  					#If the value is non-numeric, jsut count the number of instances
  				end
 

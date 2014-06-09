@@ -3,6 +3,8 @@ require 'json'
 require 'mongo'
 require 'uri'
 require 'chronic'
+require 'money'
+require 'monetize'
 
 
 
@@ -30,6 +32,15 @@ class DatasetController < ApplicationController
 				row.each_with_index do |attribute, index|
 					if row[index] != nil
 						row[index] = row[index].force_encoding("utf-8")
+					end
+
+					puts dataset.attrs
+					if dataset.attrs[index]["type"] == "number"
+						puts "IS NUMERIC"
+						if not is_numeric(row[index])
+							puts "IS DATE"
+							row[index] = Monetize.parse(row[index]).to_f
+						end
 					end
 				end
 				newDoc = Datadoc.new
@@ -106,6 +117,8 @@ class DatasetController < ApplicationController
 
 	 				if is_numeric?(firstValRow[index])
 	 					attrHash[:type] = 'number'
+	 				elsif Monetize.parse(firstValRow[index]) != Money.empty
+	 					attrHash[:type] = 'number'	 					
 	 				elsif not Chronic.parse(firstValRow[index]).nil?
 	 					attrHash[:type] = 'datetime'
 	 				else 
