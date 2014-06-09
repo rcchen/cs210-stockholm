@@ -1,0 +1,1 @@
+(function(){window.Cs210Stockholm={Models:{},Collections:{},Routers:{},Views:{}}}).call(this);
