@@ -337,6 +337,7 @@ var VisualizationView = Backbone.View.extend({
 
 	events: {
 		'click #visualization-edit': 			'focusVisualization', 
+		'click #visualization-destroy': 		'removeVisualization'
 	},
 
 	// Handle focus to the visualization
@@ -365,7 +366,14 @@ var VisualizationView = Backbone.View.extend({
 			}
 		});
 
-	}	
+	},
+
+	removeVisualization: function() {
+
+		this.remove();
+		this.unbind();
+
+	}
 
 });
 
