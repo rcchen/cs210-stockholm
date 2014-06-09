@@ -341,8 +341,8 @@ var VisualizationSettingsView = Backbone.View.extend({
 		var chart = $('#visualization-type').val();
 		var keys = $('#visualization-keys').tagit('assignedTags');
 		var values = $('#visualization-values').tagit('assignedTags');
-		var aggregate = [];
-		if ($('#visualization-aggregate')) {
+		var aggregate;
+		if ($('#visualization-aggregate').length) {
 			aggregate = $('#visualization-aggregate').tagit('assignedTags');
 		}
 
@@ -377,9 +377,11 @@ var VisualizationSettingsView = Backbone.View.extend({
 		this.model.set('chart_type', chart);
 		this.model.set('chart_options', obj);
 		this.model.set('filters', filters);
-		this.model.save();
 
 		console.log(this.model);
+
+		this.model.save();
+
 
 		// Remove the modal
 		modal.close();
