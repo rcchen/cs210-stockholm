@@ -205,9 +205,9 @@ class ApiController < ApplicationController
 	 		# Handles the geo chart data request
 	 	elsif chart == 'geo'
 
-	 		latitude = params[:chart_options]['latitude']
-	 		longitude = params[:chart_options]['longitude']
-	 		aggregate = params[:chart_options]['value']
+	 		latitude = params[:chart_options]['key']
+	 		longitude = params[:chart_options]['value']
+	 		aggregate = params[:chart_options]['aggregate']
 
 	 		render json: getGeoData(latitude, longitude, aggregate)
 
