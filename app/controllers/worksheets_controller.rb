@@ -80,6 +80,7 @@ class WorksheetsController < ApplicationController
 	def destroy
 		@worksheet = Worksheet.find_by_identifier(params[:id])
 		@worksheet.destroy
+		redirect_to "/users/profile"
 	end
 
 end

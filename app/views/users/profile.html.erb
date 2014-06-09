@@ -22,7 +22,7 @@
 					<td><%= worksheet.updated_at %></td>
 					<td><a href="/worksheets/<%= worksheet.identifier %>">View</a></td>
 					<td><a href="/worksheets/<%= worksheet.identifier %>/edit">Edit</a></td>
-					<td><a href="/worksheets/<%= worksheet.identifier %>/destroy">Delete</a></td>
+					<td><a href="/worksheets/<%= worksheet.identifier %>" data-method="delete">Delete</a></td>
 				</tr>
 				<% end %>
 			</tbody>
