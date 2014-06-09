@@ -206,7 +206,7 @@ class ApiController < ApplicationController
 	 	elsif chart == 'geo'
 
 	 		latitude = params[:chart_options]['key']
-	 		longitude = params[:chart_options]['value']
+	 		longitude = params[:chart_options]['value'][0]
 	 		aggregate = params[:chart_options]['aggregate']
 
 	 		render json: getGeoData(latitude, longitude, aggregate)
@@ -367,9 +367,12 @@ class ApiController < ApplicationController
  	def getGeoData(latitude, longitude, aggregate_values)
 
  		dataTableHash = Hash.new
+ 		puts latitude
+ 		puts longitude
+ 		puts aggregate_values
 
- 		dataTableLatitudeIndex = attrNameToIndex(@dataset.attrs, latitude[0])
- 		dataTableLongitudeIndex = attrNameToIndex(@dataset.attrs, longitude[0])
+ 		dataTableLatitudeIndex = attrNameToIndex(@dataset.attrs, latitude)
+ 		dataTableLongitudeIndex = attrNameToIndex(@dataset.attrs, longitude)
  		dataTableValueIndices = Array.new
 
  		# Adds all the corresponding values to cols
@@ -397,23 +400,21 @@ class ApiController < ApplicationController
  					dataTableHash[location][index] += @doc.row[rowIndex].to_f
  				rescue
   					#If it isn't numeric, just count the number of occurences
-  					dataTableHash[location][index] = dataTableHash[location][index] + 1
-  				else
-  					puts "LOLWUT"
+  					dataTableHash[location][index] += 1
   				end
 
   			end
-  			returnArray = Array.new
-  			dataTableHash.each do |location, valArray|
-  				rowArr = Array.new
-  				rowArr << location.latitude
-  				rowArr << location.longitude
-  				returnArray << (rowArr + valArray)
-  			end
-
-  			return returnArray
 
   		end
+  		returnArray = Array.new
+		dataTableHash.each do |location, valArray|
+			rowArr = Array.new
+			rowArr << location.latitude
+			rowArr << location.longitude
+			rowArr << valArray[0]
+			returnArray << rowArr
+		end
+		return returnArray
   	end
 
 end
