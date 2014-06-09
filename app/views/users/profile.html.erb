@@ -1,7 +1,8 @@
 <div class="container">
 	<div class="profile-panel">
 		<h3>Worksheets</h3>
-		<%= link_to 'New Worksheet', {controller: 'worksheets', action: 'new'}, class: 'btn btn-success btn-or' %>
+		<i>Annotate, generate, and share visualizations on existing datasets in a worksheet.</i><br><br>
+		<%= link_to 'New Worksheet', {controller: 'worksheets', action: 'new'}, class: 'btn btn-success btn-or' %> 
 		<table class="table">
 			<thead>
 				<tr>
@@ -10,7 +11,7 @@
 					<th>Updated</th>
 					<th>View</th>
 					<th>Edit</th>
-					<th>Destroy</th>
+					<th>Delete</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -21,7 +22,7 @@
 					<td><%= worksheet.updated_at %></td>
 					<td><a href="/worksheets/<%= worksheet.identifier %>">View</a></td>
 					<td><a href="/worksheets/<%= worksheet.identifier %>/edit">Edit</a></td>
-					<td><a href="/worksheets/<%= worksheet.identifier %>/destroy">Destroy</a></td>
+					<td><a href="/worksheets/<%= worksheet.identifier %>/destroy">Delete</a></td>
 				</tr>
 				<% end %>
 			</tbody>
@@ -29,7 +30,8 @@
 	</div>
 	<div class="profile-panel">
 		<h3>Datasets</h3>
-		<%= link_to 'New Dataset', {controller: 'dataset', action: 'create'}, class: 'btn btn-success btn-or' %>
+		<i>Upload a new dataset from your local computer.</i><br><br>
+		<%= link_to 'New Dataset', {controller: 'dataset', action: 'create'}, class: 'btn btn-success btn-or' %> 
 		<table class="table">
 			<thead>
 				<tr>
@@ -37,7 +39,7 @@
 					<th>Created</th>
 					<th>Updated</th>
 					<th>View</th>
-					<th>Destroy</th>
+					<th>Delete</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -47,7 +49,7 @@
 					<td><%= dataset.created_at %></td>
 					<td><%= dataset.updated_at %></td>
 					<td><a href="/dataset/<%= dataset.identifier %>/view">View</a></td>
-					<td><a href="/dataset/<%= dataset.identifier %>/destroy">Destroy</a></td>
+					<td><a href="/dataset/<%= dataset.identifier %>/destroy">Delete</a></td>
 				</tr>
 				<% end %>	
 			</tbody>
